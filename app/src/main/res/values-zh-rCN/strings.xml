@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">链你</string>
+    <string name="main_page">首页</string>
+    <string name="explore_page">发现</string>
+    <string name="message_page">消息</string>
+    <string name="my_page">我的</string>
+    <string name="my_friend_string">好友</string>
+    <string name="my_friend_bit_string">位</string>
+    <string name="my_friend_count">0</string>
+    <string name="my_light_up_dynamics">点亮的动态</string>
+    <string name="my_light_up_dynamics_count">0</string>
+    <string name="my_light_up_dynamics_strip_string">条</string>
+    <string name="user_name">迷毂</string>
+    <string name="user_city">重庆</string>
+    <string name="user_constellation">" · 星座"</string>
+    <string name="user_dynamics_count">" · 0条"</string>
+    <string name="dynamics_time">1970-01-01 10:10</string>
+    <string name="dynamics_context">这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容</string>
+    <string name="my_dynamics_light_up_count">0</string>
+    <string name="my_dynamics_message">0</string>
+    <string name="message_page_title">消息</string>
+    <string name="message_example">这是一条消息，这是一条消息,这是一条消息，这是一条消息,这是一条消息，这是一条消息</string>
+    <string name="message_time">13:14</string>
+    <string name="focus_string">关注</string>
+    <string name="up_to_date">最新</string>
+</resources>

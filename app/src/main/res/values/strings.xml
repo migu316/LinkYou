@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">LinkYou</string>
+    <string name="main_page">MainPage</string>
+    <string name="explore_page">ExplorePage</string>
+    <string name="message_page">MessagePage</string>
+    <string name="my_page">MyPage</string>
+    <string name="my_friend_string">Friend</string>
+    <string name="my_friend_bit_string">bit</string>
+    <string name="my_friend_count">0</string>
+    <string name="my_light_up_dynamics">light up dynamics</string>
+    <string name="my_light_up_dynamics_count">0</string>
+    <string name="my_light_up_dynamics_strip_string">strip</string>
+    <string name="user_name">Your Name</string>
+    <string name="user_city">City</string>
+    <string name="user_constellation">" · Aries"</string>
+    <string name="user_dynamics_count">" · 0strip"</string>
+    <string name="dynamics_time">1970-01-01 10:10</string>
+    <string name="dynamics_context">this is dynamics context,this is dynamics context,this is dynamics context,this is dynamics context</string>
+    <string name="my_dynamics_light_up_count">0</string>
+    <string name="my_dynamics_message">0</string>
+    <string name="message_page_title">Message</string>
+    <string name="message_example">This is a message,This is a message,This is a message</string>
+    <string name="message_time">13:14</string>
+    <string name="focus_string">Focus</string>
+    <string name="up_to_date">UpToDate</string>
+</resources>
