@@ -18,17 +18,17 @@ android {
     }
 
     signingConfigs {
-        create("config") {
-            storeFile = file(project.findProperty("KEY_PATH")?.toString() ?: "")
-            storePassword = project.findProperty("KEY_PASS")?.toString() ?: ""
-            keyAlias = project.findProperty("ALIAS_NAME")?.toString() ?: ""
-            keyPassword =  project.findProperty("ALIAS_PASS")?.toString() ?: ""
-        }
+//        create("config") {
+//            storeFile = file(project.findProperty("KEY_PATH")?.toString() ?: "")
+//            storePassword = project.findProperty("KEY_PASS")?.toString() ?: ""
+//            keyAlias = project.findProperty("ALIAS_NAME")?.toString() ?: ""
+//            keyPassword =  project.findProperty("ALIAS_PASS")?.toString() ?: ""
+//        }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("config")
+//            signingConfig = signingConfigs.getByName("config")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -36,7 +36,7 @@ android {
             )
         }
         debug {
-            signingConfig = signingConfigs.getByName("config")
+//            signingConfig = signingConfigs.getByName("config")
         }
     }
     compileOptions {
