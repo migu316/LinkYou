@@ -24,7 +24,7 @@
         android:ellipsize="end"
         android:lineSpacingExtra="2dp"
         android:maxLines="4"
-        android:text="@string/dynamics_context"
+        android:text="@string/dynamics_content"
         android:textSize="15sp" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -15,8 +15,8 @@
     <string name="user_city">重庆</string>
     <string name="user_constellation">" · 星座"</string>
     <string name="user_dynamics_count">" · 0条"</string>
-    <string name="dynamics_time">1970-01-01 10:10</string>
-    <string name="dynamics_context">这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容</string>
+    <string name="dynamics_time">1970–01–01 10:10</string>
+    <string name="dynamics_content">这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容</string>
     <string name="my_dynamics_light_up_count">0</string>
     <string name="my_dynamics_message">0</string>
     <string name="message_page_title">消息</string>
@@ -24,4 +24,10 @@
     <string name="message_time">13:14</string>
     <string name="focus_string">关注</string>
     <string name="up_to_date">最新</string>
+    <string name="privacy_policy_title_string">隐私政策</string>
+    <string name="privacy_policy_content_string">已阅读并同意《用户协议》和《隐私协议》\n 为了提供更好的服务体验，我们的应用在运行时将使用包含但不限于图库、连接网络、通知等权限。 我们承诺严格遵守隐私政策，保护您的个人信息安全，绝不会泄露或滥用您的隐私数据。</string>
+    <string name="privacy_policy_button_agree">同意</string>
+    <string name="privacy_policy_button_cancel">退出</string>
+    <string name="user_agreement_string">点击查看《用户协议》</string>
+    <string name="privacy_agreement_string">点击查看《隐私协议》</string>
 </resources>

@@ -15,7 +15,7 @@
     <string name="user_constellation">" · Aries"</string>
     <string name="user_dynamics_count">" · 0strip"</string>
     <string name="dynamics_time">1970-01-01 10:10</string>
-    <string name="dynamics_context">this is dynamics context,this is dynamics context,this is dynamics context,this is dynamics context</string>
+    <string name="dynamics_content">this is dynamics context,this is dynamics context,this is dynamics context,this is dynamics context</string>
     <string name="my_dynamics_light_up_count">0</string>
     <string name="my_dynamics_message">0</string>
     <string name="message_page_title">Message</string>
@@ -23,4 +23,10 @@
     <string name="message_time">13:14</string>
     <string name="focus_string">Focus</string>
     <string name="up_to_date">UpToDate</string>
+    <string name="privacy_policy_title_string">Privacy Policy</string>
+    <string name="privacy_policy_content_string">Have read and agreed to the 《User Agreement》 and 《Privacy Agreement》\n In order to provide a better service experience, our application will use permissions including but not limited to gallery, network connection, notification, etc. when running. We promise to strictly abide by the privacy policy, protect the security of your personal information, and will never leak or abuse your private data.</string>
+    <string name="privacy_policy_button_agree">Agree</string>
+    <string name="privacy_policy_button_cancel">Exit</string>
+    <string name="user_agreement_string">Click to view《User Agreement》</string>
+    <string name="privacy_agreement_string">Click to view《Privacy Agreement》</string>
 </resources>
