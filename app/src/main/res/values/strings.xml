@@ -29,4 +29,5 @@
     <string name="privacy_policy_button_cancel">Exit</string>
     <string name="user_agreement_string">Click to view《User Agreement》</string>
     <string name="privacy_agreement_string">Click to view《Privacy Agreement》</string>
+    <string name="sure_string">Sure</string>
 </resources>

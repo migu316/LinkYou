@@ -11,14 +11,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.ActivityMainBinding
+import com.migu.android.linkyou.databinding.FragmentPrivacyAgreementBinding
 import com.migu.android.linkyou.databinding.FragmentPrivacyPolicyPopUpBinding
+import com.migu.android.linkyou.databinding.FragmentUserAgreementBinding
 import com.migu.android.linkyou.ui.explore.ExploreFragment
 import com.migu.android.linkyou.ui.main.MainFragment
 import com.migu.android.linkyou.ui.message.MessageFragment
 import com.migu.android.linkyou.ui.my.MyFragment
+import com.migu.android.linkyou.ui.util.AssetsUtils
 import com.migu.android.linkyou.ui.util.BarUtils
 import com.migu.android.linkyou.ui.util.LayoutUtils
 import kotlin.jvm.internal.Intrinsics.Kotlin
@@ -42,16 +46,9 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.main)
-        BarUtils.immersiveStatus(window)
 
-        getSharedPreferences(PRIVACY_POLICY, MODE_PRIVATE).getBoolean(
-            PRIVACY_POLICY_IS_AGREE,
-            false
-        ).apply {
-            if (!this) {
-                showPrivacyPolicyDialog()
-            }
-        }
+        BarUtils.immersiveStatus(window)
+        showPrivacyPolicyDialog()
 
         // 用户实现在配置变更时，通过模拟点击触发底部导航栏的监听方法，恢复用户之前的视图
         if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
@@ -91,25 +88,71 @@ class MainActivity : BaseActivity() {
 
 
     private fun showPrivacyPolicyDialog() {
+
+        if (getSharedPreferences(PRIVACY_POLICY, MODE_PRIVATE).getBoolean(
+                PRIVACY_POLICY_IS_AGREE,
+                false
+            )
+        ) return
+
         // 弹出隐私策略窗口
-        LayoutUtils.createDialog(this) {
-            val binding = FragmentPrivacyPolicyPopUpBinding.inflate(layoutInflater).apply {
-                exitButton.setOnClickListener { finish() }
-                agreeButton.setOnClickListener {
-                    ::alertDialog.isInitialized.apply {
-                        getSharedPreferences(PRIVACY_POLICY, AppCompatActivity.MODE_PRIVATE).edit {
-                            putBoolean(PRIVACY_POLICY_IS_AGREE, true)
+            LayoutUtils.createDialog(this) {
+                val binding = FragmentPrivacyPolicyPopUpBinding.inflate(layoutInflater).apply {
+                    exitButton.setOnClickListener {
+                        finish()
+                    }
+                    agreeButton.setOnClickListener {
+                        ::alertDialog.isInitialized.apply {
+                            getSharedPreferences(PRIVACY_POLICY, MODE_PRIVATE).edit {
+                                putBoolean(PRIVACY_POLICY_IS_AGREE, true)
+                            }
+                            alertDialog.dismiss()
                         }
-                        alertDialog.dismiss()
+                    }
+                    var userAgreementDialog: AlertDialog? = null
+                    var privacyAgreementDialog: AlertDialog? = null
+                    userAgreement.setOnClickListener {
+                        val userAgreementBinding =
+                            FragmentUserAgreementBinding.inflate(layoutInflater).apply {
+                                this.userAgreementString.text = AssetsUtils.readTextFromAssets(
+                                    this@MainActivity,
+                                    "UserAgreement"
+                                )
+                                this.agreementSure.setOnClickListener {
+                                    userAgreementDialog?.dismiss()
+                                }
+                            }
+                        LayoutUtils.createDialog(this@MainActivity) {
+                            setView(userAgreementBinding.root)
+                            setCancelable(true)
+                        }.apply {
+                            userAgreementDialog = this
+                        }.show()
+                    }
+                    privacyAgreement.setOnClickListener {
+                        val userAgreementBinding =
+                            FragmentPrivacyAgreementBinding.inflate(layoutInflater).apply {
+                                this.privacyAgreementString.text = AssetsUtils.readTextFromAssets(
+                                    this@MainActivity,
+                                    "PrivacyAgreement"
+                                )
+                                this.agreementSure.setOnClickListener {
+                                    privacyAgreementDialog?.dismiss()
+                                }
+                            }
+                        LayoutUtils.createDialog(this@MainActivity) {
+                            setView(userAgreementBinding.root)
+                            setCancelable(true)
+                        }.apply {
+                            privacyAgreementDialog = this
+                        }.show()
                     }
                 }
-            }
-            setView(binding.root)
-            setCancelable(false) // 设置对话框不可取消
-        }.apply {
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 设置对话框背景为透明
-            alertDialog = this
-        }.show()
+                setView(binding.root)
+                setCancelable(false) // 设置对话框不可取消
+            }.apply {
+                alertDialog = this
+            }.show()
     }
 
     /**
