@@ -2,16 +2,11 @@ package com.migu.android.linkyou.ui
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
-import androidx.viewbinding.ViewBinding
 import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.ActivityMainBinding
@@ -19,13 +14,12 @@ import com.migu.android.linkyou.databinding.FragmentPrivacyAgreementBinding
 import com.migu.android.linkyou.databinding.FragmentPrivacyPolicyPopUpBinding
 import com.migu.android.linkyou.databinding.FragmentUserAgreementBinding
 import com.migu.android.linkyou.ui.explore.ExploreFragment
-import com.migu.android.linkyou.ui.main.MainFragment
+import com.migu.android.linkyou.ui.front.FrontFragment
 import com.migu.android.linkyou.ui.message.MessageFragment
 import com.migu.android.linkyou.ui.my.MyFragment
 import com.migu.android.linkyou.ui.util.AssetsUtils
 import com.migu.android.linkyou.ui.util.BarUtils
 import com.migu.android.linkyou.ui.util.LayoutUtils
-import kotlin.jvm.internal.Intrinsics.Kotlin
 
 private const val TAG = "MainActivity"
 private const val BUNDLE_MENU_SELECT_ID = "menuSelectId"
@@ -54,12 +48,12 @@ class MainActivity : BaseActivity() {
         if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
             binding.mainBottomMenu.performClick()
         } else {
-            replaceContainerFragment(MainFragment::class.java)
+            replaceContainerFragment(FrontFragment::class.java)
         }
         binding.mainBottomMenu.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.main_page -> {
-                    replaceContainerFragment(MainFragment::class.java)
+                R.id.front_page -> {
+                    replaceContainerFragment(FrontFragment::class.java)
                 }
 
                 R.id.explore_page -> {
@@ -174,7 +168,7 @@ class MainActivity : BaseActivity() {
             fragmentController.addFragment(targetFragment)
         }
         transaction.commit()
-    }
+      }
 
     override fun onDestroy() {
         super.onDestroy()

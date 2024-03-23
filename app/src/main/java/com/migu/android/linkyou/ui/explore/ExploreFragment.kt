@@ -1,12 +1,12 @@
 package com.migu.android.linkyou.ui.explore
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.migu.android.linkyou.databinding.FragmentExploreBinding
-import com.migu.android.linkyou.ui.main.MainFragment
 import com.migu.android.linkyou.ui.util.BarUtils
 
 private const val TAG = "ExploreFragment"
@@ -23,6 +23,11 @@ class ExploreFragment : Fragment() {
     ): View {
         BarUtils.offsetStatusBar(binding.root)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.i(TAG, "onViewCreated: ")
     }
 
     companion object {
