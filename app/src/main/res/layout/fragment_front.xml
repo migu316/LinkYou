@@ -6,16 +6,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="auto"
-        android:background="@color/whiteBackground"
-        app:tabTextColor="@color/black"
-        app:tabIndicatorColor="#000000">
-    </com.google.android.material.tabs.TabLayout>
+        android:orientation="horizontal">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@color/whiteBackground"
+            app:tabIndicatorColor="#000000"
+            app:tabMode="auto"
+            app:tabTextColor="@color/black">
+        </com.google.android.material.tabs.TabLayout>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_height="match_parent"
+            app:tint="@color/black"
+            android:src="@drawable/add_24px" />
+    </LinearLayout>
+
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/main_viewpager"

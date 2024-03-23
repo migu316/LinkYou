@@ -81,72 +81,91 @@ class MainActivity : BaseActivity() {
     }
 
 
+    /**
+     * 显示隐私策略对话框的方法。
+     * 如果用户已同意隐私策略，则不显示对话框。
+     */
     private fun showPrivacyPolicyDialog() {
-
+        // 检查用户是否已同意隐私策略，如果是，则返回
         if (getSharedPreferences(PRIVACY_POLICY, MODE_PRIVATE).getBoolean(
                 PRIVACY_POLICY_IS_AGREE,
                 false
             )
         ) return
 
-        // 弹出隐私策略窗口
-            LayoutUtils.createDialog(this) {
-                val binding = FragmentPrivacyPolicyPopUpBinding.inflate(layoutInflater).apply {
-                    exitButton.setOnClickListener {
-                        finish()
-                    }
-                    agreeButton.setOnClickListener {
-                        ::alertDialog.isInitialized.apply {
-                            getSharedPreferences(PRIVACY_POLICY, MODE_PRIVATE).edit {
-                                putBoolean(PRIVACY_POLICY_IS_AGREE, true)
-                            }
-                            alertDialog.dismiss()
+        // 创建并显示隐私策略对话框
+        LayoutUtils.createDialog(this) {
+            val binding = FragmentPrivacyPolicyPopUpBinding.inflate(layoutInflater).apply {
+                // 设置退出按钮的点击事件
+                exitButton.setOnClickListener {
+                    finish()
+                }
+                // 设置同意按钮的点击事件
+                agreeButton.setOnClickListener {
+                    // 初始化对话框变量并检查其是否已被初始化
+                    ::alertDialog.isInitialized.apply {
+                        // 将用户同意隐私策略的状态保存到 SharedPreferences 中
+                        getSharedPreferences(PRIVACY_POLICY, MODE_PRIVATE).edit {
+                            putBoolean(PRIVACY_POLICY_IS_AGREE, true)
                         }
-                    }
-                    var userAgreementDialog: AlertDialog? = null
-                    var privacyAgreementDialog: AlertDialog? = null
-                    userAgreement.setOnClickListener {
-                        val userAgreementBinding =
-                            FragmentUserAgreementBinding.inflate(layoutInflater).apply {
-                                this.userAgreementString.text = AssetsUtils.readTextFromAssets(
-                                    this@MainActivity,
-                                    "UserAgreement"
-                                )
-                                this.agreementSure.setOnClickListener {
-                                    userAgreementDialog?.dismiss()
-                                }
-                            }
-                        LayoutUtils.createDialog(this@MainActivity) {
-                            setView(userAgreementBinding.root)
-                            setCancelable(true)
-                        }.apply {
-                            userAgreementDialog = this
-                        }.show()
-                    }
-                    privacyAgreement.setOnClickListener {
-                        val userAgreementBinding =
-                            FragmentPrivacyAgreementBinding.inflate(layoutInflater).apply {
-                                this.privacyAgreementString.text = AssetsUtils.readTextFromAssets(
-                                    this@MainActivity,
-                                    "PrivacyAgreement"
-                                )
-                                this.agreementSure.setOnClickListener {
-                                    privacyAgreementDialog?.dismiss()
-                                }
-                            }
-                        LayoutUtils.createDialog(this@MainActivity) {
-                            setView(userAgreementBinding.root)
-                            setCancelable(true)
-                        }.apply {
-                            privacyAgreementDialog = this
-                        }.show()
+                        // 关闭对话框
+                        alertDialog.dismiss()
                     }
                 }
-                setView(binding.root)
-                setCancelable(false) // 设置对话框不可取消
-            }.apply {
-                alertDialog = this
-            }.show()
+                var userAgreementDialog: AlertDialog? = null
+                var privacyAgreementDialog: AlertDialog? = null
+                // 设置用户协议点击事件
+                userAgreement.setOnClickListener {
+                    val userAgreementBinding =
+                        FragmentUserAgreementBinding.inflate(layoutInflater).apply {
+                            // 从 assets 中读取用户协议文本
+                            this.userAgreementString.text = AssetsUtils.readTextFromAssets(
+                                this@MainActivity,
+                                "UserAgreement"
+                            )
+                            // 设置用户协议确定按钮的点击事件
+                            this.agreementSure.setOnClickListener {
+                                userAgreementDialog?.dismiss()
+                            }
+                        }
+                    // 创建并显示用户协议对话框
+                    LayoutUtils.createDialog(this@MainActivity) {
+                        setView(userAgreementBinding.root)
+                        setCancelable(true)
+                    }.apply {
+                        userAgreementDialog = this
+                    }.show()
+                }
+                // 设置隐私协议点击事件
+                privacyAgreement.setOnClickListener {
+                    val userAgreementBinding =
+                        FragmentPrivacyAgreementBinding.inflate(layoutInflater).apply {
+                            // 从 assets 中读取隐私协议文本
+                            this.privacyAgreementString.text = AssetsUtils.readTextFromAssets(
+                                this@MainActivity,
+                                "PrivacyAgreement"
+                            )
+                            // 设置隐私协议确定按钮的点击事件
+                            this.agreementSure.setOnClickListener {
+                                privacyAgreementDialog?.dismiss()
+                            }
+                        }
+                    // 创建并显示隐私协议对话框
+                    LayoutUtils.createDialog(this@MainActivity) {
+                        setView(userAgreementBinding.root)
+                        setCancelable(true)
+                    }.apply {
+                        privacyAgreementDialog = this
+                    }.show()
+                }
+            }
+            // 设置对话框的布局
+            setView(binding.root)
+            // 设置对话框不可取消
+            setCancelable(false)
+        }.apply {
+            alertDialog = this
+        }.show()
     }
 
     /**
@@ -164,7 +183,7 @@ class MainActivity : BaseActivity() {
             targetFragment = constructor.newInstance()
             // 隐藏当前碎片，再添加当前targetFragment
             transaction.replace(binding.fragmentContainer.id, targetFragment)
-            // 替换当前currentFragment
+            // 将当前fragment添加到集合中
             fragmentController.addFragment(targetFragment)
         }
         transaction.commit()
