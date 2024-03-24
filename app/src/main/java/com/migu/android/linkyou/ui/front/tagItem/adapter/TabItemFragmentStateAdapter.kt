@@ -1,9 +1,11 @@
-package com.migu.android.linkyou.ui.front.tagItem
+package com.migu.android.linkyou.ui.front.tagItem.adapter
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.migu.android.linkyou.ui.front.tagItem.TabItemCategoriesEnum
+import com.migu.android.linkyou.ui.front.tagItem.fragment.FocusPageFragment
+import com.migu.android.linkyou.ui.front.tagItem.fragment.MainPageFragment
 
 private const val TAG = "TabItemFragmentStateAdapter"
 class TabItemFragmentStateAdapter(
@@ -20,6 +22,7 @@ class TabItemFragmentStateAdapter(
         return when (tabItemCategoriesEnum) {
             TabItemCategoriesEnum.MAIN_PAGE -> MainPageFragment()
             TabItemCategoriesEnum.FOCUS_PAGE -> FocusPageFragment()
+            else -> Fragment()
         }
     }
 }

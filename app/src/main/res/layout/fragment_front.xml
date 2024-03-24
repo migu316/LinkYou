@@ -23,12 +23,13 @@
         </com.google.android.material.tabs.TabLayout>
 
         <ImageView
+            android:id="@+id/add_focus_topic"
             android:layout_width="24dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_height="match_parent"
             app:tint="@color/black"
-            android:src="@drawable/add_24px" />
+            android:src="@drawable/format_list_bulleted_add_24px" />
     </LinearLayout>
 
 

@@ -3,9 +3,11 @@ package com.migu.android.linkyou.ui.util
 import android.graphics.Color
 import android.os.Build
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -55,12 +57,26 @@ object BarUtils {
     }
 
     /**
-     * 让视图向下偏移一个状态栏的高度
+     * 在给定的视图中设置顶部状态栏偏移量。
+     * @param view 应用顶部状态栏偏移的视图
+     *
+     * 如果其他布局也使用了同样的方法进行了转换，并且都是从 LinearLayout 转换为 FrameLayout.LayoutParams，
+     * 但没有出现问题，那可能是因为这些布局的父容器都是 FrameLayout，
+     * 或者这些布局的父容器对于添加 FrameLayout.LayoutParams 参数也没有产生影响。
      */
-    fun offsetStatusBar(view:View) {
+    fun offsetStatusBar(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-            val params = v.layoutParams as FrameLayout.LayoutParams
-            params.topMargin = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+            // 获取视图的父容器
+            val parent = v.parent as? ViewGroup
+            // 如果父容器是 FrameLayout，则设置 FrameLayout.LayoutParams 的 topMargin
+            if (parent is FrameLayout) {
+                val params = v.layoutParams as FrameLayout.LayoutParams
+                params.topMargin = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+                // 如果父容器是 LinearLayout，则设置 LinearLayout.LayoutParams 的 topMargin
+            } else if (parent is LinearLayout) {
+                val params = v.layoutParams as LinearLayout.LayoutParams
+                params.topMargin = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+            }
             insets
         }
     }

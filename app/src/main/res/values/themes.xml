@@ -15,6 +15,12 @@
 
     <style name="Theme.LinkYou" parent="Base.Theme.LinkYou" />
 
+    <style name="Theme.LinkYou.ActionBar" parent="Base.Theme.LinkYou">
+        <!-- 在某些特定的 Activity 中重新启用 ActionBar -->
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item> <!-- 如果你的主题中有 windowNoTitle 项，也要确保它为 false -->
+    </style>
+
     <!--
         设置Toolbar 的样式
         但是目前发现无法改变到my页面下的toolbar颜色

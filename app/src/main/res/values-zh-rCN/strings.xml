@@ -31,4 +31,8 @@
     <string name="user_agreement_string">点击查看《用户协议》</string>
     <string name="privacy_agreement_string">点击查看《隐私协议》</string>
     <string name="sure_string">确定</string>
+    <string name="my_channel_list">我的频道</string>
+    <string name="edit_my_channel">编辑</string>
+    <string name="more_channel_string">更多频道</string>
+    <string name="channel_string">频道</string>
 </resources>

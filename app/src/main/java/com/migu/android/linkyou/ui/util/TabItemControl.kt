@@ -1,8 +1,9 @@
-package com.migu.android.linkyou.ui.front.tagItem
+package com.migu.android.linkyou.ui.util
 
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.migu.android.linkyou.ui.front.tagItem.TabItemCategoriesEnum
 import com.migu.android.linkyou.ui.util.SharedPreferencesUtils.getSharedPreferencesByNameExecute
 import com.migu.android.linkyou.ui.util.SharedPreferencesUtils.getSharedPreferencesObjByName
 
@@ -58,10 +59,14 @@ object TabItemControl {
         }
 
         // 如果 map 未初始化，则创建一个默认列表并保存到 SharedPreferences 中
-        if (!::map.isInitialized) {
+        if (!TabItemControl::map.isInitialized) {
             map = linkedMapOf()
             map[TabItemCategoriesEnum.MAIN_PAGE] = "主页"
             map[TabItemCategoriesEnum.FOCUS_PAGE] = "好友关注"
+            map[TabItemCategoriesEnum.HOT_LIST_PAGE] = "热榜"
+            map[TabItemCategoriesEnum.TOPIC_PAGE] = "话题"
+            map[TabItemCategoriesEnum.VIDEO_PAGE] = "视频"
+            map[TabItemCategoriesEnum.INFORMATION_PAGE] = "资讯"
             saveTabItemListToSP(context, name, Context.MODE_PRIVATE)
         }
         // 返回获取到的标签项列表

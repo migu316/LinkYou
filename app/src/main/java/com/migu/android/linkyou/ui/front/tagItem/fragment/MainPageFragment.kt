@@ -1,4 +1,4 @@
-package com.migu.android.linkyou.ui.front.tagItem
+package com.migu.android.linkyou.ui.front.tagItem.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -19,7 +19,6 @@ class MainPageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTabItemMainPageBinding.inflate(inflater, container, false)
-        binding.timeTest.text = System.currentTimeMillis().toString()
         return binding.root
     }
 }

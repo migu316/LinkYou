@@ -1,4 +1,4 @@
-package com.migu.android.linkyou.ui.front.tagItem
+package com.migu.android.linkyou.ui.front.tagItem.fragment
 
 import androidx.fragment.app.Fragment
 

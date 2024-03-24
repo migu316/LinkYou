@@ -30,4 +30,8 @@
     <string name="user_agreement_string">Click to view《User Agreement》</string>
     <string name="privacy_agreement_string">Click to view《Privacy Agreement》</string>
     <string name="sure_string">Sure</string>
+    <string name="my_channel_list">My Focus Channel</string>
+    <string name="edit_my_channel">Edit</string>
+    <string name="more_channel_string">More Channel</string>
+    <string name="channel_string">Channel</string>
 </resources>

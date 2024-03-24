@@ -1,28 +1,26 @@
 package com.migu.android.linkyou.ui.my
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.android.material.appbar.AppBarLayout
 import com.migu.android.linkyou.databinding.FragmentMyBinding
-import com.migu.android.linkyou.ui.message.MessageFragment
-import com.migu.android.linkyou.ui.util.BarUtils
 
 private const val TAG = "MyFragment"
 
 class MyFragment : Fragment() {
+//    private lateinit var binding: FragmentMyBinding
+
     private val binding by lazy {
         FragmentMyBinding.inflate(layoutInflater)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+//        binding = FragmentMyBinding.inflate(inflater, container, false)
         return binding.root
     }
 

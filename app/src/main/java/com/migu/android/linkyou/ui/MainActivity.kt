@@ -3,6 +3,7 @@ package com.migu.android.linkyou.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
@@ -15,6 +16,8 @@ import com.migu.android.linkyou.databinding.FragmentPrivacyPolicyPopUpBinding
 import com.migu.android.linkyou.databinding.FragmentUserAgreementBinding
 import com.migu.android.linkyou.ui.explore.ExploreFragment
 import com.migu.android.linkyou.ui.front.FrontFragment
+import com.migu.android.linkyou.ui.front.tagItem.TabItemCategoriesEnum
+import com.migu.android.linkyou.ui.front.tagItem.fragment.ChangeChannelFragment
 import com.migu.android.linkyou.ui.message.MessageFragment
 import com.migu.android.linkyou.ui.my.MyFragment
 import com.migu.android.linkyou.ui.util.AssetsUtils
@@ -26,7 +29,7 @@ private const val BUNDLE_MENU_SELECT_ID = "menuSelectId"
 private const val PRIVACY_POLICY = "privacy_policy"
 private const val PRIVACY_POLICY_IS_AGREE = "isAgree"
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), FrontFragment.Callbacks {
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -45,11 +48,17 @@ class MainActivity : BaseActivity() {
         showPrivacyPolicyDialog()
 
         // 用户实现在配置变更时，通过模拟点击触发底部导航栏的监听方法，恢复用户之前的视图
-        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
-            binding.mainBottomMenu.performClick()
-        } else {
+//        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
+//            binding.mainBottomMenu.performClick()
+//        } else {
+//            replaceContainerFragment(FrontFragment::class.java)
+//        }
+
+        // 如果未包含指定ID，说明是第一次加载该活动
+        if (savedInstanceState == null || !savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
             replaceContainerFragment(FrontFragment::class.java)
         }
+
         binding.mainBottomMenu.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.front_page -> {
@@ -69,6 +78,19 @@ class MainActivity : BaseActivity() {
                 }
             }
             return@setOnItemSelectedListener true
+        }
+    }
+
+    /**
+     * 因为异常情况保存活动的数据
+     * 由于该方法通常发生在onStart
+     */
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        // 如果存在一个指定的导航ID，那么模拟点击触发监听方法去改变视图
+        if (savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
+            Log.i(TAG, "onRestoreInstanceState: ")
+            binding.mainBottomMenu.performClick()
         }
     }
 
@@ -169,7 +191,7 @@ class MainActivity : BaseActivity() {
     }
 
     /**
-     * 用于替换容器中的碎片
+     * 用于替换容器中的碎片，仅用于首页导航栏碎片缓存切换
      */
     private fun replaceContainerFragment(fragmentClass: Class<out Fragment>) {
         val transaction = supportFragmentManager.beginTransaction()
@@ -187,7 +209,7 @@ class MainActivity : BaseActivity() {
             fragmentController.addFragment(targetFragment)
         }
         transaction.commit()
-      }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -235,5 +257,17 @@ class MainActivity : BaseActivity() {
         }
 
         fun getCount() = fragments.size
+    }
+
+    override fun onClickChannelButton(map: LinkedHashMap<TabItemCategoriesEnum, String>) {
+        val fragment = ChangeChannelFragment.newInstance(map)
+        val transaction = supportFragmentManager.beginTransaction().apply {
+            setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_left)
+        }
+        transaction
+            .replace(binding.root.id, fragment)
+            .addToBackStack(null)
+            .commit()
+
     }
 }
