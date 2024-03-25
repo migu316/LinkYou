@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -11,6 +12,17 @@
         android:layout_height="36dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/package_2_24px" />
+
+    <ImageView
+        android:id="@+id/remove_channel"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_centerHorizontal="true"
+        android:visibility="visible"
+        tools:visibility="visible"
+        android:layout_toEndOf="@id/channel_icon"
+        android:src="@drawable/heart_minus_24px" />
+
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/channel_name"

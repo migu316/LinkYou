@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.ChooseChannelItemBinding
 import com.migu.android.linkyou.ui.front.tagItem.TabItemCategoriesEnum
+import com.migu.android.linkyou.ui.front.tagItem.model.ChannelData
 
-class ChangeChannelAdapter(private val mapList: LinkedHashMap<TabItemCategoriesEnum, String>) :
+class ChangeChannelAdapter(private val channelSet: LinkedHashSet<ChannelData>) :
     RecyclerView.Adapter<ChangeChannelAdapter.ChannelViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChannelViewHolder {
@@ -17,19 +18,19 @@ class ChangeChannelAdapter(private val mapList: LinkedHashMap<TabItemCategoriesE
         return ChannelViewHolder(binding)
     }
 
-    override fun getItemCount() = mapList.size
+    override fun getItemCount() = channelSet.size
 
     override fun onBindViewHolder(holder: ChannelViewHolder, position: Int) {
-        val entry = mapList.entries.elementAt(position)
-        holder.bind(entry.value)
+        val channelData = channelSet.elementAt(position)
+        holder.bind(channelData)
     }
 
-    inner class ChannelViewHolder(val binding: ChooseChannelItemBinding) :
+    inner class ChannelViewHolder(private val binding: ChooseChannelItemBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        fun bind(name: String) {
-            binding.channelIcon.setImageResource(R.drawable.package_2_24px)
-            binding.channelName.text = name
+        fun bind(channelData: ChannelData) {
+            binding.channelIcon.setImageResource(channelData.channelIcon)
+            binding.channelName.text = channelData.channelName
         }
 
         override fun onClick(v: View?) {

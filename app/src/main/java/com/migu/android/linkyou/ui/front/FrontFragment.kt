@@ -11,6 +11,7 @@ import com.migu.android.linkyou.databinding.FragmentFrontBinding
 import com.migu.android.linkyou.ui.front.tagItem.TabItemCategoriesEnum
 import com.migu.android.linkyou.ui.util.TabItemControl
 import com.migu.android.linkyou.ui.front.tagItem.adapter.TabItemFragmentStateAdapter
+import com.migu.android.linkyou.ui.front.tagItem.model.ChannelData
 import com.migu.android.linkyou.ui.util.BarUtils
 
 private const val TAG = "FrontFragment"
@@ -23,7 +24,7 @@ class FrontFragment : Fragment() {
      * 托管活动所需接口，用于在添加频道时添加主页面
      */
     interface Callbacks {
-        fun onClickChannelButton(map: LinkedHashMap<TabItemCategoriesEnum, String>)
+        fun onClickChannelButton(channelSet: LinkedHashSet<ChannelData>)
     }
 
     // 使用懒加载委托来获取与该Fragment关联的布局绑定
@@ -51,10 +52,10 @@ class FrontFragment : Fragment() {
         BarUtils.offsetStatusBar(binding.root)
 
         // 从本地存储中获取TabItem的数据列表
-        val map = TabItemControl.getTabItemListForSP(requireContext(), TAG_ITEM)
+        val channelSet = TabItemControl.getTabItemListForSP(requireContext(), TAG_ITEM)
 
         // 初始化适配器
-        adapter = TabItemFragmentStateAdapter(requireActivity(), map)
+        adapter = TabItemFragmentStateAdapter(requireActivity(), channelSet)
 
         // 设置ViewPager2的保存状态为不可用
         binding.mainViewpager.isSaveEnabled = false
@@ -66,11 +67,11 @@ class FrontFragment : Fragment() {
 
         // 将TabLayout与ViewPager2关联，并设置选项卡的标题
         TabLayoutMediator(binding.tabLayout, binding.mainViewpager) { tab, position ->
-            tab.text = map.entries.elementAt(position).value
+            tab.text = channelSet.elementAt(position).channelName
         }.attach()
 
         binding.addFocusTopic.setOnClickListener {
-            callbacks?.onClickChannelButton(map)
+            callbacks?.onClickChannelButton(channelSet)
         }
 
         // 返回根视图

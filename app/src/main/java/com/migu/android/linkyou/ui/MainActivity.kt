@@ -16,8 +16,8 @@ import com.migu.android.linkyou.databinding.FragmentPrivacyPolicyPopUpBinding
 import com.migu.android.linkyou.databinding.FragmentUserAgreementBinding
 import com.migu.android.linkyou.ui.explore.ExploreFragment
 import com.migu.android.linkyou.ui.front.FrontFragment
-import com.migu.android.linkyou.ui.front.tagItem.TabItemCategoriesEnum
 import com.migu.android.linkyou.ui.front.tagItem.fragment.ChangeChannelFragment
+import com.migu.android.linkyou.ui.front.tagItem.model.ChannelData
 import com.migu.android.linkyou.ui.message.MessageFragment
 import com.migu.android.linkyou.ui.my.MyFragment
 import com.migu.android.linkyou.ui.util.AssetsUtils
@@ -259,8 +259,8 @@ class MainActivity : BaseActivity(), FrontFragment.Callbacks {
         fun getCount() = fragments.size
     }
 
-    override fun onClickChannelButton(map: LinkedHashMap<TabItemCategoriesEnum, String>) {
-        val fragment = ChangeChannelFragment.newInstance(map)
+    override fun onClickChannelButton(channelSet: LinkedHashSet<ChannelData>) {
+        val fragment = ChangeChannelFragment.newInstance(channelSet)
         val transaction = supportFragmentManager.beginTransaction().apply {
             setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_left)
         }

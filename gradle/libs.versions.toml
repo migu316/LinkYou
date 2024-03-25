@@ -30,7 +30,7 @@ rxJava2 = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "r
 leancloud-mixpush = { group = "cn.leancloud", name = "mixpush-android", version.ref = "mixpush" }
 splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 viewmodel-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "viewmodel-lifecycle" }
-glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
