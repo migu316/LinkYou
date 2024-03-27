@@ -44,9 +44,71 @@ object SharedUtil {
      * 清理SharedPreferences文件中所有的值
      * @param shardName SharedPreferences 文件名
      */
-    fun clearAll(shardName:String) {
+    fun clearAll(shardName: String) {
         LinkYou.context.getSharedPreferencesByNameExecute(shardName) {
             clear()
         }
     }
+
+    /**
+     * 将字符串类型的值保存到指定的 SharedPreferences 中
+     * @param spName SharedPreferences 文件名
+     * @param key 存储键
+     * @param value 要保存的字符串值
+     */
+    fun save(spName: String, key: String, value: String) {
+        LinkYou.context.getSharedPreferencesByNameExecute(spName) {
+            putString(key, value)
+        }
+    }
+
+    /**
+     * 将长整型类型的值保存到指定的 SharedPreferences 中
+     * @param spName SharedPreferences 文件名
+     * @param key 存储键
+     * @param value 要保存的长整型值
+     */
+    fun save(spName: String, key: String, value: Long) {
+        LinkYou.context.getSharedPreferencesByNameExecute(spName) {
+            putLong(key, value)
+        }
+    }
+
+    /**
+     * 将布尔类型的值保存到指定的 SharedPreferences 中
+     * @param spName SharedPreferences 文件名
+     * @param key 存储键
+     * @param value 要保存的布尔值
+     */
+    fun save(spName: String, key: String, value: Boolean) {
+        LinkYou.context.getSharedPreferencesByNameExecute(spName) {
+            putBoolean(key, value)
+        }
+    }
+
+    /**
+     * 将浮点型类型的值保存到指定的 SharedPreferences 中
+     * @param spName SharedPreferences 文件名
+     * @param key 存储键
+     * @param value 要保存的浮点型值
+     */
+    fun save(spName: String, key: String, value: Float) {
+        LinkYou.context.getSharedPreferencesByNameExecute(spName) {
+            putFloat(key, value)
+        }
+    }
+
+    /**
+     * 将字符串集合类型的值保存到指定的 SharedPreferences 中
+     * @param spName SharedPreferences 文件名
+     * @param key 存储键
+     * @param value 要保存的字符串集合值
+     */
+    fun save(spName: String, key: String, value: Set<String>) {
+        LinkYou.context.getSharedPreferencesByNameExecute(spName) {
+            putStringSet(key, value)
+        }
+    }
+
+
 }

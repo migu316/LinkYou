@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.viewmodel.lifecycle)
     implementation(libs.glide)
     implementation(project(":core"))
+    implementation(project(":network"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

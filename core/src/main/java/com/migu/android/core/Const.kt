@@ -11,13 +11,15 @@ interface Const {
             const val SESSION_TOKEN = "session_token"
             const val USER_NAME = "user_name"
             const val EMAIL_VERIFIED = "email_verified"
+            const val EMAIL = "email"
+            const val CREATE_AT = "created_at"
         }
     }
 
     interface Shared {
         companion object {
             const val PRIVACY_POLICY = "privacy_policy"
-            const val PRIVACY_POLICY_IS_AGREE = "isAgree"
+            const val PRIVACY_POLICY_IS_AGREE = "is_agree"
         }
     }
 }

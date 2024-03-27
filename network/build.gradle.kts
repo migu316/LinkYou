@@ -1,21 +1,17 @@
 plugins {
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
 }
 
 android {
-    namespace = "com.migu.android.opensource"
+    namespace = "com.migu.android.network"
     compileSdk = 34
 
     defaultConfig {
-                applicationId = "com.migu.android.linkyou"
         minSdk = 21
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-//        consumerProguardFiles("consumer-rules.pro")
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -34,19 +30,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    viewBinding { enable = true }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(project(":app"))
+    implementation(libs.retrofit2)
+    implementation(libs.converter.gson)
     implementation(project(":core"))
-    implementation(libs.splashscreen)
-    implementation(libs.viewmodel.lifecycle)
-    implementation(project(":network"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

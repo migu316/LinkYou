@@ -25,3 +25,4 @@ rootProject.name = "LinkYou"
 include(":app")
 include(":core")
 include(":opensource")
+include(":network")

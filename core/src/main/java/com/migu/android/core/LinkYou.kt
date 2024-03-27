@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import com.migu.android.core.util.SharedUtil
-import com.migu.android.core.util.SharedUtil.getSharedPreferencesByNameExecute
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
 
 private const val LOGIN_INFO = "login_info"
@@ -13,7 +12,7 @@ private const val LOGIN_INFO = "login_info"
 class LinkYou {
     companion object {
 
-        var isDebug:Boolean = false
+        var isDebug:Boolean = true
 
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
@@ -34,6 +33,7 @@ class LinkYou {
         fun initialize(c: Context) {
             context = c
             handler = Handler(Looper.getMainLooper())
+            refreshLoginState()
         }
 
         /**
@@ -53,7 +53,7 @@ class LinkYou {
             val t = preferences.getString(Const.Auth.SESSION_TOKEN, "")
             val un = preferences.getString(Const.Auth.USER_NAME, "")
             val ev = preferences.getBoolean(Const.Auth.EMAIL_VERIFIED, false)
-            isLogin = t!!.isEmpty() && un!!.isEmpty()
+            isLogin = t!!.isNotEmpty() && un!!.isNotEmpty()
             if (isLogin) {
                 sessionToken = t
                 userName = un!!

@@ -9,7 +9,7 @@ import cn.leancloud.LeanCloud
 import cn.leancloud.callback.LCCallback
 import cn.leancloud.session.LCConnectionManager
 import com.migu.android.core.LinkYou
-import java.io.FileInputStream
+import com.migu.android.core.util.AssetsUtils
 import java.io.IOException
 import java.io.InputStream
 import java.util.Properties
@@ -30,16 +30,8 @@ open class LinkYouApplication : Application() {
 
     private fun leanCloudInit() {
         // 读取 local.properties 中的属性值
-        val properties = Properties()
-        try {
-            val inputStream: InputStream = assets.open("local.properties")
-            properties.load(inputStream)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        val appId = properties.getProperty("APPID")
-        val restApi = properties.getProperty("REST_API")
-
+        val appId = AssetsUtils.getAPPID()
+        val restApi = AssetsUtils.getRESTAPI()
         LeanCloud.initializeSecurely(this, appId, restApi)
 
         // 验证链接是否建立

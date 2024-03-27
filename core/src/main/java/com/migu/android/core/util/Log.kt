@@ -22,4 +22,11 @@ fun logWarn(tag: String, msg: String?, tr: Throwable? = null) {
             Log.w(tag, msg.toString(), tr)
         }
     }
+
+}
+
+fun logInfo(tag: String, msg: String?) {
+    if (level <= INFO) {
+        Log.i(tag, msg.toString())
+    }
 }
