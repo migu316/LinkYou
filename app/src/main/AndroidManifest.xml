@@ -5,20 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <application
-        android:enableOnBackInvokedCallback="true"
-        android:name=".LinkYouApplication"
-        android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Base.Theme.LinkYou"
-        tools:targetApi="34">
+    <application>
         <activity
-            android:theme="@style/Base.Theme.LinkYou"
             android:name=".ui.MainActivity"
             android:exported="false" />
         <!-- 即时通讯和推送 START -->
@@ -34,16 +22,7 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver> <!-- 即时通讯和推送 END -->
-        <activity
-            android:name=".ui.splash.SplashActivity"
-            android:exported="true"
-            android:theme="@style/JetpackSplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

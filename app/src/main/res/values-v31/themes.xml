@@ -7,6 +7,6 @@
 
         <item name="android:windowSplashScreenIconBackgroundColor">@color/skyBlue</item>
 
-<!--        <item name="android:windowSplashScreenBrandingImage">@drawable/ic_tm_brand</item>-->
+        <!--        <item name="android:windowSplashScreenBrandingImage">@drawable/ic_tm_brand</item>-->
     </style>
 </resources>

@@ -3,11 +3,11 @@ package com.migu.android.linkyou.ui.util
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.migu.android.core.util.SharedUtil.getSharedPreferencesByNameExecute
+import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.ui.front.tagItem.TabItemCategoriesEnum
 import com.migu.android.linkyou.ui.front.tagItem.model.ChannelData
-import com.migu.android.linkyou.ui.util.SharedPreferencesUtils.getSharedPreferencesByNameExecute
-import com.migu.android.linkyou.ui.util.SharedPreferencesUtils.getSharedPreferencesObjByName
 
 private const val TAB_ITEM_LIST = "tab_item_list"
 

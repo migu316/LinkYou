@@ -1,4 +1,4 @@
-package com.migu.android.linkyou.ui.util
+package com.migu.android.core.util
 
 import android.content.Context
 import java.io.IOException
@@ -13,7 +13,7 @@ object AssetsUtils {
             inputStream.read(buffer)
             inputStream.close()
             String(buffer, Charsets.UTF_8)
-        } catch (e:IOException) {
+        } catch (e: IOException) {
             e.printStackTrace()
             "文件读取错误"
         }

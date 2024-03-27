@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.migu.android.linkyou.databinding.FragmentPrivacyPolicyPopUpBinding
 
 object LayoutUtils {
@@ -21,5 +22,19 @@ object LayoutUtils {
     ): AlertDialog {
         // 使用 lambda 函数配置 AlertDialog.Builder 对象，然后创建对话框并返回
         return AlertDialog.Builder(context).block().create()
+    }
+
+    inline fun createBottomDialog(
+        context: Context,
+        style: Int? = null,
+        block: BottomSheetDialog.() -> Unit
+    ): BottomSheetDialog {
+        val bottomSheetDialog: BottomSheetDialog = if (style != null) {
+            BottomSheetDialog(context, style)
+        } else {
+            BottomSheetDialog(context)
+        }
+        bottomSheetDialog.block()
+        return bottomSheetDialog
     }
 }

@@ -8,6 +8,7 @@ import cn.leancloud.LCObject
 import cn.leancloud.LeanCloud
 import cn.leancloud.callback.LCCallback
 import cn.leancloud.session.LCConnectionManager
+import com.migu.android.core.LinkYou
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -23,12 +24,11 @@ open class LinkYouApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        LinkYou.initialize(this)
         leanCloudInit()
     }
 
     private fun leanCloudInit() {
-
-
         // 读取 local.properties 中的属性值
         val properties = Properties()
         try {

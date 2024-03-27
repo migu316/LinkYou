@@ -57,6 +57,15 @@
         <item name="backgroundTint">@color/whiteBackground</item>
     </style>
 
+    <!-- 设置BottomSheetDialog 的样式 -->
+    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
+    </style>
+    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+
     <!-- 闪屏页base -->
     <style name="JetpackSplashTheme.Base" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimationDuration">@integer/icon_animator_duration</item>

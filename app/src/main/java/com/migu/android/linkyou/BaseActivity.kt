@@ -1,8 +1,12 @@
 package com.migu.android.linkyou
 
 import android.app.Activity
+import android.content.Context
+import android.inputmethodservice.InputMethodService
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import com.migu.android.core.util.logWarn
 
 /**
  * 应用程序中所有activity的基类
@@ -19,6 +23,22 @@ open class BaseActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         ActivityController.removeActivity(this)
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    fun hideSoftKeyboard() {
+        try {
+            val view = currentFocus
+            if (view != null) {
+                val iBinder = view.windowToken
+                val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS)
+            }
+        } catch (e:Exception) {
+            logWarn(TAG, e.message, e)
+        }
     }
 
     object ActivityController {

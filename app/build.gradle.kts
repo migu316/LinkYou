@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-parcelize")
 }
@@ -9,27 +9,14 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.migu.android.linkyou"
         minSdk = 21
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    signingConfigs {
-//        create("config") {
-//            storeFile = file(project.findProperty("KEY_PATH")?.toString() ?: "")
-//            storePassword = project.findProperty("KEY_PASS")?.toString() ?: ""
-//            keyAlias = project.findProperty("ALIAS_NAME")?.toString() ?: ""
-//            keyPassword =  project.findProperty("ALIAS_PASS")?.toString() ?: ""
-//        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
-//            signingConfig = signingConfigs.getByName("config")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -37,7 +24,6 @@ android {
             )
         }
         debug {
-//            signingConfig = signingConfigs.getByName("config")
         }
     }
     compileOptions {
@@ -64,6 +50,7 @@ dependencies {
     implementation(libs.splashscreen)
     implementation(libs.viewmodel.lifecycle)
     implementation(libs.glide)
+    implementation(project(":core"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
