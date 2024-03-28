@@ -2,12 +2,14 @@ package com.migu.android.opensource.login
 
 import android.content.Context
 import android.content.Intent
+import android.net.http.HttpException
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.RequiresExtension
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
@@ -40,6 +42,7 @@ private const val TAG = "LoginActivity"
 class LoginActivity : BaseActivity() {
 
     private lateinit var alertDialog: AlertDialog
+    private lateinit var loginViewModel: LoginViewModel
 
     // 用于活动布局的视图绑定
     private val binding by lazy {
@@ -50,6 +53,8 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
 
         showPrivacyPolicyDialog()
         // 设置点击监听器
@@ -70,25 +75,28 @@ class LoginActivity : BaseActivity() {
                     showToast(GlobalUtil.getString(R.string.password_is_empty))
                     return@setOnClickListener
                 }
-                showIsLogin()
-                lifecycleScope.launch(Dispatchers.IO) {
-                    try {
-                        val loginUserData =
-                            LoginRequest.loginUserRequest(LoginUserRequestBody(username, password))
-                        saveAuthData(loginUserData)
-                        MainActivity.newInstance(this@LoginActivity)
-                        finish()
-                    } catch (e: Exception) {
-                        hideIsLogin()
-                        showToastOnUiThread(e.message.toString())
-                        e.printStackTrace()
-                    }
-                }
+                loginViewModel.loginUserRequest(username, password)
             }
 
             // 显示更多登录类型对话框
             moreType.setOnClickListener {
                 showMoreLoginTypeDialog()
+            }
+        }
+
+        loginViewModel.isLogin.observe(this) {
+            it.getContentIfNotHandled()?.let { loginStatus ->
+                if (loginStatus.first && !loginStatus.second) {
+                    // 如果正在登录但是并未成功响应，那么就实现正在登录的界面
+                    showIsLogin()
+                } else if (loginStatus.second) {
+                    // 如果均为真，即登录成功
+                    MainActivity.newInstance(this)
+                    finish()
+                } else {
+                    // 如果未登录，则隐藏正在登录的界面
+                    hideIsLogin()
+                }
             }
         }
     }
@@ -115,29 +123,6 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    fun saveAuthData(loginUserData: LoginUserData) {
-        SharedUtil.save(
-            Const.Auth.LOGIN_STATE_INFO_SHARED,
-            Const.Auth.USER_NAME,
-            loginUserData.username
-        )
-        SharedUtil.save(
-            Const.Auth.LOGIN_STATE_INFO_SHARED,
-            Const.Auth.EMAIL,
-            loginUserData.email
-        )
-        SharedUtil.save(
-            Const.Auth.LOGIN_STATE_INFO_SHARED,
-            Const.Auth.SESSION_TOKEN,
-            loginUserData.sessionToken
-        )
-        SharedUtil.save(
-            Const.Auth.LOGIN_STATE_INFO_SHARED,
-            Const.Auth.CREATE_AT,
-            loginUserData.createdAt
-        )
-        LinkYou.refreshLoginState()
-    }
 
     /**
      * 显示更多登录类型对话框。

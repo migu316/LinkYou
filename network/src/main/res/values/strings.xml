@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="check_your_account_or_password">Check your account or password</string>
+    <string name="not_logged_in">Not logged in, please log in again</string>
+    <string name="network_error">Network Error</string>
+</resources>
