@@ -1,5 +1,6 @@
-package com.migu.android.network
+package com.migu.android.network.request
 
+import android.util.Log
 import kotlinx.coroutines.suspendCancellableCoroutine
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,6 +14,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+private const val TAG = "ServiceCreator"
 /**
  * 用于获取retrofit对象
  * 扩展await函数，用于简化回调
@@ -87,7 +89,9 @@ object ServiceCreator {
                         } else {
                             continuation.resume(body)
                         }
+                        Log.i(TAG, "onResponse: ${request().url()}")
                     } else {
+                        Log.i(TAG, "onResponse: ${request().url()}")
                         continuation.resumeWithException(HttpException(response))
                     }
                 }

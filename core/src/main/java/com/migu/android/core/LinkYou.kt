@@ -12,7 +12,7 @@ private const val LOGIN_INFO = "login_info"
 class LinkYou {
     companion object {
 
-        var isDebug:Boolean = true
+        var isDebug: Boolean = true
 
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
@@ -28,6 +28,9 @@ class LinkYou {
             private set
 
         var userName: String = ""
+            private set
+
+        var objectId: String = ""
             private set
 
         fun initialize(c: Context) {
@@ -53,10 +56,12 @@ class LinkYou {
             val t = preferences.getString(Const.Auth.SESSION_TOKEN, "")
             val un = preferences.getString(Const.Auth.USER_NAME, "")
             val ev = preferences.getBoolean(Const.Auth.EMAIL_VERIFIED, false)
-            isLogin = t!!.isNotEmpty() && un!!.isNotEmpty()
+            val oId = preferences.getString(Const.Auth.OBJECT_ID, "")
+            isLogin = t!!.isNotEmpty() && un!!.isNotEmpty() && oId!!.isNotEmpty()
             if (isLogin) {
                 sessionToken = t
                 userName = un!!
+                objectId = oId!!
             }
         }
     }

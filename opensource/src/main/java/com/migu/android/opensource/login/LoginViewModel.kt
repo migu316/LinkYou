@@ -7,11 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.SharedUtil
-import com.migu.android.network.model.LoginUserData
+import com.migu.android.network.Repository
+import com.migu.android.network.model.LoginUserResponse
 import com.migu.android.network.model.LoginUserRequestBody
-import com.migu.android.network.request.LoginRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
+private const val TAG = "LoginViewModel"
 
 class LoginViewModel : ViewModel() {
 
@@ -32,7 +34,7 @@ class LoginViewModel : ViewModel() {
                 _isLogin.postValue(LoginEvent(true to false))
                 // 执行登录请求
                 val loginUserData =
-                    LoginRequest.loginUserRequest(LoginUserRequestBody(username, password))
+                    Repository.loginUser(LoginUserRequestBody(username, password))
                 // 登录成功，保存认证数据
                 saveAuthData(loginUserData)
                 // 通知UI登录成功
@@ -47,32 +49,37 @@ class LoginViewModel : ViewModel() {
 
     /**
      * 保存认证数据
-     * @param loginUserData 登录用户的认证数据
+     * @param loginUserResponse 登录用户的认证数据
      */
-    private fun saveAuthData(loginUserData: LoginUserData) {
+    private fun saveAuthData(loginUserResponse: LoginUserResponse) {
         // 保存用户名
         SharedUtil.save(
             Const.Auth.LOGIN_STATE_INFO_SHARED,
             Const.Auth.USER_NAME,
-            loginUserData.username
+            loginUserResponse.username
         )
         // 保存邮箱
         SharedUtil.save(
             Const.Auth.LOGIN_STATE_INFO_SHARED,
             Const.Auth.EMAIL,
-            loginUserData.email
+            loginUserResponse.email
         )
         // 保存会话令牌
         SharedUtil.save(
             Const.Auth.LOGIN_STATE_INFO_SHARED,
             Const.Auth.SESSION_TOKEN,
-            loginUserData.sessionToken
+            loginUserResponse.sessionToken
         )
         // 保存创建时间
         SharedUtil.save(
             Const.Auth.LOGIN_STATE_INFO_SHARED,
             Const.Auth.CREATE_AT,
-            loginUserData.createdAt
+            loginUserResponse.createdAt
+        )
+        SharedUtil.save(
+            Const.Auth.LOGIN_STATE_INFO_SHARED,
+            Const.Auth.OBJECT_ID,
+            loginUserResponse.objectId
         )
         // 刷新登录状态
         LinkYou.refreshLoginState()

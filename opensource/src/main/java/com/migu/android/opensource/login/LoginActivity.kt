@@ -2,7 +2,6 @@ package com.migu.android.opensource.login
 
 import android.content.Context
 import android.content.Intent
-import android.net.http.HttpException
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -12,12 +11,9 @@ import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.migu.android.core.Const
-import com.migu.android.core.LinkYou
 import com.migu.android.core.util.AssetsUtils
 import com.migu.android.core.util.GlobalUtil
-import com.migu.android.core.util.SharedUtil
 import com.migu.android.core.util.showToast
-import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.FragmentPrivacyAgreementBinding
@@ -25,9 +21,6 @@ import com.migu.android.linkyou.databinding.FragmentPrivacyPolicyPopUpBinding
 import com.migu.android.linkyou.databinding.FragmentUserAgreementBinding
 import com.migu.android.linkyou.ui.MainActivity
 import com.migu.android.linkyou.ui.util.LayoutUtils
-import com.migu.android.network.model.LoginUserData
-import com.migu.android.network.model.LoginUserRequestBody
-import com.migu.android.network.request.LoginRequest
 import com.migu.android.opensource.databinding.ActivityLoginBinding
 import com.migu.android.opensource.databinding.BottomSheetLayoutBinding
 import kotlinx.coroutines.Dispatchers

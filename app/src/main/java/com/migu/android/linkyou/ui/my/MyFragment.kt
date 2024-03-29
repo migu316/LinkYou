@@ -1,11 +1,21 @@
 package com.migu.android.linkyou.ui.my
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.migu.android.core.LinkYou
+import com.migu.android.core.util.SharedUtil
 import com.migu.android.linkyou.databinding.FragmentMyBinding
+import com.migu.android.network.Repository
+import com.migu.android.network.model.LeanCloudPointerBaseModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "MyFragment"
 
@@ -15,6 +25,7 @@ class MyFragment : Fragment() {
     private val binding by lazy {
         FragmentMyBinding.inflate(layoutInflater)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,6 +48,27 @@ class MyFragment : Fragment() {
             } else {
                 binding.toolbarInfo.visibility = View.VISIBLE
             }
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            val userInfo = Repository.getUserInfo(LeanCloudPointerBaseModel(LinkYou.objectId))
+            Log.i(TAG, "onViewCreated: $userInfo")
+            withContext(Dispatchers.Main) {
+                userInfo?.results?.get(0)?.apply {
+                    val glide = Glide.with(this@MyFragment)
+                    glide.load(replaceHttps(background.url)).into(binding.userBackground)
+                    glide.load(replaceHttps(avatar.url)).into(binding.userPhoto)
+                    glide.load(replaceHttps(avatar.url)).into(binding.smailUserPhoto)
+                }
+            }
+
+        }
+    }
+
+    fun replaceHttps(imageUrl: String): String {
+        return if (imageUrl.startsWith("https://")) {
+            imageUrl // 如果 URL 已经是 HTTPS 开头，则不需要转换
+        } else {
+            imageUrl.replace("http://", "https://") // 否则，将 HTTP 协议替换为 HTTPS
         }
     }
 

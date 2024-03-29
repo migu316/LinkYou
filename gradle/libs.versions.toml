@@ -17,6 +17,7 @@ viewmodel-lifecycle = "2.7.0"
 glide = "4.16.0"
 retrofit = "2.10.0"
 converter-gson = "2.10.0"
+lifecycler-livedata = "2.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +36,7 @@ viewmodel-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-viewmode
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converter-gson" }
+lifecycler-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycler-livedata" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

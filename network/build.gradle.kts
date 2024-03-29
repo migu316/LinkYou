@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.retrofit2)
     implementation(libs.converter.gson)
     implementation(project(":core"))
+    implementation(libs.lifecycler.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
