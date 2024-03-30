@@ -14,6 +14,59 @@ private const val NOTHING = 6
 //    private val level = VERBOSE;
 private val level = if (LinkYou.isDebug) VERBOSE else WARN
 
+
+fun Any.logVerbose(msg: String?) {
+    if (level <= VERBOSE) {
+        Log.v(javaClass.simpleName, msg.toString())
+    }
+}
+
+fun Any.logDebug(msg: String?) {
+    if (level <= DEBUG) {
+        Log.d(javaClass.simpleName, msg.toString())
+    }
+}
+
+fun Any.logInfo(msg: String?) {
+    if (level <= INFO) {
+        Log.i(javaClass.simpleName, msg.toString())
+    }
+}
+
+fun Any.logWarn(msg: String?, tr: Throwable? = null) {
+    if (level <= WARN) {
+        if (tr == null) {
+            Log.w(javaClass.simpleName, msg.toString())
+        } else {
+            Log.w(javaClass.simpleName, msg.toString(), tr)
+        }
+    }
+}
+
+fun Any.logError(msg: String?, tr: Throwable) {
+    if (level <= ERROR) {
+        Log.e(javaClass.simpleName, msg.toString(), tr)
+    }
+}
+
+fun logVerbose(tag: String, msg: String?) {
+    if (level <= VERBOSE) {
+        Log.v(tag, msg.toString())
+    }
+}
+
+fun logDebug(tag: String, msg: String?) {
+    if (level <= DEBUG) {
+        Log.d(tag, msg.toString())
+    }
+}
+
+fun logInfo(tag: String, msg: String?) {
+    if (level <= INFO) {
+        Log.i(tag, msg.toString())
+    }
+}
+
 fun logWarn(tag: String, msg: String?, tr: Throwable? = null) {
     if (level <= WARN) {
         if (tr == null) {
@@ -22,11 +75,10 @@ fun logWarn(tag: String, msg: String?, tr: Throwable? = null) {
             Log.w(tag, msg.toString(), tr)
         }
     }
-
 }
 
-fun logInfo(tag: String, msg: String?) {
-    if (level <= INFO) {
-        Log.i(tag, msg.toString())
+fun logError(tag: String, msg: String?, tr: Throwable) {
+    if (level <= ERROR) {
+        Log.e(tag, msg.toString(), tr)
     }
 }

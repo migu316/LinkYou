@@ -3,4 +3,6 @@
     <string name="check_your_account_or_password">Check your account or password</string>
     <string name="not_logged_in">Not logged in, please log in again</string>
     <string name="network_error">Network Error</string>
+    <string name="network_error_get_personal_information">Failed to obtain personal information</string>
+    <string name="response_data_is_empty">Response data is empty</string>
 </resources>

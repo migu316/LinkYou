@@ -1,29 +1,29 @@
 package com.migu.android.linkyou.ui.my
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.migu.android.core.LinkYou
-import com.migu.android.core.util.SharedUtil
+import com.migu.android.core.util.GlobalUtil
+import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.databinding.FragmentMyBinding
-import com.migu.android.network.Repository
-import com.migu.android.network.model.LeanCloudPointerBaseModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.migu.android.network.R
+import com.migu.android.network.model.UserInfo
+import com.migu.android.network.util.NetWorkUtil
 
 private const val TAG = "MyFragment"
 
 class MyFragment : Fragment() {
-//    private lateinit var binding: FragmentMyBinding
 
     private val binding by lazy {
         FragmentMyBinding.inflate(layoutInflater)
+    }
+
+    private val myViewModel by lazy {
+        ViewModelProvider(this)[MyViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -31,12 +31,20 @@ class MyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        binding = FragmentMyBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // 执行主页初始化工作
+        initialize()
+    }
+
+
+    /**
+     * 初始化操作，包括设置AppBarLayout的滚动监听器和从缓存中更新主页用户信息。
+     */
+    private fun initialize() {
         binding.appbarLayout.addOnOffsetChangedListener { p0, p1 ->
             val totalRange = p0?.totalScrollRange
             val shouldGoneValue = totalRange?.minus(binding.toolbar.height / 2)
@@ -44,33 +52,59 @@ class MyFragment : Fragment() {
             // 如果总共可滑动1269，toolbar.height = 235/2 ，就是-1151时应该隐藏
             // 也就是说[-1269,-1151]显示 [-1150,0]隐藏
             if (p1 > -(shouldGoneValue!!)) {
+                // 当滚动偏移量大于shouldGoneValue时，隐藏toolbarInfo
                 binding.toolbarInfo.visibility = View.INVISIBLE
             } else {
+                // 否则显示toolbarInfo
                 binding.toolbarInfo.visibility = View.VISIBLE
             }
         }
-        lifecycleScope.launch(Dispatchers.IO) {
-            val userInfo = Repository.getUserInfo(LeanCloudPointerBaseModel(LinkYou.objectId))
-            Log.i(TAG, "onViewCreated: $userInfo")
-            withContext(Dispatchers.Main) {
-                userInfo?.results?.get(0)?.apply {
-                    val glide = Glide.with(this@MyFragment)
-                    glide.load(replaceHttps(background.url)).into(binding.userBackground)
-                    glide.load(replaceHttps(avatar.url)).into(binding.userPhoto)
-                    glide.load(replaceHttps(avatar.url)).into(binding.smailUserPhoto)
-                }
+
+        // 从缓存中更新主页
+        updateUserInfo(myViewModel.getUserInfoBySp())
+
+        // 将会发起一个网络请求，获取最新的数据，并观察 userInfoLiveData，当数据发生变化时执行回调函数
+        myViewModel.userInfoLiveData.observe(viewLifecycleOwner) { result ->
+            val userResultResponse = result.getOrNull()
+            // 如果 userResultResponse 不为 null，则执行下面的代码块
+            userResultResponse?.let {
+                // 更新用户信息，传入结果中的第一个用户信息对象
+                updateUserInfo(it.results[0])
+                // 将最新的用户信息保存到SharedPreferences中
+                myViewModel.saveUserInfo(it.results[0])
+            } ?: run {
+                // 如果发生异常，则显示网络错误提示，并打印异常栈轨迹信息
+                showToastOnUiThread(GlobalUtil.getString(R.string.network_error_get_personal_information))
+                result.exceptionOrNull()?.printStackTrace()
             }
-
         }
     }
 
-    fun replaceHttps(imageUrl: String): String {
-        return if (imageUrl.startsWith("https://")) {
-            imageUrl // 如果 URL 已经是 HTTPS 开头，则不需要转换
-        } else {
-            imageUrl.replace("http://", "https://") // 否则，将 HTTP 协议替换为 HTTPS
+
+    /**
+     * 更新用户信息，包括用户头像和背景图片
+     *
+     * @param userInfo 包含用户信息的对象
+     */
+    private fun updateUserInfo(userInfo: UserInfo) {
+        // 初始化 Glide 实例
+        val glide = Glide.with(this)
+
+        // 使用 Glide 加载用户头像并显示到 userPhoto ImageView 中
+        // 如果用户头像 URL 使用 HTTP 协议，则将其转换为 HTTPS
+        binding.apply {
+            glide.load(NetWorkUtil.replaceHttps(userInfo.avatar.url!!)).into(userPhoto)
+
+            // 使用 Glide 加载用户头像并显示到 smailUserPhoto ImageView 中
+            // 如果用户头像 URL 使用 HTTP 协议，则将其转换为 HTTPS
+            glide.load(NetWorkUtil.replaceHttps(userInfo.avatar.url!!)).into(smailUserPhoto)
+
+            // 使用 Glide 加载用户背景并显示到 userBackground ImageView 中
+            // 如果用户背景 URL 使用 HTTP 协议，则将其转换为 HTTPS
+            glide.load(NetWorkUtil.replaceHttps(userInfo.background.url!!)).into(userBackground)
         }
     }
+
 
     companion object {
         fun newInstance(): MyFragment {

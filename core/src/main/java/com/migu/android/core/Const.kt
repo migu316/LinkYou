@@ -17,6 +17,22 @@ interface Const {
         }
     }
 
+    interface UserInfo {
+        companion object {
+            const val USER_INFO_SP_FILE = "user_info_sp_file"
+            const val AGE = "age"
+            const val BRIEF_INFO = "brief_info"
+            const val CITY = "city"
+            const val GENDER = "gender"
+            const val NAME = "name"
+            const val CREATED_AT = "created_at"
+            const val OBJECT_ID = "object_id"
+            const val UPDATED_AT = "updated_at"
+            const val AVATAR_FILE_PATH = "avatar_file_path"
+            const val BACKGROUND_FILE_PATH = "background_file_path"
+        }
+    }
+
     interface Shared {
         companion object {
             const val PRIVACY_POLICY = "privacy_policy"

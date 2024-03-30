@@ -3,4 +3,6 @@
     <string name="check_your_account_or_password">请检查您的账户或密码是否正确</string>
     <string name="not_logged_in">未登录，请重新登录</string>
     <string name="network_error">网络错误，请检查您的网络</string>
+    <string name="network_error_get_personal_information">个人资料获取失败</string>
+    <string name="response_data_is_empty">响应数据为空</string>
 </resources>

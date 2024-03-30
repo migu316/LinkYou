@@ -70,6 +70,7 @@ object ServiceCreator {
 
     suspend fun <T> Call<T>.awaitForRetrofit(): T {
         return suspendCancellableCoroutine { continuation ->
+            // 当协程被取消时，取消当前任务
             continuation.invokeOnCancellation {
                 cancel()
             }
