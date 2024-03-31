@@ -1,4 +1,4 @@
-package com.migu.android.network.model
+package com.migu.android.network.model.base
 
 import com.google.gson.annotations.SerializedName
 import com.migu.android.network.util.NetWorkUtil

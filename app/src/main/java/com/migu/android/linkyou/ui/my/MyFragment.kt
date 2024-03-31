@@ -6,12 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.GlobalUtil
+import com.migu.android.core.util.showToast
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.databinding.FragmentMyBinding
 import com.migu.android.network.R
-import com.migu.android.network.model.UserInfo
+import com.migu.android.network.model.base.Post
+import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.util.NetWorkUtil
 
 private const val TAG = "MyFragment"
@@ -25,6 +29,8 @@ class MyFragment : Fragment() {
     private val myViewModel by lazy {
         ViewModelProvider(this)[MyViewModel::class.java]
     }
+
+    private lateinit var userDynamicAdapter: UserDynamicAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,7 +84,41 @@ class MyFragment : Fragment() {
                 result.exceptionOrNull()?.printStackTrace()
             }
         }
+
+        // 发起网络请求获取用户发布的动态
+        myViewModel.userPostsLiveData.observe(viewLifecycleOwner) { result ->
+            val targetUserPostsResponse = result.getOrNull()
+            targetUserPostsResponse?.let {
+                showDynamics(it.results)
+            } ?: run {
+                showToastOnUiThread("动态获取失败")
+                result.exceptionOrNull()?.printStackTrace()
+            }
+        }
     }
+
+    /**
+     * 将获取到的数据填充到recyclerView的适配器中
+     *
+     * @param posts 动态列表数据
+     */
+    private fun showDynamics(posts: List<Post>) {
+        // 初始化用户动态适配器
+        userDynamicAdapter = UserDynamicAdapter(posts)
+        binding.apply {
+            // 设置适配器
+            userDynamicRecyclerView.adapter = userDynamicAdapter
+            // 设置布局管理器
+            userDynamicRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+            // 更新主页动态数量显示
+            userDynamicQuantity.text = GlobalUtil.getString(
+                com.migu.android.linkyou.R.string.user_dynamics_count,
+                posts.size.toString()
+            )
+        }
+    }
+
 
 
     /**
@@ -101,7 +141,12 @@ class MyFragment : Fragment() {
 
             // 使用 Glide 加载用户背景并显示到 userBackground ImageView 中
             // 如果用户背景 URL 使用 HTTP 协议，则将其转换为 HTTPS
-            glide.load(NetWorkUtil.replaceHttps(userInfo.background.url!!)).into(userBackground)
+            glide.load(NetWorkUtil.replaceHttps(userInfo.background?.url!!)).into(userBackground)
+
+            // 设置其他资料
+            smailUserName.text = userInfo.name
+            userName.text = userInfo.name
+            userCity.text = userInfo.city
         }
     }
 

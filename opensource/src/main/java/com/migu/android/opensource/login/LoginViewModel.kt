@@ -9,7 +9,7 @@ import com.migu.android.core.LinkYou
 import com.migu.android.core.util.SharedUtil
 import com.migu.android.network.Repository
 import com.migu.android.network.model.LoginUserResponse
-import com.migu.android.network.model.LoginUserRequestBody
+import com.migu.android.network.model.base.LoginUserRequestBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

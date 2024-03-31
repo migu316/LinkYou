@@ -36,7 +36,7 @@
 
     <!-- 设置Material CardView的样式 -->
     <style name="MaterialCardView" parent="Base.Widget.Material3.CardView">
-        <item name="cardBackgroundColor">@color/whiteCard</item>
+        <item name="cardBackgroundColor">@color/white</item>
     </style>
 
     <!-- 设置Material 底部导航栏的样式 -->

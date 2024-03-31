@@ -4,13 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.showToastOnUiThread
-import com.migu.android.network.model.LeanCloudPointerBaseModel
-import com.migu.android.network.model.LoginUserRequestBody
+import com.migu.android.network.model.base.LoginUserRequestBody
 import com.migu.android.network.model.LoginUserResponse
+import com.migu.android.network.model.TargetUserPostsResponse
 import com.migu.android.network.model.UserResultResponse
 import com.migu.android.network.request.LinkYouNetwork
 import com.migu.android.network.util.Event
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import kotlin.coroutines.CoroutineContext
 
@@ -64,6 +65,29 @@ object Repository {
             }
         }
     }
+
+    /**
+     * 获取目标用户发布的帖子信息。
+     *
+     * @param objectId 目标用户的唯一标识符
+     * @return LiveData 包装的帖子信息响应结果
+     */
+    fun getTargetUserPosts(objectId: String): LiveData<Result<TargetUserPostsResponse>> {
+        return fire(Dispatchers.IO) {
+            // 添加延迟以防止数据过大导致网络拥塞，后期尝试重构为请求重试
+            delay(200)
+            // 发起网络请求获取目标用户发布的帖子数据
+            val userPostsResponse = LinkYouNetwork.getUserPostsRequest(objectId)
+            // 如果响应结果不为空，则返回成功的 Result 包装
+            if (userPostsResponse.results.isNotEmpty()) {
+                Result.success(userPostsResponse)
+            } else {
+                // 如果响应数据为空，则返回包含异常信息的失败 Result 包装
+                Result.failure(RuntimeException(GlobalUtil.getString(R.string.response_data_is_empty)))
+            }
+        }
+    }
+
 
     /**
      * 构建一个通用的用于返回结果或者错误信息的泛型函数

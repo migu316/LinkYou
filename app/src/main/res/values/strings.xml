@@ -13,7 +13,7 @@
     <string name="user_name">Your Name</string>
     <string name="user_city">City</string>
     <string name="user_constellation">" · Aries"</string>
-    <string name="user_dynamics_count">" · 0strip"</string>
+    <string name="user_dynamics_count">" · %s strip"</string>
     <string name="dynamics_time">1970-01-01 10:10</string>
     <string name="dynamics_content">this is dynamics context,this is dynamics context,this is dynamics context,this is dynamics context</string>
     <string name="my_dynamics_light_up_count">0</string>

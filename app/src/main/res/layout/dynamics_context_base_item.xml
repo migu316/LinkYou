@@ -9,6 +9,7 @@
     android:paddingEnd="15dp">
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/release_time_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
@@ -19,6 +20,7 @@
         android:textSize="12sp" />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/content_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -30,7 +32,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_dynamic_images_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-         />
+        android:layout_height="wrap_content" />
 </LinearLayout>
 

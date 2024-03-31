@@ -6,15 +6,15 @@ import com.migu.android.core.LinkYou
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesByNameExecute
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
 import com.migu.android.network.Repository
-import com.migu.android.network.model.FileImage
-import com.migu.android.network.model.UserInfo
+import com.migu.android.network.model.base.FileImage
+import com.migu.android.network.model.base.UserInfo
 
 class MyViewModel : ViewModel() {
 
     // 仅第一次获取该livedata时，发起网络请求
     // 即使多次获取，也不会再发起网络请求
     val userInfoLiveData = Repository.getUserInfo(LinkYou.objectId)
-
+    val userPostsLiveData = Repository.getTargetUserPosts(LinkYou.objectId)
 
     /**
      * 将从服务器获取到的数据存储到SP文件中
@@ -30,7 +30,7 @@ class MyViewModel : ViewModel() {
             putString(Const.UserInfo.OBJECT_ID, userInfo.objectId)
             putString(Const.UserInfo.UPDATED_AT, userInfo.updatedAt)
             putString(Const.UserInfo.AVATAR_FILE_PATH, userInfo.avatar.url)
-            putString(Const.UserInfo.BACKGROUND_FILE_PATH, userInfo.background.url)
+            putString(Const.UserInfo.BACKGROUND_FILE_PATH, userInfo.background?.url)
         }
     }
 

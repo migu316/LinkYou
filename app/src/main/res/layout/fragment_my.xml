@@ -13,10 +13,10 @@
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:background="@color/whiteBackground"
             android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="410dp"
+            android:background="@color/whiteBackground"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
@@ -76,9 +76,13 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/user_name"
+                        android:maxLength="10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/user_name"
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -95,8 +99,9 @@
                             android:id="@+id/user_city"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:ellipsize="end"
                             android:maxLines="1"
+                            android:maxLength="6"
+                            android:ellipsize="end"
                             android:text="@string/user_city"
                             android:textColor="@color/gray"
                             android:textSize="16sp"
@@ -120,8 +125,6 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:maxLines="1"
-
-                            android:text="@string/user_dynamics_count"
                             android:textColor="@color/gray"
                             android:textSize="16sp"
                             tools:text=" · 32条" />
@@ -168,16 +171,22 @@
                         </com.google.android.material.card.MaterialCardView>
 
                         <com.google.android.material.textview.MaterialTextView
+
+                            android:id="@+id/smail_user_name"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginStart="2dp"
+                            android:ellipsize="end"
                             android:gravity="center"
+                            android:maxLength="10"
+                            android:maxLines="1"
                             android:text="@string/user_name"
                             android:textColor="@color/black"
                             android:textSize="18sp" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:layout_marginStart="15dp"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
@@ -217,7 +226,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
@@ -363,17 +372,6 @@
                     </FrameLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
-
-
-            <include layout="@layout/dynamics_no_avatar_item" />
-
-            <include layout="@layout/dynamics_no_avatar_item" />
-
-            <include layout="@layout/dynamics_no_avatar_item" />
-
-            <include layout="@layout/dynamics_no_avatar_item" />
-
-            <include layout="@layout/dynamics_no_avatar_item" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/user_dynamic_recycler_view"

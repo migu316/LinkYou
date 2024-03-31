@@ -1,7 +1,10 @@
-package com.migu.android.network.model
+package com.migu.android.network.model.base
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * 用户资料的基类
+ */
 data class UserInfo(
     @SerializedName("Age") val age: Int,
     @SerializedName("BriefInfo") val briefInfo: String,
@@ -12,5 +15,5 @@ data class UserInfo(
     @SerializedName("objectId") val objectId: String,
     @SerializedName("updatedAt") val updatedAt: String,
     @SerializedName("Avatar") val avatar: FileImage,
-    @SerializedName("Background") val background: FileImage
+    @SerializedName("Background") val background: FileImage?=null
 )

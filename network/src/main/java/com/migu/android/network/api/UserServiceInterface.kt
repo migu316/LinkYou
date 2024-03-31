@@ -2,7 +2,8 @@ package com.migu.android.network.api
 
 import com.migu.android.core.util.AssetsUtils
 import com.migu.android.network.model.LoginUserResponse
-import com.migu.android.network.model.LoginUserRequestBody
+import com.migu.android.network.model.TargetUserPostsResponse
+import com.migu.android.network.model.base.LoginUserRequestBody
 import com.migu.android.network.model.UserResultResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -31,4 +32,5 @@ interface UserServiceInterface {
         @Query("where") where: String,
         @Query("include") include: String? = "Background,Avatar"
     ): Call<UserResultResponse>
+
 }

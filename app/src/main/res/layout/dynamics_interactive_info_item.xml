@@ -20,6 +20,7 @@
             app:tint="@color/gray" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/likes_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -42,6 +43,7 @@
             app:tint="@color/gray" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/comment_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"

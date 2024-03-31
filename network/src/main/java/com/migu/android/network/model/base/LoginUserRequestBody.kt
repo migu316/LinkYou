@@ -1,4 +1,4 @@
-package com.migu.android.network.model
+package com.migu.android.network.model.base
 
 data class LoginUserRequestBody(
     var username: String,

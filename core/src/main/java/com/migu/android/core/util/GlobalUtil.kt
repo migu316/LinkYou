@@ -15,4 +15,16 @@ object GlobalUtil {
     fun getString(resId: Int): String {
         return LinkYou.context.resources.getString(resId)
     }
+
+    /**
+     * 获取格式化后的字符串资源。
+     *
+     * @param resId 字符串资源的资源ID
+     * @param formatArgs 格式化参数，可选
+     * @return 格式化后的字符串
+     */
+    fun getString(resId: Int, vararg formatArgs: Any): String {
+        return LinkYou.context.resources.getString(resId, *formatArgs)
+    }
+
 }

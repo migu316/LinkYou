@@ -1,4 +1,4 @@
-package com.migu.android.network.model
+package com.migu.android.network.model.base
 
 /**
  * 基类，用于组装请求url中的where部分，如下

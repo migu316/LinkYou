@@ -14,7 +14,7 @@
     <string name="user_name">迷毂</string>
     <string name="user_city">重庆</string>
     <string name="user_constellation">" · 星座"</string>
-    <string name="user_dynamics_count">" · 0条"</string>
+    <string name="user_dynamics_count">" · %s 条"</string>
     <string name="dynamics_time">1970–01–01 10:10</string>
     <string name="dynamics_content">这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容，这里是动态内容</string>
     <string name="my_dynamics_light_up_count">0</string>
