@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.migu.android.network"
+    namespace = "com.migu.android.database"
     compileSdk = 34
 
     defaultConfig {
@@ -33,14 +34,15 @@ android {
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.retrofit2)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
     implementation(libs.converter.gson)
     implementation(project(":core"))
-    implementation(libs.lifecycler.livedata)
-    implementation(project(":database"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,20 +1,21 @@
 package com.migu.android.linkyou.ui.my
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.GlobalUtil
-import com.migu.android.core.util.showToast
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.databinding.FragmentMyBinding
+import com.migu.android.network.GetUrlsHandler
 import com.migu.android.network.R
-import com.migu.android.network.model.base.Post
+import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.util.NetWorkUtil
 
@@ -31,6 +32,16 @@ class MyFragment : Fragment() {
     }
 
     private lateinit var userDynamicAdapter: UserDynamicAdapter
+    private lateinit var getUrlsHandler: GetUrlsHandler<UserDynamicAdapter.DynamicViewHolder>
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val responseHandler = Handler(Looper.getMainLooper())
+        getUrlsHandler = GetUrlsHandler(responseHandler, this) { dynamicViewHolder, urls ->
+            dynamicViewHolder.bindImagesAdapter(urls)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,9 +97,9 @@ class MyFragment : Fragment() {
         }
 
         // 发起网络请求获取用户发布的动态
-        myViewModel.userPostsLiveData.observe(viewLifecycleOwner) { result ->
-            val targetUserPostsResponse = result.getOrNull()
-            targetUserPostsResponse?.let {
+        myViewModel.userDynamicsLiveData.observe(viewLifecycleOwner) { result ->
+            val targetUserDynamicsResponse = result.getOrNull()
+            targetUserDynamicsResponse?.let {
                 showDynamics(it.results)
             } ?: run {
                 showToastOnUiThread("动态获取失败")
@@ -100,11 +111,11 @@ class MyFragment : Fragment() {
     /**
      * 将获取到的数据填充到recyclerView的适配器中
      *
-     * @param posts 动态列表数据
+     * @param dynamics 动态列表数据
      */
-    private fun showDynamics(posts: List<Post>) {
+    private fun showDynamics(dynamics: List<Dynamic>) {
         // 初始化用户动态适配器
-        userDynamicAdapter = UserDynamicAdapter(posts)
+        userDynamicAdapter = UserDynamicAdapter(dynamics, getUrlsHandler)
         binding.apply {
             // 设置适配器
             userDynamicRecyclerView.adapter = userDynamicAdapter
@@ -114,11 +125,10 @@ class MyFragment : Fragment() {
             // 更新主页动态数量显示
             userDynamicQuantity.text = GlobalUtil.getString(
                 com.migu.android.linkyou.R.string.user_dynamics_count,
-                posts.size.toString()
+                dynamics.size.toString()
             )
         }
     }
-
 
 
     /**

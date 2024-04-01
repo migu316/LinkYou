@@ -6,7 +6,7 @@ import java.util.Date
 /**
  * 动态的基类
  */
-data class Post(
+data class Dynamic(
     @SerializedName("userInfoId") val userInfoId: UserInfo,
     @SerializedName("likes") val likes: Int,
     @SerializedName("postText") val postText: String,

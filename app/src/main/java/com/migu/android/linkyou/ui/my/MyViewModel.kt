@@ -14,7 +14,7 @@ class MyViewModel : ViewModel() {
     // 仅第一次获取该livedata时，发起网络请求
     // 即使多次获取，也不会再发起网络请求
     val userInfoLiveData = Repository.getUserInfo(LinkYou.objectId)
-    val userPostsLiveData = Repository.getTargetUserPosts(LinkYou.objectId)
+    val userDynamicsLiveData = Repository.getTargetUserDynamics(LinkYou.objectId)
 
     /**
      * 将从服务器获取到的数据存储到SP文件中

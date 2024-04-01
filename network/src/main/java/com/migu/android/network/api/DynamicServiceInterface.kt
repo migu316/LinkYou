@@ -1,35 +1,31 @@
 package com.migu.android.network.api
 
 import com.migu.android.core.util.AssetsUtils
-import com.migu.android.network.model.LoginUserResponse
-import com.migu.android.network.model.base.LoginUserRequestBody
-import com.migu.android.network.model.UserResultResponse
+import com.migu.android.network.model.DynamicImageResponse
+import com.migu.android.network.model.TargetUserDynamicsResponse
 import retrofit2.Call
-import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
-import retrofit2.http.POST
 import retrofit2.http.Query
 
-interface UserServiceInterface {
-
+interface DynamicServiceInterface {
     @Headers("Content-Type: application/json")
-    @POST("login")
-    fun getLoginUserData(
-        @Header("X-LC-Id") xLcId: String = AssetsUtils.getAPPID(),
-        @Header("X-LC-Key") xLcKey: String = AssetsUtils.getLCKEY(),
-        @Body requestBody: LoginUserRequestBody
-    ): Call<LoginUserResponse>
-
-
-    @Headers("Content-Type: application/json")
-    @GET("classes/UserInfo")
-    fun getUserInfoData(
+    @GET("classes/Posts")
+    fun getUserDynamicsData(
         @Header("X-LC-Id") xLcId: String = AssetsUtils.getAPPID(),
         @Header("X-LC-Key") xLcKey: String = AssetsUtils.getLCKEY(),
         @Query("where") where: String,
-        @Query("include") include: String? = "Background,Avatar"
-    ): Call<UserResultResponse>
+        @Query("include") include:String?="UserInfoId.Avatar",
+        @Query("order") order:String? = "-createdAt"
+    ): Call<TargetUserDynamicsResponse>
 
+    @Headers("Content-Type: application/json")
+    @GET("classes/PostImages")
+    fun getDynamicImagesData(
+        @Header("X-LC-Id") xLcId: String = AssetsUtils.getAPPID(),
+        @Header("X-LC-Key") xLcKey: String = AssetsUtils.getLCKEY(),
+        @Query("where") where: String,
+        @Query("include") include:String?="imageId"
+    ): Call<DynamicImageResponse>
 }

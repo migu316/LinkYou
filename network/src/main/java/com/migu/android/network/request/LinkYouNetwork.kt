@@ -1,11 +1,12 @@
 package com.migu.android.network.request
 
-import com.migu.android.network.api.PostServiceInterface
+import com.migu.android.network.api.DynamicServiceInterface
 import com.migu.android.network.api.UserServiceInterface
 import com.migu.android.network.model.base.LeanCloudPointerBaseModel
 import com.migu.android.network.model.base.LoginUserRequestBody
 import com.migu.android.network.model.LoginUserResponse
-import com.migu.android.network.model.TargetUserPostsResponse
+import com.migu.android.network.model.DynamicImageResponse
+import com.migu.android.network.model.TargetUserDynamicsResponse
 import com.migu.android.network.model.UserResultResponse
 import com.migu.android.network.request.ServiceCreator.awaitForRetrofit
 
@@ -38,7 +39,7 @@ object LinkYouNetwork {
             pointerName = "UserObjectId" // 设置指针名称
             className = "UserInfo" // 设置指针指向的类名
         }
-        // 将指针参数转换为字符串形式
+        // 将指针参数转换约束条件
         val pointerWhere = leanCloudPointerBaseModel.toStringSeparateParameters()
         // 发起网络请求获取用户信息数据，并等待响应结果
         return ServiceCreator.create<UserServiceInterface>().getUserInfoData(where = pointerWhere)
@@ -53,17 +54,28 @@ object LinkYouNetwork {
      * @param objectId 用户对象的唯一标识符
      * @return 包含用户发布的帖子信息的响应结果
      */
-    suspend fun getUserPostsRequest(objectId: String): TargetUserPostsResponse {
+    suspend fun getUserDynamicsRequest(objectId: String): TargetUserDynamicsResponse {
         // 创建指向 LeanCloud 中用户对象的指针
         val leanCloudPointerBaseModel = LeanCloudPointerBaseModel(objectId).apply {
             pointerName = "author" // 设置指针名称
             className = "_User" // 设置指针指向的类名
         }
-        // 将指针参数转换为字符串形式
+        // 将指针参数转换约束条件
         val pointerWhere = leanCloudPointerBaseModel.toStringSeparateParameters()
-        // 发起网络请求获取用户发布的帖子数据，并等待响应结果
-        return ServiceCreator.create<PostServiceInterface>().getUserPostsData(where = pointerWhere)
+        // 发起网络请求获取用户发布的动态数据，并等待响应结果
+        return ServiceCreator.create<DynamicServiceInterface>().getUserDynamicsData(where = pointerWhere)
             .awaitForRetrofit() // 等待 Retrofit 响应
+    }
+
+    suspend fun getDynamicImagesRequest(objectId: String): DynamicImageResponse {
+        // 创建指向 LeanCloud 中动态对象的指针
+        val leanCloudPointerBaseModel = LeanCloudPointerBaseModel(objectId).apply {
+            pointerName = "postObjectId"
+            className = "Posts"
+        }
+        val pointerWhere = leanCloudPointerBaseModel.toStringSeparateParameters()
+        return ServiceCreator.create<DynamicServiceInterface>().getDynamicImagesData(where = pointerWhere)
+            .awaitForRetrofit()
     }
 
 }

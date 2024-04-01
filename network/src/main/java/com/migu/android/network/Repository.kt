@@ -2,16 +2,19 @@ package com.migu.android.network
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import com.google.gson.Gson
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.network.model.base.LoginUserRequestBody
 import com.migu.android.network.model.LoginUserResponse
-import com.migu.android.network.model.TargetUserPostsResponse
+import com.migu.android.network.model.DynamicImageResponse
+import com.migu.android.network.model.TargetUserDynamicsResponse
 import com.migu.android.network.model.UserResultResponse
 import com.migu.android.network.request.LinkYouNetwork
 import com.migu.android.network.util.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import kotlin.coroutines.CoroutineContext
 
@@ -72,18 +75,42 @@ object Repository {
      * @param objectId 目标用户的唯一标识符
      * @return LiveData 包装的帖子信息响应结果
      */
-    fun getTargetUserPosts(objectId: String): LiveData<Result<TargetUserPostsResponse>> {
+    fun getTargetUserDynamics(objectId: String): LiveData<Result<TargetUserDynamicsResponse>> {
         return fire(Dispatchers.IO) {
             // 添加延迟以防止数据过大导致网络拥塞，后期尝试重构为请求重试
             delay(200)
             // 发起网络请求获取目标用户发布的帖子数据
-            val userPostsResponse = LinkYouNetwork.getUserPostsRequest(objectId)
+            val userDynamicsResponse = LinkYouNetwork.getUserDynamicsRequest(objectId)
             // 如果响应结果不为空，则返回成功的 Result 包装
-            if (userPostsResponse.results.isNotEmpty()) {
-                Result.success(userPostsResponse)
+            if (userDynamicsResponse.results.isNotEmpty()) {
+                Result.success(userDynamicsResponse)
             } else {
                 // 如果响应数据为空，则返回包含异常信息的失败 Result 包装
                 Result.failure(RuntimeException(GlobalUtil.getString(R.string.response_data_is_empty)))
+            }
+        }
+    }
+
+    fun getDynamicImages(objectId: String): List<String> {
+//        return fire(Dispatchers.IO) {
+//            val dynamicImageResponse = LinkYouNetwork.getDynamicImagesRequest(objectId)
+//            if (dynamicImageResponse.results.isNotEmpty()) {
+//                Result.success(dynamicImageResponse)
+//            } else {
+//                // 结果数据为空时，不一定是错误，可能本身动态就没有图片
+//                Result.failure(RuntimeException(GlobalUtil.getString(R.string.response_data_is_empty)))
+//            }
+//        }
+
+        return runBlocking {
+            try {
+                val dynamicImageResponse = LinkYouNetwork.getDynamicImagesRequest(objectId)
+                return@runBlocking dynamicImageResponse.results.map {
+                    it.image.url!!
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@runBlocking listOf()
             }
         }
     }
