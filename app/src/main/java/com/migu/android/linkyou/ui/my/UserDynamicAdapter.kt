@@ -1,7 +1,9 @@
 package com.migu.android.linkyou.ui.my
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -29,11 +31,18 @@ class UserDynamicAdapter(
     override fun onBindViewHolder(holder: DynamicViewHolder, position: Int) {
         val post = dynamics[position]
         holder.bind(post)
-        logInfo(position.toString())
+        // 为视图添加标签
+        holder.binding.root.tag = post.objectId
+        // 当开始绑定时，先将其adapter设置为null
+        // 相当于是清除复用holder中的adapter，并且将其设置为GONE，recyclerView将不会提示跳过布局
+        holder.binding.includeContent.userDynamicImagesRecyclerView.apply {
+            adapter = null
+            visibility = View.GONE
+        }
         getUrlsHandler.queueGetUrls(holder, post.objectId)
     }
 
-    inner class DynamicViewHolder(private val binding: DynamicsNoAvatarItemBinding) :
+    inner class DynamicViewHolder(val binding: DynamicsNoAvatarItemBinding) :
         ViewHolder(binding.root) {
 
         fun bind(dynamic: Dynamic) {
@@ -45,12 +54,12 @@ class UserDynamicAdapter(
             }
         }
 
-        fun bindImagesAdapter(urls: List<String>) {
-            if (urls.isEmpty()) {
-                return
-            }
-            binding.includeContent.userDynamicImagesRecyclerView.apply {
-                if (adapter == null) {
+        fun bindImagesAdapter(urls: List<String>, objectId: String) {
+            // 传递过来的objectId，如果和当前视图中的tag相等，说明holder尚未被复用，可以将urls设置到adapter中
+            // 如果不相等，那么就不进行设置，将会由下一次回调并且tag相等的来进行设置
+            if (binding.root.tag == objectId) {
+                binding.includeContent.userDynamicImagesRecyclerView.apply {
+                    visibility = View.VISIBLE
                     adapter = ImageAdapter(urls)
                     layoutManager = GridLayoutManager(context, 3)
                 }

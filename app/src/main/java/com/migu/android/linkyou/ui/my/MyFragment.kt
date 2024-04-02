@@ -1,8 +1,10 @@
 package com.migu.android.linkyou.ui.my
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,27 +36,72 @@ class MyFragment : Fragment() {
     private lateinit var userDynamicAdapter: UserDynamicAdapter
     private lateinit var getUrlsHandler: GetUrlsHandler<UserDynamicAdapter.DynamicViewHolder>
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.i(TAG, "onAttach: ")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val responseHandler = Handler(Looper.getMainLooper())
-        getUrlsHandler = GetUrlsHandler(responseHandler, this) { dynamicViewHolder, urls ->
-            dynamicViewHolder.bindImagesAdapter(urls)
+        getUrlsHandler = GetUrlsHandler(responseHandler, this) { dynamicViewHolder, urls,objectId ->
+            dynamicViewHolder.bindImagesAdapter(urls,objectId)
         }
+        Log.i(TAG, "onCreate: ")
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.i(TAG, "onCreateView: ")
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // 执行主页初始化工作
         initialize()
+        Log.i(TAG, "onViewCreated: ")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initializeData()
+        Log.i(TAG, "onStart: ")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "onResume: ")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i(TAG, "onPause: ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i(TAG, "onStop: ")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.i(TAG, "onDestroyView: ")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(TAG, "onDestroy: ")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.i(TAG, "onDetach: ")
     }
 
 
@@ -76,7 +123,9 @@ class MyFragment : Fragment() {
                 binding.toolbarInfo.visibility = View.VISIBLE
             }
         }
+    }
 
+    private fun initializeData(){
         // 从缓存中更新主页
         updateUserInfo(myViewModel.getUserInfoBySp())
 

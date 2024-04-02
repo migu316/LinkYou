@@ -77,11 +77,11 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/user_name"
-                        android:maxLength="10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:ellipsize="end"
+                        android:maxLength="10"
                         android:maxLines="1"
                         android:text="@string/user_name"
                         android:textSize="20sp"
@@ -99,9 +99,9 @@
                             android:id="@+id/user_city"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:maxLines="1"
-                            android:maxLength="6"
                             android:ellipsize="end"
+                            android:maxLength="6"
+                            android:maxLines="1"
                             android:text="@string/user_city"
                             android:textColor="@color/gray"
                             android:textSize="16sp"
@@ -186,10 +186,10 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_marginStart="15dp"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
+                        android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
                         android:orientation="horizontal">
 
@@ -373,10 +373,12 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/user_dynamic_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="800dp" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

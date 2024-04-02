@@ -8,13 +8,13 @@ class DynamicTypeConverters {
     private val gson = Gson()
 
     @TypeConverter
-    fun imageUrlsToString(urls: List<String>?): String? {
-        return gson.toJson(urls)
+    fun fromListString(list: List<String>): String {
+        return gson.toJson(list)
     }
 
     @TypeConverter
-    fun fromUrlsString(urlsString: String?): List<String>? {
-        val listType = object : TypeToken<List<String>>() {}.type
-        return gson.fromJson(urlsString, listType)
+    fun toListString(jsonString: String): List<String> {
+        val type = object : TypeToken<List<String>>() {}.type
+        return gson.fromJson(jsonString, type)
     }
 }

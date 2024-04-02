@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
 import com.migu.android.network.util.NetWorkUtil
 
@@ -15,7 +16,10 @@ class ImageAdapter(private val urls: List<String>) : Adapter<ImageAdapter.ImageV
 
     inner class ImageViewHolder(val binding: DynamicsImageItemBinding) : ViewHolder(binding.root) {
         fun bind(imageUrl: String) {
-            Glide.with(context).load(NetWorkUtil.replaceHttps(imageUrl)).into(binding.dynamicsImage)
+            Glide.with(context)
+                .load(NetWorkUtil.replaceHttps(imageUrl))
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(binding.dynamicsImage)
         }
     }
 

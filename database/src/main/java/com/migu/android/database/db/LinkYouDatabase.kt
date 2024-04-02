@@ -1,6 +1,5 @@
 package com.migu.android.database.db
 
-import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -9,7 +8,7 @@ import com.migu.android.core.LinkYou
 import com.migu.android.database.model.DynamicImages
 import com.migu.android.database.util.DynamicTypeConverters
 
-@Database(version = 1, entities = [DynamicImages::class], exportSchema = true)
+@Database(version = 1, entities = [DynamicImages::class])
 @TypeConverters(DynamicTypeConverters::class)
 abstract class LinkYouDatabase : RoomDatabase() {
     abstract fun dynamicDao(): DynamicDao
