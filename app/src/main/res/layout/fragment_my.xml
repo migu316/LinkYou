@@ -230,8 +230,9 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/interactive_data"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
@@ -371,14 +372,19 @@
                             android:src="@drawable/wb_sunny_24px" />
                     </FrameLayout>
                 </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
 
+
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/user_dynamic_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="800dp" />
+                android:layout_height="match_parent" />
 
+            <ProgressBar
+                android:id="@+id/recycler_view_is_loading"
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

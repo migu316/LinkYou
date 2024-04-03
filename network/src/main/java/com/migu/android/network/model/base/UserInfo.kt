@@ -1,10 +1,13 @@
 package com.migu.android.network.model.base
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 /**
  * 用户资料的基类
  */
+@Parcelize
 data class UserInfo(
     @SerializedName("Age") val age: Int,
     @SerializedName("BriefInfo") val briefInfo: String,
@@ -16,4 +19,4 @@ data class UserInfo(
     @SerializedName("updatedAt") val updatedAt: String,
     @SerializedName("Avatar") val avatar: FileImage,
     @SerializedName("Background") val background: FileImage?=null
-)
+):Parcelable

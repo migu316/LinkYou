@@ -50,6 +50,8 @@ dependencies {
     implementation(libs.splashscreen)
     implementation(libs.viewmodel.lifecycle)
     implementation(libs.glide)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
     implementation(project(":core"))
     implementation(project(":network"))
     testImplementation(libs.junit)

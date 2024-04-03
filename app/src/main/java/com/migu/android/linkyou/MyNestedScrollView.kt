@@ -17,6 +17,20 @@ class MyNestedScrollView @JvmOverloads constructor(
         parentHeightMeasureSpec: Int,
         heightUsed: Int
     ) {
-        child.measure(parentWidthMeasureSpec, parentHeightMeasureSpec)
+        val lp = child.layoutParams as MarginLayoutParams
+
+        val childWidthMeasureSpec = getChildMeasureSpec(
+            parentWidthMeasureSpec,
+            paddingLeft + paddingRight + lp.leftMargin + lp.rightMargin
+                    + widthUsed, lp.width
+        )
+        // 这里的写法与 ScrollView 里面的一样
+        val usedTotal = paddingTop + paddingBottom + lp.topMargin + lp.bottomMargin + heightUsed
+        val childHeightMeasureSpec: Int = MeasureSpec.makeMeasureSpec(
+            max(0, MeasureSpec.getSize(parentHeightMeasureSpec) - usedTotal),
+            MeasureSpec.UNSPECIFIED
+        )
+
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
     }
 }

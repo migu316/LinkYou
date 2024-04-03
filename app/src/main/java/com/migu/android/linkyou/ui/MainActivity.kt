@@ -8,6 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import com.migu.android.core.util.AssetsUtils
 import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.R
@@ -46,30 +48,36 @@ class MainActivity : BaseActivity(), FrontFragment.Callbacks {
         BarUtils.immersiveStatus(window)
 
         // 如果未包含指定ID，说明是第一次加载该活动
-        if (savedInstanceState == null || !savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
-            replaceContainerFragment(FrontFragment::class.java)
-        }
+//        if (savedInstanceState == null || !savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
+//            replaceContainerFragment(FrontFragment::class.java)
+//        }
+//
+//        binding.mainBottomMenu.setOnItemSelectedListener {
+//            when (it.itemId) {
+//                R.id.front_page -> {
+//                    replaceContainerFragment(FrontFragment::class.java)
+//                }
+//
+//                R.id.explore_page -> {
+//                    replaceContainerFragment(ExploreFragment::class.java)
+//                }
+//
+//                R.id.message_page -> {
+//                    replaceContainerFragment(MessageFragment::class.java)
+//                }
+//
+//                R.id.my_page -> {
+//                    replaceContainerFragment(MyFragment::class.java)
+//                }
+//            }
+//            return@setOnItemSelectedListener true
+//        }
 
-        binding.mainBottomMenu.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.front_page -> {
-                    replaceContainerFragment(FrontFragment::class.java)
-                }
-
-                R.id.explore_page -> {
-                    replaceContainerFragment(ExploreFragment::class.java)
-                }
-
-                R.id.message_page -> {
-                    replaceContainerFragment(MessageFragment::class.java)
-                }
-
-                R.id.my_page -> {
-                    replaceContainerFragment(MyFragment::class.java)
-                }
-            }
-            return@setOnItemSelectedListener true
-        }
+        // 使用navigation完成导航操作
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(binding.fragmentContainer.id) as NavHostFragment
+        val navController = navHostFragment.navController
+        NavigationUI.setupWithNavController(binding.mainBottomMenu, navController)
     }
 
     /**
@@ -114,6 +122,8 @@ class MainActivity : BaseActivity(), FrontFragment.Callbacks {
         }
         transaction.commit()
     }
+
+
 
     override fun onDestroy() {
         super.onDestroy()

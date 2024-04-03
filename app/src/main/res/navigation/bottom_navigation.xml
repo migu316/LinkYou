@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_navigation"
+    app:startDestination="@id/front_page">
+
+    <fragment
+        android:id="@+id/front_page"
+        android:name="com.migu.android.linkyou.ui.front.FrontFragment"
+        android:label="fragment_front"
+        tools:layout="@layout/fragment_front"/>
+    <fragment
+        android:id="@+id/explore_page"
+        android:name="com.migu.android.linkyou.ui.explore.ExploreFragment"
+        tools:layout="@layout/fragment_explore"
+        android:label="fragment_explore" />
+    <fragment
+        android:id="@+id/message_page"
+        android:name="com.migu.android.linkyou.ui.message.MessageFragment"
+        tools:layout="@layout/fragment_message"
+        android:label="fragment_message" />
+    <fragment
+        android:id="@+id/my_page"
+        android:name="com.migu.android.linkyou.ui.my.MyFragment"
+        tools:layout="@layout/fragment_my"
+        android:label="fragment_my" />
+</navigation>

@@ -1,16 +1,15 @@
 package com.migu.android.linkyou.ui.my
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.showToastOnUiThread
@@ -21,13 +20,9 @@ import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.util.NetWorkUtil
 
-private const val TAG = "MyFragment"
-
 class MyFragment : Fragment() {
 
-    private val binding by lazy {
-        FragmentMyBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: FragmentMyBinding
 
     private val myViewModel by lazy {
         ViewModelProvider(this)[MyViewModel::class.java]
@@ -36,18 +31,17 @@ class MyFragment : Fragment() {
     private lateinit var userDynamicAdapter: UserDynamicAdapter
     private lateinit var getUrlsHandler: GetUrlsHandler<UserDynamicAdapter.DynamicViewHolder>
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Log.i(TAG, "onAttach: ")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val responseHandler = Handler(Looper.getMainLooper())
-        getUrlsHandler = GetUrlsHandler(responseHandler, this) { dynamicViewHolder, urls,objectId ->
-            dynamicViewHolder.bindImagesAdapter(urls,objectId)
-        }
-        Log.i(TAG, "onCreate: ")
+        getUrlsHandler =
+            GetUrlsHandler(
+                responseHandler,
+                this
+            ) { dynamicViewHolder, urls, objectId ->
+                dynamicViewHolder.bindImagesAdapter(urls, objectId)
+            }
     }
 
 
@@ -56,7 +50,7 @@ class MyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.i(TAG, "onCreateView: ")
+        binding = FragmentMyBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -65,45 +59,13 @@ class MyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // 执行主页初始化工作
         initialize()
-        Log.i(TAG, "onViewCreated: ")
     }
 
     override fun onStart() {
         super.onStart()
+        initializeDataForCache()
         initializeData()
-        Log.i(TAG, "onStart: ")
     }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i(TAG, "onResume: ")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.i(TAG, "onPause: ")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i(TAG, "onStop: ")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.i(TAG, "onDestroyView: ")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i(TAG, "onDestroy: ")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.i(TAG, "onDetach: ")
-    }
-
 
     /**
      * 初始化操作，包括设置AppBarLayout的滚动监听器和从缓存中更新主页用户信息。
@@ -123,12 +85,43 @@ class MyFragment : Fragment() {
                 binding.toolbarInfo.visibility = View.VISIBLE
             }
         }
+
+        binding.userDynamicRecyclerView.apply {
+            // 添加滚动监听器
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    // 当滚动状态变为停止时
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        // 获取布局管理器
+                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                        // 获取最后一个可见项的位置
+                        val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
+                        // 判断是否需要加载更多数据并且不是最后一个项
+                        if (userDynamicAdapter.calculate(lastVisiblePosition) && lastVisiblePosition != (userDynamicAdapter.dynamics.size - 1)) {
+                            // 显示加载视图
+                            binding.recyclerViewIsLoading.visibility = View.VISIBLE
+                            // 添加数据到适配器
+                            userDynamicAdapter.addData()
+                        } else {
+                            // 隐藏加载视图
+                            binding.recyclerViewIsLoading.visibility = View.GONE
+                        }
+                    }
+                }
+            })
+        }
     }
 
-    private fun initializeData(){
+    /**
+     * 加载部分持久化数据
+     */
+    private fun initializeDataForCache() {
         // 从缓存中更新主页
         updateUserInfo(myViewModel.getUserInfoBySp())
+    }
 
+    private fun initializeData() {
         // 将会发起一个网络请求，获取最新的数据，并观察 userInfoLiveData，当数据发生变化时执行回调函数
         myViewModel.userInfoLiveData.observe(viewLifecycleOwner) { result ->
             val userResultResponse = result.getOrNull()
@@ -151,7 +144,7 @@ class MyFragment : Fragment() {
             targetUserDynamicsResponse?.let {
                 showDynamics(it.results)
             } ?: run {
-                showToastOnUiThread("动态获取失败")
+                showToastOnUiThread(GlobalUtil.getString(com.migu.android.linkyou.R.string.get_dynamics_error))
                 result.exceptionOrNull()?.printStackTrace()
             }
         }
@@ -170,7 +163,6 @@ class MyFragment : Fragment() {
             userDynamicRecyclerView.adapter = userDynamicAdapter
             // 设置布局管理器
             userDynamicRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-
             // 更新主页动态数量显示
             userDynamicQuantity.text = GlobalUtil.getString(
                 com.migu.android.linkyou.R.string.user_dynamics_count,
