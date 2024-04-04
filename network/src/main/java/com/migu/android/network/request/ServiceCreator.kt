@@ -1,7 +1,9 @@
 package com.migu.android.network.request
 
 import android.util.Log
+import com.migu.android.network.util.GlobalInterceptor
 import kotlinx.coroutines.suspendCancellableCoroutine
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
@@ -15,6 +17,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 private const val TAG = "ServiceCreator"
+
 /**
  * 用于获取retrofit对象
  * 扩展await函数，用于简化回调
@@ -23,10 +26,13 @@ object ServiceCreator {
     // 基础URL
     private const val BASE_URL = "https://zp9lzzl0.lc-cn-n1-shared.com/1.1/"
 
+    private val client = OkHttpClient.Builder().addInterceptor(GlobalInterceptor()).build()
+
     // 创建 Retrofit 实例
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL) // 设置基础URL
         .addConverterFactory(GsonConverterFactory.create()) // 添加Gson转换器
+        .client(client)
         .build()
 
     /**
@@ -50,8 +56,8 @@ object ServiceCreator {
      * 扩展await函数，用于简化回调的编写，并且该方法将会自动发起异步网络请求
      */
     suspend fun <T> Call<T>.await(): T {
-        return suspendCoroutine {continuation ->
-            enqueue(object :Callback<T> {
+        return suspendCoroutine { continuation ->
+            enqueue(object : Callback<T> {
                 override fun onResponse(call: Call<T>, response: Response<T>) {
                     val body = response.body()
                     if (body != null) {

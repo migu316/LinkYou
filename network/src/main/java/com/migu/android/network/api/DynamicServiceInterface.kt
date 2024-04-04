@@ -13,8 +13,6 @@ interface DynamicServiceInterface {
     @Headers("Content-Type: application/json")
     @GET("classes/Posts")
     fun getUserDynamicsData(
-        @Header("X-LC-Id") xLcId: String = AssetsUtils.getAPPID(),
-        @Header("X-LC-Key") xLcKey: String = AssetsUtils.getLCKEY(),
         @Query("where") where: String,
         @Query("include") include:String?="UserInfoId.Avatar",
         @Query("order") order:String? = "-createdAt"
@@ -23,8 +21,6 @@ interface DynamicServiceInterface {
     @Headers("Content-Type: application/json")
     @GET("classes/PostImages")
     fun getDynamicImagesData(
-        @Header("X-LC-Id") xLcId: String = AssetsUtils.getAPPID(),
-        @Header("X-LC-Key") xLcKey: String = AssetsUtils.getLCKEY(),
         @Query("where") where: String,
         @Query("include") include:String?="imageId"
     ): Call<DynamicImageResponse>

@@ -17,8 +17,6 @@ interface UserServiceInterface {
     @Headers("Content-Type: application/json")
     @POST("login")
     fun getLoginUserData(
-        @Header("X-LC-Id") xLcId: String = AssetsUtils.getAPPID(),
-        @Header("X-LC-Key") xLcKey: String = AssetsUtils.getLCKEY(),
         @Body requestBody: LoginUserRequestBody
     ): Call<LoginUserResponse>
 
@@ -26,8 +24,6 @@ interface UserServiceInterface {
     @Headers("Content-Type: application/json")
     @GET("classes/UserInfo")
     fun getUserInfoData(
-        @Header("X-LC-Id") xLcId: String = AssetsUtils.getAPPID(),
-        @Header("X-LC-Key") xLcKey: String = AssetsUtils.getLCKEY(),
         @Query("where") where: String,
         @Query("include") include: String? = "Background,Avatar"
     ): Call<UserResultResponse>
