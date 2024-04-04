@@ -15,6 +15,7 @@ import com.migu.android.network.util.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import kotlin.coroutines.CoroutineContext
 
@@ -103,6 +104,7 @@ object Repository {
 //        }
 
         return runBlocking {
+//            delay(10000)
             try {
                 val dynamicImageResponse = LinkYouNetwork.getDynamicImagesRequest(objectId)
                 return@runBlocking dynamicImageResponse.results.map {

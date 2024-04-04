@@ -125,7 +125,6 @@ class GetUrlsHandler<in T>(
     }
 
 
-    // 处理请求的方法
     /**
      * 处理请求的方法。
      * @param target 请求的目标对象
@@ -160,6 +159,7 @@ class GetUrlsHandler<in T>(
 //            }
         }
 
+        // 处理拿到的图片Urls
         responseHandler.post(Runnable {
             // 如果请求对象已经被取消或者已经退出，则直接返回，不执行回调操作
             if (requestMap[target] != objectId || hasQuit) {
@@ -170,8 +170,6 @@ class GetUrlsHandler<in T>(
             // 执行回调操作，将目标对象以及对应的图片 URL 列表传递给回调函数
             onGetUrlsHandler(target, listUrls, objectId)
         })
-
-
     }
 
 

@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
+import com.google.gson.Gson
+import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
 import com.migu.android.network.util.NetWorkUtil
@@ -18,6 +21,7 @@ import com.migu.android.network.util.NetWorkUtil
 class ImageAdapter(private var urls: List<String>) : Adapter<ImageAdapter.ImageViewHolder>() {
 
     private lateinit var context: Context
+    private lateinit var glide: RequestManager
 
     /**
      * ImageAdapter 的 ViewHolder 类。
@@ -31,10 +35,12 @@ class ImageAdapter(private var urls: List<String>) : Adapter<ImageAdapter.ImageV
          * @param imageUrl 要加载的图片的 URL。
          */
         fun bind(imageUrl: String) {
-            Glide.with(context)
-                .load(NetWorkUtil.replaceHttps(imageUrl))
-                .placeholder(R.drawable.ic_launcher_background)
-                .into(binding.dynamicsImage)
+            if (imageUrl.isEmpty()) {
+                glide.load(R.drawable.ic_launcher_background).into(binding.dynamicsImage)
+            } else {
+                glide.load(NetWorkUtil.replaceHttps(imageUrl))
+                    .placeholder(R.drawable.ic_launcher_background).into(binding.dynamicsImage)
+            }
         }
     }
 
@@ -47,6 +53,7 @@ class ImageAdapter(private var urls: List<String>) : Adapter<ImageAdapter.ImageV
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         context = parent.context
+        glide = Glide.with(context)
         val binding = DynamicsImageItemBinding.inflate(LayoutInflater.from(context), parent, false)
         return ImageViewHolder(binding)
     }
@@ -66,9 +73,9 @@ class ImageAdapter(private var urls: List<String>) : Adapter<ImageAdapter.ImageV
      */
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val url = urls[position]
-        if (url.isEmpty()) {
-            return
-        }
+//        if (url.isEmpty()) {
+//            return
+//        }
         url.let { holder.bind(it) }
     }
 
@@ -77,6 +84,6 @@ class ImageAdapter(private var urls: List<String>) : Adapter<ImageAdapter.ImageV
      */
     fun overwriteData(newUrls: List<String>) {
         urls = newUrls
-//        notifyItemChanged(0, newUrls.size)
+        notifyItemChanged(0, newUrls.size)
     }
 }

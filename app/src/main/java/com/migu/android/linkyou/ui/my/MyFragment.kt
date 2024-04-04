@@ -36,10 +36,7 @@ class MyFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val responseHandler = Handler(Looper.getMainLooper())
         getUrlsHandler =
-            GetUrlsHandler(
-                responseHandler,
-                this
-            ) { dynamicViewHolder, urls, objectId ->
+            GetUrlsHandler(responseHandler, this) { dynamicViewHolder, urls, objectId ->
                 dynamicViewHolder.bindImagesAdapter(urls, objectId)
             }
     }
