@@ -14,14 +14,12 @@ import retrofit2.http.Query
 
 interface UserServiceInterface {
 
-    @Headers("Content-Type: application/json")
     @POST("login")
     fun getLoginUserData(
         @Body requestBody: LoginUserRequestBody
     ): Call<LoginUserResponse>
 
 
-    @Headers("Content-Type: application/json")
     @GET("classes/UserInfo")
     fun getUserInfoData(
         @Query("where") where: String,

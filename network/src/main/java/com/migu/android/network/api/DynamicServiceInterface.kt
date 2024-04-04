@@ -10,7 +10,6 @@ import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface DynamicServiceInterface {
-    @Headers("Content-Type: application/json")
     @GET("classes/Posts")
     fun getUserDynamicsData(
         @Query("where") where: String,
@@ -18,10 +17,10 @@ interface DynamicServiceInterface {
         @Query("order") order:String? = "-createdAt"
     ): Call<TargetUserDynamicsResponse>
 
-    @Headers("Content-Type: application/json")
     @GET("classes/PostImages")
     fun getDynamicImagesData(
         @Query("where") where: String,
         @Query("include") include:String?="imageId"
     ): Call<DynamicImageResponse>
+
 }
