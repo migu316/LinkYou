@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayoutMediator
 import com.migu.android.linkyou.databinding.FragmentFrontBinding
 import com.migu.android.linkyou.ui.front.tagItem.TabItemCategoriesEnum
@@ -36,6 +37,7 @@ class FrontFragment : Fragment() {
     private lateinit var adapter: TabItemFragmentStateAdapter
 
     private var callbacks: Callbacks? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks = context as Callbacks

@@ -2,20 +2,29 @@ package com.migu.android.network
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.google.gson.Gson
+import androidx.lifecycle.map
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.showToastOnUiThread
+import com.migu.android.database.DatabaseRepository
+import com.migu.android.database.model.DynamicAndImages
 import com.migu.android.network.model.base.LoginUserRequestBody
 import com.migu.android.network.model.LoginUserResponse
 import com.migu.android.network.model.DynamicImageResponse
 import com.migu.android.network.model.TargetUserDynamicsResponse
 import com.migu.android.network.model.UserResultResponse
+import com.migu.android.network.model.base.Dynamic
+import com.migu.android.network.request.DynamicsPagingSource
 import com.migu.android.network.request.LinkYouNetwork
 import com.migu.android.network.util.Event
+import com.migu.android.network.util.toDynamic
+import com.migu.android.network.util.toDynamicEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import kotlin.coroutines.CoroutineContext
 
@@ -92,31 +101,98 @@ object Repository {
         }
     }
 
+    /**
+     * 通过 objectId 获取动态图片的列表
+     * @param objectId 动态对象的 ID
+     * @return 返回动态图片的 URL 列表，如果请求失败则返回空列表
+     */
     fun getDynamicImages(objectId: String): List<String> {
-//        return fire(Dispatchers.IO) {
-//            val dynamicImageResponse = LinkYouNetwork.getDynamicImagesRequest(objectId)
-//            if (dynamicImageResponse.results.isNotEmpty()) {
-//                Result.success(dynamicImageResponse)
-//            } else {
-//                // 结果数据为空时，不一定是错误，可能本身动态就没有图片
-//                Result.failure(RuntimeException(GlobalUtil.getString(R.string.response_data_is_empty)))
-//            }
-//        }
-
         return runBlocking {
-//            delay(10000)
             try {
+                // 发起获取动态图片数据的网络请求
                 val dynamicImageResponse = LinkYouNetwork.getDynamicImagesRequest(objectId)
+                // 将响应结果中的图片 URL 提取出来并返回
                 return@runBlocking dynamicImageResponse.results.map {
                     it.image.url!!
                 }
             } catch (e: Exception) {
+                // 发生异常时打印错误信息并返回空列表
                 e.printStackTrace()
                 return@runBlocking listOf()
             }
         }
     }
 
+    /**
+     * 获取动态图片的 LiveData 对象
+     * @param objectId 动态对象的 ID
+     * @return 返回一个 LiveData 对象，用于观察动态图片数据的请求结果
+     */
+    fun getDynamicImagesLiveData(objectId: String): LiveData<Result<DynamicImageResponse>> {
+        return fire(Dispatchers.IO) {
+            // 使用协程在 IO 线程发起网络请求获取动态图片数据
+            val dynamicImageResponse = LinkYouNetwork.getDynamicImagesRequest(objectId)
+            if (dynamicImageResponse.results.isNotEmpty()) {
+                // 如果响应结果不为空，则返回成功的结果包装
+                Result.success(dynamicImageResponse)
+            } else {
+                // 如果响应结果为空，可能是正常情况，也可能是出现了异常，这里返回一个带有错误信息的结果包装
+                Result.failure(RuntimeException(GlobalUtil.getString(R.string.response_data_is_empty)))
+            }
+        }
+    }
+
+    /**
+     * 获取最新的动态数据的 LiveData 对象
+     * @param limit 每一页的大小
+     * @param skip 跳过的动态数量
+     * @return 返回一个 Flow 对象，用于观察最新动态数据的请求结果
+     */
+    fun getTheLatestDynamics(limit:Int=10): Flow<PagingData<Dynamic>> {
+       return Pager(
+            config = PagingConfig(limit,initialLoadSize=limit),
+            pagingSourceFactory = {
+                DynamicsPagingSource()
+            }
+        ).flow
+//        return fire(Dispatchers.IO) {
+//            // 使用协程在 IO 线程发起网络请求获取最新的动态数据
+//            val theLatestDynamicsRequest = LinkYouNetwork.getTheLatestDynamicsRequest(limit,skip)
+//            if (theLatestDynamicsRequest.results.isNotEmpty()) {
+//                // 如果响应结果不为空，则返回成功的结果包装
+//                Result.success(theLatestDynamicsRequest)
+//            } else {
+//                // 如果响应结果为空，可能是正常情况，也可能是出现了异常，这里返回一个带有错误信息的结果包装
+//                Result.failure(RuntimeException(GlobalUtil.getString(R.string.response_data_is_empty)))
+//            }
+//        }
+    }
+
+
+    /**
+     * 该函数用于获取数据库中缓存的所有动态，调用数据库模块的函数进行查询，最后将其转换为app模块中能够使用的对象
+     */
+    fun getDynamicDetail(): LiveData<List<Dynamic>?> {
+        return fireNotResult(Dispatchers.IO) {
+            return@fireNotResult DatabaseRepository.getRepository().getDynamicDetail()
+        }.map {
+            it?.map { dynamicAndImages ->
+                dynamicAndImages.dynamicEntity.toDynamic()
+            }
+        }
+    }
+
+    /**
+     * 将数据存储到数据库中
+     */
+    fun saveDynamicsDB(dynamic: List<Dynamic>) {
+        val dynamicEntityList = dynamic.map {
+            it.toDynamicEntity()
+        }
+        dynamicEntityList.forEach {
+            DatabaseRepository.getRepository().insertImagesUrl(DynamicAndImages(it.objectId, it, listOf()))
+        }
+    }
 
     /**
      * 构建一个通用的用于返回结果或者错误信息的泛型函数
@@ -155,18 +231,18 @@ object Repository {
     }
 
 
-//    private fun <T> fire(
-//        context: CoroutineContext = Dispatchers.IO,
-//        block: suspend () -> T
-//    ): LiveData<T?> {
-//        return liveData<T?>(context) {
-//            val result = try {
-//                block()
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                null
-//            }
-//            emit(result)
-//        }
-//    }
+    private fun <T> fireNotResult(
+        context: CoroutineContext = Dispatchers.IO,
+        block: suspend () -> T
+    ): LiveData<T?> {
+        return liveData<T?>(context) {
+            val result = try {
+                block()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+            emit(result)
+        }
+    }
 }

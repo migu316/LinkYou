@@ -10,7 +10,9 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.migu.android.core.util.logInfo
 import com.migu.android.database.DatabaseRepository
-import com.migu.android.database.model.DynamicImages
+import com.migu.android.database.model.DynamicAndImages
+import com.migu.android.network.model.base.Dynamic
+import com.migu.android.network.util.toDynamicEntity
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -27,7 +29,7 @@ class GetUrlsHandler<in T>(
 ) : HandlerThread(TAG) {
 
     // 存储目标及其对应的 objectId 的映射
-    private val requestMap = ConcurrentHashMap<T, String>()
+    private val requestMap = ConcurrentHashMap<T, Dynamic>()
 
     // 用于在后台线程处理请求的处理程序
     private lateinit var requestHandler: Handler
@@ -130,26 +132,35 @@ class GetUrlsHandler<in T>(
      * @param target 请求的目标对象
      */
     fun handlerRequest(target: T) {
+
+        val dynamic = requestMap[target]
         // 获取请求对象对应的 objectId，如果为空则直接返回
-        val objectId = requestMap[target] ?: return
+        val objectId = dynamic?.objectId ?: return
         // 从缓存中获取图片 URL 列表，如果缓存中不存在则返回空集合
         var listUrls = mMemoryCache.get(objectId) ?: listOf()
 
         // 如果缓存中不存在图片 URL 列表，则尝试从本地数据库获取
         if (listUrls.isEmpty()) {
             // 获取本地数据库中的原始图片 URL 数据，即一个 List<String> 在索引 0 处
-            val rawListData = databaseRepository.getImagesUrl(objectId)
+            var rawListData = databaseRepository.getImagesUrl(objectId)
+            // 集合不为空时才将其转换为List集合
+            if (rawListData.isNotEmpty()) {
+                rawListData = databaseRepository.toListString(rawListData[0])
+            }
             // 如果获取到的集合为空，即数据库中无数据，执行如下操作
             if (rawListData.isEmpty()) {
                 // 从网络请求获取动态图片 URLs
                 listUrls = Repository.getDynamicImages(objectId)
-                // 将获取到的动态图片 URLs 存入数据库
-                databaseRepository.insertImagesUrl(DynamicImages(objectId, listUrls))
+                // 将获取到的动态图片 URLs合并动态数据 存入数据库
+                // 需要重写：修改为更新指定对象的url，不能在这里往数据库存数据
+//                logInfo(dynamic.toString())
+                databaseRepository.updateImageUrl(DynamicAndImages(objectId, dynamic.toDynamicEntity(), listUrls))
                 // 将获取到的动态图片 URLs 存入缓存
                 mMemoryCache.put(objectId, listUrls)
             } else {
-                // 如果数据库中存在该动态的图片 URLs 信息，则直接取出并传入 listUrls
-                listUrls = databaseRepository.toListString(rawListData[0])
+                // 如果数据库中存在该动态的图片 URLs 信息，则直接取出并转换为 listUrls
+//                listUrls = databaseRepository.toListString(rawListData[0])
+                listUrls = rawListData
                 // 将数据库中获取到的动态图片 URLs 存入缓存
                 mMemoryCache.put(objectId, listUrls)
             }
@@ -162,7 +173,7 @@ class GetUrlsHandler<in T>(
         // 处理拿到的图片Urls
         responseHandler.post(Runnable {
             // 如果请求对象已经被取消或者已经退出，则直接返回，不执行回调操作
-            if (requestMap[target] != objectId || hasQuit) {
+            if (requestMap[target]?.objectId != objectId || hasQuit) {
                 return@Runnable
             }
             // 从请求映射中移除已处理完成的请求对象
@@ -176,9 +187,9 @@ class GetUrlsHandler<in T>(
     /**
      * 将目标对象和对应的 objectId 加入到请求映射中。
      */
-    fun queueGetUrls(target: T, objectId: String) {
+    fun queueGetUrls(target: T, dynamic: Dynamic) {
         // 将目标对象和 objectId 加入到请求 Map 中
-        requestMap[target] = objectId
+        requestMap[target] = dynamic
         // 如果请求处理程序已经初始化，则发送消息给请求处理程序
         if (::requestHandler.isInitialized) {
             requestHandler.obtainMessage(MESSAGE_GET_URLS, target).sendToTarget()

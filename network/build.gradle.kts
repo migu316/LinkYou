@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":core"))
     implementation(libs.lifecycler.livedata)
     implementation(project(":database"))
+    implementation(libs.paging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

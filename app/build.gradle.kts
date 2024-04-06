@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.paging)
     implementation(project(":core"))
     implementation(project(":network"))
     testImplementation(libs.junit)

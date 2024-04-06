@@ -1,6 +1,5 @@
 package com.migu.android.linkyou.ui.my
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.migu.android.core.util.DateUtil
-import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.databinding.DynamicsNoAvatarItemBinding
 import com.migu.android.linkyou.ui.dynamic.ImageAdapter
 import com.migu.android.network.GetUrlsHandler
@@ -31,8 +29,6 @@ class UserDynamicAdapter(
     override fun getItemCount() = copyDynamics
 
     override fun onBindViewHolder(holder: DynamicViewHolder, position: Int) {
-
-
         val dynamic = dynamics[position]
         holder.bind(dynamic)
         // 为视图添加标签
@@ -48,11 +44,11 @@ class UserDynamicAdapter(
                 // 否则设置显示，并传入无效数据用于显示占位图，
                 // 避免后面holder回调方法时，页面view重新测量高度导致视图拉扯卡顿
                 visibility = View.VISIBLE
-                ImageAdapter(List(dynamic.imageCount) { "" })
+                ImageAdapter(List(dynamic.imageCount ?: 0) { "" })
             }
             layoutManager = GridLayoutManager(context, 3)
         }
-        getUrlsHandler.queueGetUrls(holder, dynamic.objectId)
+        getUrlsHandler.queueGetUrls(holder, dynamic)
     }
 
     inner class DynamicViewHolder(val binding: DynamicsNoAvatarItemBinding) :
@@ -64,7 +60,7 @@ class UserDynamicAdapter(
             dynamic = data
             binding.apply {
                 includeContent.releaseTimeTextview.text =
-                    DateUtil.formatDateToString(data.createdAt)
+                    data.createdAt?.let { DateUtil.formatDateToString(it) }
                 includeContent.contentTextview.text = data.postText
                 includeInteractive.likesTextview.text = data.likes.toString()
             }

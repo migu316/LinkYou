@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
@@ -16,14 +16,18 @@
         app:strokeWidth="0dp">
 
         <LinearLayout
-            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
-            <include layout="@layout/dynamics_user_info_item" />
+            <include
+                android:id="@+id/include_user_info"
+                layout="@layout/dynamics_user_info_item" />
 
-            <include layout="@layout/dynamics_context_base_item" />
+            <include
+                android:id="@+id/include_content"
+                layout="@layout/dynamics_context_base_item" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

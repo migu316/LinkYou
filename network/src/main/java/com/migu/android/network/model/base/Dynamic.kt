@@ -10,11 +10,11 @@ import java.util.Date
  */
 @Parcelize
 data class Dynamic(
-    @SerializedName("userInfoId") val userInfoId: UserInfo,
-    @SerializedName("likes") val likes: Int,
-    @SerializedName("postText") val postText: String,
+    @SerializedName("UserInfoId") val userInfoId: UserInfo? = null,
+    @SerializedName("likes") val likes: Int? = 0,
+    @SerializedName("postText") val postText: String? = "",
     @SerializedName("objectId") val objectId: String,
-    @SerializedName("createdAt") val createdAt: Date,
-    @SerializedName("updatedAt") val updatedAt: Date,
-    @SerializedName("ImageCount") val imageCount: Int
-):Parcelable
+    @SerializedName("createdAt") val createdAt: Date? = null,
+    @SerializedName("updatedAt") val updatedAt: Date? = null,
+    @SerializedName("ImageCount") val imageCount: Int? = 0
+) : Parcelable

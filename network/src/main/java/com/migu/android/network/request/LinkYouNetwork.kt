@@ -63,19 +63,41 @@ object LinkYouNetwork {
         // 将指针参数转换约束条件
         val pointerWhere = leanCloudPointerBaseModel.toStringSeparateParameters()
         // 发起网络请求获取用户发布的动态数据，并等待响应结果
-        return ServiceCreator.create<DynamicServiceInterface>().getUserDynamicsData(where = pointerWhere)
+        return ServiceCreator.create<DynamicServiceInterface>()
+            .getUserDynamicsData(where = pointerWhere)
             .awaitForRetrofit() // 等待 Retrofit 响应
     }
 
+    /**
+     * 通过 objectId 获取动态图片数据的网络请求
+     * @param objectId 动态对象的 ID
+     * @return 返回动态图片数据的响应结果
+     */
     suspend fun getDynamicImagesRequest(objectId: String): DynamicImageResponse {
         // 创建指向 LeanCloud 中动态对象的指针
         val leanCloudPointerBaseModel = LeanCloudPointerBaseModel(objectId).apply {
             pointerName = "postObjectId"
             className = "Posts"
         }
+        // 将指针转换为查询条件字符串
         val pointerWhere = leanCloudPointerBaseModel.toStringSeparateParameters()
-        return ServiceCreator.create<DynamicServiceInterface>().getDynamicImagesData(where = pointerWhere)
+
+        // 使用 Retrofit 接口创建实例，并发起网络请求
+        return ServiceCreator.create<DynamicServiceInterface>()
+            // 调用 Retrofit 接口中的 getDynamicImagesData 方法，并传入查询条件
+            .getDynamicImagesData(where = pointerWhere)
+            // 等待 Retrofit 异步响应
             .awaitForRetrofit()
     }
+
+    suspend fun getTheLatestDynamicsRequest(
+        limit: Int = 10,
+        skip: Int
+    ): TargetUserDynamicsResponse {
+        return ServiceCreator.create<DynamicServiceInterface>()
+            .getTheLatestDynamicsData(limit = limit, skip = skip)
+            .awaitForRetrofit()
+    }
+
 
 }

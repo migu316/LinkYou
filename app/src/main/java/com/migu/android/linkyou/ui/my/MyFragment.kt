@@ -19,6 +19,7 @@ import com.migu.android.network.R
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.util.NetWorkUtil
+import com.migu.android.network.util.toDynamic
 
 class MyFragment : Fragment() {
 
@@ -116,8 +117,19 @@ class MyFragment : Fragment() {
     private fun initializeDataForCache() {
         // 从缓存中更新主页
         updateUserInfo(myViewModel.getUserInfoBySp())
+        // 从数据库中更新缓存动态数据
+        myViewModel.dynamicCache.observe(viewLifecycleOwner) {
+            it?.apply {
+                if (isNotEmpty()) {
+                    showDynamics(this)
+                }
+            }
+        }
     }
 
+    /**
+     * 拉取服务器中最新的内容
+     */
     private fun initializeData() {
         // 将会发起一个网络请求，获取最新的数据，并观察 userInfoLiveData，当数据发生变化时执行回调函数
         myViewModel.userInfoLiveData.observe(viewLifecycleOwner) { result ->
@@ -140,6 +152,7 @@ class MyFragment : Fragment() {
             val targetUserDynamicsResponse = result.getOrNull()
             targetUserDynamicsResponse?.let {
                 showDynamics(it.results)
+                myViewModel.saveDynamicsToDB(it.results)
             } ?: run {
                 showToastOnUiThread(GlobalUtil.getString(com.migu.android.linkyou.R.string.get_dynamics_error))
                 result.exceptionOrNull()?.printStackTrace()
@@ -181,11 +194,11 @@ class MyFragment : Fragment() {
         // 使用 Glide 加载用户头像并显示到 userPhoto ImageView 中
         // 如果用户头像 URL 使用 HTTP 协议，则将其转换为 HTTPS
         binding.apply {
-            glide.load(NetWorkUtil.replaceHttps(userInfo.avatar.url!!)).into(userPhoto)
+            glide.load(NetWorkUtil.replaceHttps(userInfo.avatar?.url!!)).into(userPhoto)
 
             // 使用 Glide 加载用户头像并显示到 smailUserPhoto ImageView 中
             // 如果用户头像 URL 使用 HTTP 协议，则将其转换为 HTTPS
-            glide.load(NetWorkUtil.replaceHttps(userInfo.avatar.url!!)).into(smailUserPhoto)
+            glide.load(NetWorkUtil.replaceHttps(userInfo.avatar?.url!!)).into(smailUserPhoto)
 
             // 使用 Glide 加载用户背景并显示到 userBackground ImageView 中
             // 如果用户背景 URL 使用 HTTP 协议，则将其转换为 HTTPS

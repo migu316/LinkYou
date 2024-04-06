@@ -5,13 +5,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.migu.android.core.LinkYou
-import com.migu.android.database.model.DynamicImages
+import com.migu.android.database.model.DynamicAndImages
 import com.migu.android.database.util.DynamicTypeConverters
 
 /**
  * 数据库类，用于定义数据库和提供访问数据库的方法。
  */
-@Database(version = 1, entities = [DynamicImages::class])
+@Database(version = 1, entities = [DynamicAndImages::class])
 @TypeConverters(DynamicTypeConverters::class)
 abstract class LinkYouDatabase : RoomDatabase() {
 
