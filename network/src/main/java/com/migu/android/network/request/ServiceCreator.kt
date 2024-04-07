@@ -96,9 +96,9 @@ object ServiceCreator {
                         } else {
                             continuation.resume(body)
                         }
-                        Log.i(TAG, "onResponse1: ${request().url()}")
+//                        Log.i(TAG, "onResponse1: ${request().url()}")
                     } else {
-                        Log.i(TAG, "onResponse2: ${request().url()}")
+//                        Log.i(TAG, "onResponse2: ${request().url()}")
                         continuation.resumeWithException(HttpException(response))
                     }
                 }

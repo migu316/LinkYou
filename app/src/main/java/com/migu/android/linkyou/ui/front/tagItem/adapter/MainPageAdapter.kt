@@ -2,18 +2,23 @@ package com.migu.android.linkyou.ui.front.tagItem.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.DateUtil
 import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.databinding.DynamicsHasAvatarItemBinding
+import com.migu.android.linkyou.ui.dynamic.ImageAdapter
+import com.migu.android.network.GetUrlsHandler
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.util.NetWorkUtil
 
-class MainPageAdapter : PagingDataAdapter<Dynamic, MainPageAdapter.DynamicViewHolder>(COMPARATOR) {
+class MainPageAdapter :
+    PagingDataAdapter<Dynamic, MainPageAdapter.DynamicViewHolder>(COMPARATOR) {
 
     private lateinit var context: Context
 
@@ -37,16 +42,26 @@ class MainPageAdapter : PagingDataAdapter<Dynamic, MainPageAdapter.DynamicViewHo
     }
 
     override fun onBindViewHolder(holder: DynamicViewHolder, position: Int) {
-        val item = getItem(position)
-        if (item != null) {
-            holder.bind(item)
+        val dynamicItem = getItem(position)
+        if (dynamicItem != null) {
+            holder.bind(dynamicItem)
+            holder.binding.includeContent.userDynamicImagesRecyclerView.visibility = View.GONE
+            if (dynamicItem.imageUrls.isNotEmpty()) {
+                holder.binding.includeContent.userDynamicImagesRecyclerView.apply {
+                    visibility = View.VISIBLE
+                    adapter = ImageAdapter(dynamicItem.imageUrls)
+                    layoutManager = GridLayoutManager(context, 3)
+                }
+            }
         }
     }
 
     inner class DynamicViewHolder(val binding: DynamicsHasAvatarItemBinding) :
         ViewHolder(binding.root) {
 
+        private lateinit var dynamic: Dynamic
         fun bind(dynamic: Dynamic) {
+            this.dynamic = dynamic
             binding.includeUserInfo.apply {
                 val httpsUrl = dynamic.userInfoId?.avatar?.url?.let {
                     NetWorkUtil.replaceHttps(it)

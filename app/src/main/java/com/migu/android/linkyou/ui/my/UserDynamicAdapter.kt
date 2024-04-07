@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.migu.android.core.util.DateUtil
+import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.databinding.DynamicsNoAvatarItemBinding
 import com.migu.android.linkyou.ui.dynamic.ImageAdapter
 import com.migu.android.network.GetUrlsHandler
@@ -21,12 +22,13 @@ class UserDynamicAdapter(
     private var copyDynamics = if (dynamics.size > 10) 10 else dynamics.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicViewHolder {
+        logInfo("1111")
         val binding =
             DynamicsNoAvatarItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DynamicViewHolder(binding)
     }
 
-    override fun getItemCount() = copyDynamics
+    override fun getItemCount() = dynamics.size
 
     override fun onBindViewHolder(holder: DynamicViewHolder, position: Int) {
         val dynamic = dynamics[position]

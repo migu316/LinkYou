@@ -6,12 +6,14 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.GlobalUtil
+import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.databinding.FragmentMyBinding
 import com.migu.android.network.GetUrlsHandler
@@ -19,7 +21,6 @@ import com.migu.android.network.R
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.util.NetWorkUtil
-import com.migu.android.network.util.toDynamic
 
 class MyFragment : Fragment() {
 
@@ -55,20 +56,21 @@ class MyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // 执行主页初始化工作
-        initialize()
-    }
-
-    override fun onStart() {
-        super.onStart()
+        // 执行主页的监听器
+        initListener()
         initializeDataForCache()
         initializeData()
     }
 
+    override fun onStart() {
+        super.onStart()
+
+    }
+
     /**
-     * 初始化操作，包括设置AppBarLayout的滚动监听器和从缓存中更新主页用户信息。
+     * 初始化监听器
      */
-    private fun initialize() {
+    private fun initListener() {
         binding.appbarLayout.addOnOffsetChangedListener { p0, p1 ->
             val totalRange = p0?.totalScrollRange
             val shouldGoneValue = totalRange?.minus(binding.toolbar.height / 2)
@@ -84,27 +86,45 @@ class MyFragment : Fragment() {
             }
         }
 
-        binding.userDynamicRecyclerView.apply {
-            // 添加滚动监听器
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    // 当滚动状态变为停止时
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        // 获取布局管理器
-                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                        // 获取最后一个可见项的位置
-                        val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
-                        // 判断是否需要加载更多数据并且不是最后一个项
-                        if (userDynamicAdapter.calculate(lastVisiblePosition) && lastVisiblePosition != (userDynamicAdapter.dynamics.size - 1)) {
-                            // 显示加载视图
-                            binding.recyclerViewIsLoading.visibility = View.VISIBLE
-                            // 添加数据到适配器
-                            userDynamicAdapter.addData()
-                        } else {
-                            // 隐藏加载视图
-                            binding.recyclerViewIsLoading.visibility = View.GONE
-                        }
+//        binding.userDynamicRecyclerView.apply {
+//            // 添加滚动监听器
+//            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                    super.onScrollStateChanged(recyclerView, newState)
+//                    // 当滚动状态变为停止时
+//                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                        // 获取布局管理器
+//                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+//                        // 获取最后一个可见项的位置
+//                        val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
+//                        // 判断是否需要加载更多数据并且不是最后一个项
+//                        if (userDynamicAdapter.calculate(lastVisiblePosition) && lastVisiblePosition != (userDynamicAdapter.dynamics.size - 1)) {
+//                            // 显示加载视图
+//                            binding.recyclerViewIsLoading.visibility = View.VISIBLE
+//                            // 添加数据到适配器
+//                            userDynamicAdapter.addData()
+//                        } else {
+//                            // 隐藏加载视图
+//                            binding.recyclerViewIsLoading.visibility = View.GONE
+//                        }
+//                    }
+//                }
+//            })
+//        }
+
+        // 重新设置内容RV的高度，避免holder无法复用
+        binding.root.apply {
+            val observer = viewTreeObserver
+            observer.addOnGlobalLayoutListener(object :ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val rootMeasureHeight = measuredHeight
+                    binding.userDynamicRecyclerView.apply {
+                        val layoutParams = layoutParams
+                        layoutParams.height = rootMeasureHeight - binding.toolbar.measuredHeight
+                        setLayoutParams(layoutParams)
+                    }
+                    if (rootMeasureHeight != 0) {
+                        observer.removeOnGlobalLayoutListener(this)
                     }
                 }
             })

@@ -2,6 +2,7 @@ package com.migu.android.network.model.base
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 
@@ -17,4 +18,7 @@ data class Dynamic(
     @SerializedName("createdAt") val createdAt: Date? = null,
     @SerializedName("updatedAt") val updatedAt: Date? = null,
     @SerializedName("ImageCount") val imageCount: Int? = 0
-) : Parcelable
+) : Parcelable {
+    @IgnoredOnParcel
+    var imageUrls:List<String> = listOf()
+}
