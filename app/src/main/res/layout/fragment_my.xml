@@ -20,7 +20,6 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
             app:toolbarId="@+id/toolbar">
 
             <FrameLayout
@@ -218,7 +217,7 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <com.migu.android.linkyou.MyNestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -382,7 +381,7 @@
                 android:layout_height="0dp" />
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </com.migu.android.linkyou.MyNestedScrollView>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

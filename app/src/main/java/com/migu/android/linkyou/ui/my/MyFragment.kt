@@ -10,10 +10,8 @@ import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.GlobalUtil
-import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.databinding.FragmentMyBinding
 import com.migu.android.network.GetUrlsHandler
@@ -117,13 +115,21 @@ class MyFragment : Fragment() {
             val observer = viewTreeObserver
             observer.addOnGlobalLayoutListener(object :ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
+                    // 用于设置当前根视图的测量高度
                     val rootMeasureHeight = measuredHeight
+                    // 获取当前互动部件的测量高度
+                    val interactiveHeight = binding.interactiveData.measuredHeight
+
+                    // 设置动态RV的高度，为根布局测量高度 - toolbar的测量高度，避免holder复用失效
                     binding.userDynamicRecyclerView.apply {
                         val layoutParams = layoutParams
                         layoutParams.height = rootMeasureHeight - binding.toolbar.measuredHeight
                         setLayoutParams(layoutParams)
                     }
-                    if (rootMeasureHeight != 0) {
+
+                    // 设置自定义nestedScrollView中用于消费的互动部件的高度
+                    binding.nestedScrollView.setInteractiveHeight(interactiveHeight)
+                    if (rootMeasureHeight != 0 && observer.isAlive) {
                         observer.removeOnGlobalLayoutListener(this)
                     }
                 }
