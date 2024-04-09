@@ -18,7 +18,7 @@ interface DynamicDao {
     /**
      * 插入动态数据
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertDynamicDetail(dynamicAndImages: DynamicAndImages)
 
     @Update

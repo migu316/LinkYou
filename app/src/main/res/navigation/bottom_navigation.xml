@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/front_page"
-        android:name="com.migu.android.linkyou.ui.front.FrontFragment"
+        android:name="com.migu.android.linkyou.business.front.FrontFragment"
         android:label="fragment_front"
         tools:layout="@layout/fragment_front"/>
     <fragment
         android:id="@+id/explore_page"
-        android:name="com.migu.android.linkyou.ui.explore.ExploreFragment"
+        android:name="com.migu.android.linkyou.business.explore.ExploreFragment"
         tools:layout="@layout/fragment_explore"
         android:label="fragment_explore" />
     <fragment
         android:id="@+id/message_page"
-        android:name="com.migu.android.linkyou.ui.message.MessageFragment"
+        android:name="com.migu.android.linkyou.business.message.MessageFragment"
         tools:layout="@layout/fragment_message"
         android:label="fragment_message" />
     <fragment
         android:id="@+id/my_page"
-        android:name="com.migu.android.linkyou.ui.my.MyFragment"
+        android:name="com.migu.android.linkyou.business.my.MyFragment"
         tools:layout="@layout/fragment_my"
         android:label="fragment_my" />
 </navigation>

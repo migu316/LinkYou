@@ -9,7 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.migu.android.core.LinkYou
 import com.migu.android.linkyou.BaseActivity
-import com.migu.android.linkyou.ui.MainActivity
+import com.migu.android.linkyou.business.MainActivity
 import com.migu.android.opensource.R
 import com.migu.android.opensource.login.LoginActivity
 

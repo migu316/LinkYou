@@ -23,6 +23,7 @@
             app:toolbarId="@+id/toolbar">
 
             <FrameLayout
+                android:id="@+id/enlarge_bar_part"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -217,7 +218,7 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.migu.android.linkyou.MyNestedScrollView
+    <com.migu.android.linkyou.customize.MyNestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -381,7 +382,7 @@
                 android:layout_height="0dp" />
         </LinearLayout>
 
-    </com.migu.android.linkyou.MyNestedScrollView>
+    </com.migu.android.linkyou.customize.MyNestedScrollView>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

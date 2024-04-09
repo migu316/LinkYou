@@ -6,7 +6,10 @@ import androidx.lifecycle.map
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.migu.android.core.Const
+import com.migu.android.core.LinkYou
 import com.migu.android.core.util.GlobalUtil
+import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.database.DatabaseRepository
 import com.migu.android.database.model.DynamicAndImages
@@ -16,6 +19,8 @@ import com.migu.android.network.model.DynamicImageResponse
 import com.migu.android.network.model.TargetUserDynamicsResponse
 import com.migu.android.network.model.UserResultResponse
 import com.migu.android.network.model.base.Dynamic
+import com.migu.android.network.model.base.FileImage
+import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.request.DynamicsPagingSource
 import com.migu.android.network.request.LinkYouNetwork
 import com.migu.android.network.util.Event
@@ -192,6 +197,48 @@ object Repository {
         dynamicEntityList.forEach {
             DatabaseRepository.getRepository().insertImagesUrl(DynamicAndImages(it.objectId, it, listOf()))
         }
+    }
+
+
+    /**
+     * 用于主页从本地获取全部缓存数据
+     */
+    fun getUserAllInfoBySp(): UserInfo {
+        val sharedPreferences =
+            LinkYou.context.getSharedPreferencesObjByName(Const.UserInfo.USER_INFO_SP_FILE)
+        val age = sharedPreferences.getInt(Const.UserInfo.AGE, 0)
+        val briefInfo = sharedPreferences.getString(Const.UserInfo.BRIEF_INFO, "")
+        val city = sharedPreferences.getString(Const.UserInfo.CITY, "")
+        val gender = sharedPreferences.getString(Const.UserInfo.GENDER, "")
+        val name = sharedPreferences.getString(Const.UserInfo.NAME, "")
+        val createdAt = sharedPreferences.getString(Const.UserInfo.CREATED_AT, "")
+        val objectId = sharedPreferences.getString(Const.UserInfo.OBJECT_ID, "")
+        val updatedAt = sharedPreferences.getString(Const.UserInfo.UPDATED_AT, "")
+        val avatarUrl = sharedPreferences.getString(Const.UserInfo.AVATAR_FILE_PATH, "")
+        val backgroundUrl =
+            sharedPreferences.getString(Const.UserInfo.BACKGROUND_FILE_PATH, "")
+        return UserInfo(
+            age,
+            briefInfo!!,
+            city!!,
+            gender!!,
+            name!!,
+            createdAt!!,
+            objectId!!,
+            updatedAt!!,
+            FileImage(url = avatarUrl),
+            FileImage(url = backgroundUrl)
+        )
+    }
+
+
+    /**
+     * 从SP文件中获取头像URL
+     */
+    fun getUserAvatarUrlBySp(): String? {
+        val sharedPreferences =
+            LinkYou.context.getSharedPreferencesObjByName(Const.UserInfo.USER_INFO_SP_FILE)
+        return sharedPreferences.getString(Const.UserInfo.AVATAR_FILE_PATH, "")
     }
 
     /**

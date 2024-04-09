@@ -7,7 +7,7 @@
 
     <application>
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".business.MainActivity"
             android:exported="false" />
         <!-- 即时通讯和推送 START -->
         <!-- 即时通讯和推送都需要 PushService -->

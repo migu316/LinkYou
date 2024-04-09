@@ -8,28 +8,74 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            app:cardCornerRadius="15dp"
+            android:layout_gravity="center"
+            app:strokeWidth="0dp">
+
+            <ImageView
+                android:id="@+id/front_page_small_avatar"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/test_photo" />
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/search"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            app:cardCornerRadius="20dp"
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            app:strokeWidth="0dp"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:id="@+id/post_dynamic"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/add_24px" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:orientation="horizontal">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@color/whiteBackground"
             app:tabIndicatorColor="#000000"
             app:tabMode="auto"
-            app:tabTextColor="@color/black">
-        </com.google.android.material.tabs.TabLayout>
+            app:tabTextColor="@color/black"/>
 
         <ImageView
             android:id="@+id/add_focus_topic"
             android:layout_width="24dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_height="match_parent"
-            app:tint="@color/black"
-            android:src="@drawable/format_list_bulleted_add_24px" />
+            android:layout_marginStart="10dp"
+            android:src="@drawable/format_list_bulleted_add_24px"
+            app:tint="@color/black" />
     </LinearLayout>
 
 

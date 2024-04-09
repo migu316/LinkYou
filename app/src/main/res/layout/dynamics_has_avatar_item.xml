@@ -28,6 +28,10 @@
             <include
                 android:id="@+id/include_content"
                 layout="@layout/dynamics_context_base_item" />
+
+            <include
+                android:id="@+id/interactive_data"
+                layout="@layout/dynamics_interactive_info_item" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

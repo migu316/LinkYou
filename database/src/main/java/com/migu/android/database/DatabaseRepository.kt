@@ -3,6 +3,7 @@ package com.migu.android.database
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.migu.android.core.util.logInfo
 import com.migu.android.database.db.LinkYouDatabase
 import com.migu.android.database.model.DynamicAndImages
 import kotlinx.coroutines.Dispatchers

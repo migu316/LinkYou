@@ -19,8 +19,8 @@ import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.FragmentPrivacyAgreementBinding
 import com.migu.android.linkyou.databinding.FragmentPrivacyPolicyPopUpBinding
 import com.migu.android.linkyou.databinding.FragmentUserAgreementBinding
-import com.migu.android.linkyou.ui.MainActivity
-import com.migu.android.linkyou.ui.util.LayoutUtils
+import com.migu.android.linkyou.business.MainActivity
+import com.migu.android.linkyou.business.util.LayoutUtils
 import com.migu.android.opensource.databinding.ActivityLoginBinding
 import com.migu.android.opensource.databinding.BottomSheetLayoutBinding
 import kotlinx.coroutines.Dispatchers
