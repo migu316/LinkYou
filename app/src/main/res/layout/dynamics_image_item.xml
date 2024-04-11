@@ -27,10 +27,13 @@
     <FrameLayout
         android:id="@+id/delete"
         android:layout_width="match_parent"
+        tools:visibility="visible"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:paddingTop="5dp">
 
         <ImageView
+
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="end"
