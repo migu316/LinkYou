@@ -48,4 +48,7 @@
     <string name="User_account_need_four_bit">User Account Need Four Bit</string>
     <string name="check_your_account_or_password">Check your account or password</string>
     <string name="get_dynamics_error">Get Dynamics Error</string>
+    <string name="post_dynamic">Post</string>
+    <string name="dynamic_input_content">Share your thoughts at the moment</string>
+    <string name="maximum_image_limit">You can choose up to 9 pictures</string>
 </resources>

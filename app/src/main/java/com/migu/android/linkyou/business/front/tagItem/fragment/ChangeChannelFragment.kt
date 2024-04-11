@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.migu.android.linkyou.databinding.FragmentChooseChannelBinding
 import com.migu.android.linkyou.business.front.tagItem.adapter.ChangeChannelAdapter
 import com.migu.android.linkyou.business.front.tagItem.model.ChannelData
-import com.migu.android.linkyou.business.util.BarUtils
+import com.migu.android.linkyou.util.BarUtils
 
 
 private const val ARG_MAP_LIST = "arg_map_list"

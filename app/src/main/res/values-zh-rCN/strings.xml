@@ -49,4 +49,7 @@
     <string name="User_account_need_four_bit">账号至少需要4位</string>
     <string name="check_your_account_or_password">请检查您的账户或密码是否正确</string>
     <string name="get_dynamics_error">获取动态失败</string>
+    <string name="post_dynamic">发布</string>
+    <string name="dynamic_input_content">分享你此刻的想法</string>
+    <string name="maximum_image_limit">你最多可选择9张图片</string>
 </resources>

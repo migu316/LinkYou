@@ -11,10 +11,10 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.ActivitySharedViewModel
 import com.migu.android.linkyou.databinding.FragmentFrontBinding
-import com.migu.android.linkyou.business.util.TabItemControl
+import com.migu.android.linkyou.util.TabItemControl
 import com.migu.android.linkyou.business.front.tagItem.adapter.TabItemFragmentStateAdapter
 import com.migu.android.linkyou.business.front.tagItem.fragment.ChangeChannelFragment
-import com.migu.android.linkyou.business.util.BarUtils
+import com.migu.android.linkyou.util.BarUtils
 import com.migu.android.network.util.NetWorkUtil
 
 private const val TAG_ITEM = "tag_item"
@@ -70,7 +70,7 @@ class FrontFragment : BaseFragment() {
 
         // 刷新头像
         val avatarUrlBySp = activitySharedViewModel.getUserAvatarUrlBySp()
-        Glide.with(this).load(NetWorkUtil.replaceHttps(avatarUrlBySp)).into(binding.frontPageSmallAvatar)
+        Glide.with(this).load(avatarUrlBySp).into(binding.frontPageSmallAvatar)
 
         // 打开频道管理页面
         binding.addFocusTopic.setOnClickListener {

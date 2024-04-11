@@ -8,11 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.showToastOnUiThread
+import com.migu.android.linkyou.business.ActivitySharedViewModel
 import com.migu.android.linkyou.databinding.FragmentMyBinding
 import com.migu.android.network.GetUrlsHandler
 import com.migu.android.network.R
@@ -22,18 +23,19 @@ import com.migu.android.network.util.NetWorkUtil
 
 class MyFragment : Fragment() {
 
-//    private lateinit var binding: FragmentMyBinding
-private val binding by lazy {
-    FragmentMyBinding.inflate(layoutInflater)
-}
-
-    private val myViewModel by lazy {
-        ViewModelProvider(this)[MyViewModel::class.java]
+    private val binding by lazy {
+        FragmentMyBinding.inflate(layoutInflater)
     }
 
-    private lateinit var userDynamicAdapter: UserDynamicAdapter
-    private lateinit var getUrlsHandler: GetUrlsHandler<UserDynamicAdapter.DynamicViewHolder>
+//    private val myViewModel by lazy {
+//        ViewModelProvider(this)[MyViewModel::class.java]
+//    }
 
+    private val sharedViewModel by activityViewModels<ActivitySharedViewModel>()
+
+    private lateinit var userDynamicAdapter: UserDynamicAdapter
+
+    private lateinit var getUrlsHandler: GetUrlsHandler<UserDynamicAdapter.DynamicViewHolder>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +44,16 @@ private val binding by lazy {
             GetUrlsHandler(responseHandler, this) { dynamicViewHolder, urls, objectId ->
                 dynamicViewHolder.bindImagesAdapter(urls, objectId)
             }
+        binding.userDynamicRecyclerView.apply {
+            // 初始化适配器
+            userDynamicAdapter = UserDynamicAdapter(getUrlsHandler)
+            // 设置屏幕外的视图缓存数量
+            setItemViewCacheSize(20)
+            // 设置适配器
+            adapter = userDynamicAdapter
+            // 设置布局管理器
+            layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
 
@@ -50,7 +62,6 @@ private val binding by lazy {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        binding = FragmentMyBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -61,14 +72,6 @@ private val binding by lazy {
         initListener()
         initializeDataForCache()
         initializeData()
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     /**
@@ -89,32 +92,6 @@ private val binding by lazy {
                 binding.toolbarInfo.visibility = View.VISIBLE
             }
         }
-
-//        binding.userDynamicRecyclerView.apply {
-//            // 添加滚动监听器
-//            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                    super.onScrollStateChanged(recyclerView, newState)
-//                    // 当滚动状态变为停止时
-//                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                        // 获取布局管理器
-//                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-//                        // 获取最后一个可见项的位置
-//                        val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
-//                        // 判断是否需要加载更多数据并且不是最后一个项
-//                        if (userDynamicAdapter.calculate(lastVisiblePosition) && lastVisiblePosition != (userDynamicAdapter.dynamics.size - 1)) {
-//                            // 显示加载视图
-//                            binding.recyclerViewIsLoading.visibility = View.VISIBLE
-//                            // 添加数据到适配器
-//                            userDynamicAdapter.addData()
-//                        } else {
-//                            // 隐藏加载视图
-//                            binding.recyclerViewIsLoading.visibility = View.GONE
-//                        }
-//                    }
-//                }
-//            })
-//        }
 
         // 重新设置内容RV的高度，避免holder无法复用
         binding.root.apply {
@@ -148,9 +125,9 @@ private val binding by lazy {
      */
     private fun initializeDataForCache() {
         // 从缓存中更新主页
-        updateUserInfo(myViewModel.getUserAllInfoBySp())
+        updateUserInfo(sharedViewModel.getUserAllInfoBySp())
         // 从数据库中更新缓存动态数据
-        myViewModel.dynamicCache.observe(viewLifecycleOwner) {
+        sharedViewModel.dynamicCache.observe(viewLifecycleOwner) {
             it?.apply {
                 if (isNotEmpty()) {
                     showDynamics(this)
@@ -164,14 +141,14 @@ private val binding by lazy {
      */
     private fun initializeData() {
         // 将会发起一个网络请求，获取最新的数据，并观察 userInfoLiveData，当数据发生变化时执行回调函数
-        myViewModel.userInfoLiveData.observe(viewLifecycleOwner) { result ->
+        sharedViewModel.userInfoLiveData.observe(viewLifecycleOwner) { result ->
             val userResultResponse = result.getOrNull()
             // 如果 userResultResponse 不为 null，则执行下面的代码块
             userResultResponse?.let {
                 // 更新用户信息，传入结果中的第一个用户信息对象
                 updateUserInfo(it.results[0])
                 // 将最新的用户信息保存到SharedPreferences中
-                myViewModel.saveUserInfo(it.results[0])
+                sharedViewModel.saveUserInfo(it.results[0])
             } ?: run {
                 // 如果发生异常，则显示网络错误提示，并打印异常栈轨迹信息
                 showToastOnUiThread(GlobalUtil.getString(R.string.network_error_get_personal_information))
@@ -180,11 +157,17 @@ private val binding by lazy {
         }
 
         // 发起网络请求获取用户发布的动态
-        myViewModel.userDynamicsLiveData.observe(viewLifecycleOwner) { result ->
+        sharedViewModel.userDynamicsLiveData.observe(viewLifecycleOwner) { result ->
             val targetUserDynamicsResponse = result.getOrNull()
             targetUserDynamicsResponse?.let {
+//                // 1.先提交一个空集合，用于清空视图，避免holder在后台继续从数据库取urls
+//                userDynamicAdapter.submitList(listOf())
+
+                // 3.再将数据显示上去，就可以避免holder取数据存在问题
                 showDynamics(it.results)
-                myViewModel.saveDynamicsToDB(it.results)
+
+                // 2.再存进数据库作为缓存：因为需要先删除数据库的数据
+                sharedViewModel.saveDynamicsToDB(it.results)
             } ?: run {
                 showToastOnUiThread(GlobalUtil.getString(com.migu.android.linkyou.R.string.get_dynamics_error))
                 result.exceptionOrNull()?.printStackTrace()
@@ -198,31 +181,15 @@ private val binding by lazy {
      * @param dynamics 动态列表数据
      */
     private fun showDynamics(dynamics: List<Dynamic>) {
-        // 初始化用户动态适配器
-        userDynamicAdapter = UserDynamicAdapter(dynamics, getUrlsHandler)
+        userDynamicAdapter.submitList(dynamics)
         binding.apply {
-            // 设置屏幕外的视图缓存数量
-            userDynamicRecyclerView.setItemViewCacheSize(20)
-            // 设置适配器
-            userDynamicRecyclerView.adapter = userDynamicAdapter
-            // 设置布局管理器
-            userDynamicRecyclerView.layoutManager = LinearLayoutManager(requireContext())
             // 更新主页动态数量显示
             userDynamicQuantity.text = GlobalUtil.getString(
                 com.migu.android.linkyou.R.string.user_dynamics_count,
                 dynamics.size.toString()
             )
-
-//            userDynamicRecyclerView.addOnScrollListener(object :RecyclerView.OnScrollListener() {
-//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                    super.onScrollStateChanged(recyclerView, newState)
-//                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                    }
-//                }
-//            })
         }
     }
-
 
     /**
      * 更新用户信息，包括用户头像和背景图片
@@ -252,7 +219,6 @@ private val binding by lazy {
             userCity.text = userInfo.city
         }
     }
-
 
     companion object {
         fun newInstance(): MyFragment {

@@ -1,14 +1,10 @@
 package com.migu.android.database
 
-import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.migu.android.core.util.logInfo
 import com.migu.android.database.db.LinkYouDatabase
 import com.migu.android.database.model.DynamicAndImages
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlin.coroutines.CoroutineContext
 
 /**
  * 数据库仓库类，用于封装数据库操作方法。
@@ -32,7 +28,7 @@ class DatabaseRepository {
         }
         // 由于数据库设计问题，当一个list保存到数据库的时候，是List<String> -> String类型，但是取出时，就直接取出
         // String类型了，因此取出的字符串就是"[1,3]"或者"[]"这种形式，因此在外部需要进行处理
-        if (urls[0]=="[]") {
+        if (urls.isEmpty() || urls[0] == "[]") {
             return listOf()
         }
         return urls
@@ -53,22 +49,34 @@ class DatabaseRepository {
     }
 
     /**
-     * 插入动态列表到数据库。
+     * 批量插入插入动态列表到数据库。
      *
-     * @param dynamicAndImages 包含 objectId 和图片 URL 列表的动态图片对象。
+     * @param dynamicAndImagesList 包含 objectId 和图片 URL 列表的动态图片对象。
      */
-    fun insertImagesUrl(dynamicAndImages: DynamicAndImages) {
+    fun insertDynamicDetail(dynamicAndImagesList: List<DynamicAndImages>) {
         runBlocking {
-            dynamicDao.insertDynamicDetail(dynamicAndImages)
+            dynamicDao.insertDynamicDetail(dynamicAndImagesList)
         }
     }
 
-
+    /**
+     * 更新指定动态的urls
+     */
     fun updateImageUrl(dynamicAndImages: DynamicAndImages) {
         runBlocking {
             dynamicDao.updateDynamicImageUrls(dynamicAndImages)
         }
     }
+
+    /**
+     * 删除所有的动态
+     */
+    fun deleteAllDynamic() {
+        runBlocking {
+            dynamicDao.deleteAllDynamics()
+        }
+    }
+
 
     /**
      * 获取所有的动态

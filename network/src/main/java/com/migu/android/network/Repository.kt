@@ -1,5 +1,6 @@
 package com.migu.android.network
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
@@ -10,6 +11,7 @@ import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
+import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.database.DatabaseRepository
 import com.migu.android.database.model.DynamicAndImages
@@ -27,7 +29,6 @@ import com.migu.android.network.util.Event
 import com.migu.android.network.util.toDynamic
 import com.migu.android.network.util.toDynamicEntity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
@@ -93,11 +94,12 @@ object Repository {
     fun getTargetUserDynamics(objectId: String): LiveData<Result<TargetUserDynamicsResponse>> {
         return fire(Dispatchers.IO) {
             // 添加延迟以防止数据过大导致网络拥塞，后期尝试重构为请求重试
-            delay(200)
-            // 发起网络请求获取目标用户发布的帖子数据
+//            delay(500)
+            // 发起网络请求获取目标用户发布的动态数据
             val userDynamicsResponse = LinkYouNetwork.getUserDynamicsRequest(objectId)
             // 如果响应结果不为空，则返回成功的 Result 包装
             if (userDynamicsResponse.results.isNotEmpty()) {
+                // 进行返回
                 Result.success(userDynamicsResponse)
             } else {
                 // 如果响应数据为空，则返回包含异常信息的失败 Result 包装
@@ -153,31 +155,19 @@ object Repository {
      * @param skip 跳过的动态数量
      * @return 返回一个 Flow 对象，用于观察最新动态数据的请求结果
      */
-    fun getTheLatestDynamics(limit:Int=10): Flow<PagingData<Dynamic>> {
-       return Pager(
-            config = PagingConfig(limit,initialLoadSize=limit),
+    fun getTheLatestDynamics(limit: Int = 10): Flow<PagingData<Dynamic>> {
+        return Pager(
+            config = PagingConfig(limit, initialLoadSize = limit),
             pagingSourceFactory = {
                 DynamicsPagingSource()
             }
         ).flow
-//        return fire(Dispatchers.IO) {
-//            // 使用协程在 IO 线程发起网络请求获取最新的动态数据
-//            val theLatestDynamicsRequest = LinkYouNetwork.getTheLatestDynamicsRequest(limit,skip)
-//            if (theLatestDynamicsRequest.results.isNotEmpty()) {
-//                // 如果响应结果不为空，则返回成功的结果包装
-//                Result.success(theLatestDynamicsRequest)
-//            } else {
-//                // 如果响应结果为空，可能是正常情况，也可能是出现了异常，这里返回一个带有错误信息的结果包装
-//                Result.failure(RuntimeException(GlobalUtil.getString(R.string.response_data_is_empty)))
-//            }
-//        }
     }
-
 
     /**
      * 该函数用于获取数据库中缓存的所有动态，调用数据库模块的函数进行查询，最后将其转换为app模块中能够使用的对象
      */
-    fun getDynamicDetail(): LiveData<List<Dynamic>?> {
+    fun getDynamicDetailByDB(): LiveData<List<Dynamic>?> {
         return fireNotResult(Dispatchers.IO) {
             return@fireNotResult DatabaseRepository.getRepository().getDynamicDetail()
         }.map {
@@ -191,12 +181,16 @@ object Repository {
      * 将数据存储到数据库中
      */
     fun saveDynamicsDB(dynamic: List<Dynamic>) {
+        val databaseRepository = DatabaseRepository.getRepository()
+        // 先删除再插入
+        databaseRepository.deleteAllDynamic()
         val dynamicEntityList = dynamic.map {
             it.toDynamicEntity()
         }
-        dynamicEntityList.forEach {
-            DatabaseRepository.getRepository().insertImagesUrl(DynamicAndImages(it.objectId, it, listOf()))
+        val dynamicAndImagesList = dynamicEntityList.map {
+            DynamicAndImages(it.objectId, it, listOf())
         }
+        databaseRepository.insertDynamicDetail(dynamicAndImagesList)
     }
 
 

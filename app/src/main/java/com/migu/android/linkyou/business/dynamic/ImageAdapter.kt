@@ -4,43 +4,18 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
-import com.migu.android.network.util.NetWorkUtil
 
 /**
  * 用于在 RecyclerView 中显示图片的适配器。
  *
  * @property urls 要显示的图片 URL 列表。
  */
-class ImageAdapter(private var urls: List<String>) : Adapter<ImageAdapter.ImageViewHolder>() {
+class ImageAdapter(private var urls: List<String>) : Adapter<ImageViewHolder>() {
 
     private lateinit var context: Context
-    private lateinit var glide: RequestManager
-
-    /**
-     * ImageAdapter 的 ViewHolder 类。
-     *
-     * @param binding 项目布局的视图绑定。
-     */
-    inner class ImageViewHolder(val binding: DynamicsImageItemBinding) : ViewHolder(binding.root) {
-        /**
-         * 使用 Glide 将图片 URL 绑定到 ImageView。
-         *
-         * @param imageUrl 要加载的图片的 URL。
-         */
-        fun bind(imageUrl: String) {
-            if (imageUrl.isEmpty()) {
-                glide.load(R.drawable.ic_launcher_background).into(binding.dynamicsImage)
-            } else {
-                glide.load(NetWorkUtil.replaceHttps(imageUrl))
-                    .placeholder(R.drawable.ic_launcher_background).into(binding.dynamicsImage)
-            }
-        }
-    }
 
     /**
      * 为 RecyclerView 创建并返回一个新的 ViewHolder。
@@ -51,7 +26,6 @@ class ImageAdapter(private var urls: List<String>) : Adapter<ImageAdapter.ImageV
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         context = parent.context
-        glide = Glide.with(context)
         val binding = DynamicsImageItemBinding.inflate(LayoutInflater.from(context), parent, false)
         return ImageViewHolder(binding)
     }
@@ -71,9 +45,6 @@ class ImageAdapter(private var urls: List<String>) : Adapter<ImageAdapter.ImageV
      */
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val url = urls[position]
-//        if (url.isEmpty()) {
-//            return
-//        }
         url.let { holder.bind(it) }
     }
 

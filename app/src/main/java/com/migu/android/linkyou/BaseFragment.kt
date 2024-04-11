@@ -10,4 +10,12 @@ open class BaseFragment:Fragment() {
     interface Callbacks {
         fun onClickChangeFragment(fragment: Fragment)
     }
+
+    /**
+     * 退出当前的fragment
+     */
+    fun exitFragment() {
+        // 使用FragmentManager直接弹出返回栈顶部Fragment
+        parentFragmentManager.popBackStack()
+    }
 }

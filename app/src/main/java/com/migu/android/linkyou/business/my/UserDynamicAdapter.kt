@@ -3,7 +3,9 @@ package com.migu.android.linkyou.business.my
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.migu.android.core.util.DateUtil
@@ -12,13 +14,22 @@ import com.migu.android.linkyou.business.dynamic.ImageAdapter
 import com.migu.android.network.GetUrlsHandler
 import com.migu.android.network.model.base.Dynamic
 
-class UserDynamicAdapter(
-    val dynamics: List<Dynamic>,
-    private val getUrlsHandler: GetUrlsHandler<DynamicViewHolder>
-) :
-    Adapter<UserDynamicAdapter.DynamicViewHolder>() {
+class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewHolder>) :
+    ListAdapter<Dynamic, UserDynamicAdapter.DynamicViewHolder>(diffUtil) {
 
-    private var copyDynamics = if (dynamics.size > 10) 10 else dynamics.size
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<Dynamic>() {
+            override fun areItemsTheSame(oldItem: Dynamic, newItem: Dynamic): Boolean {
+                return oldItem.objectId == newItem.objectId
+            }
+
+            override fun areContentsTheSame(oldItem: Dynamic, newItem: Dynamic): Boolean {
+                return oldItem.objectId == newItem.objectId
+            }
+        }
+    }
+
+    private var copyDynamics = if (currentList.size > 10) 10 else currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicViewHolder {
         val binding =
@@ -26,10 +37,10 @@ class UserDynamicAdapter(
         return DynamicViewHolder(binding)
     }
 
-    override fun getItemCount() = dynamics.size
+//    override fun getItemCount() = dynamics.size
 
     override fun onBindViewHolder(holder: DynamicViewHolder, position: Int) {
-        val dynamic = dynamics[position]
+        val dynamic = currentList[position]
         holder.bind(dynamic)
         // 为视图添加标签
         holder.binding.root.tag = dynamic.objectId
@@ -112,14 +123,14 @@ class UserDynamicAdapter(
         // 获取增加数据前的大小
         val oldSize = itemCount
         // 如果当前数据和源数据长度相等，说明数据已经全部添加完毕了，直接退出
-        if (dynamics.size == itemCount) {
+        if (currentList.size == itemCount) {
             return
-        } else if (dynamics.size - copyDynamics > 10) {
+        } else if (currentList.size - copyDynamics > 10) {
             // 如果当前数据长度和源数据长度差值大于5，那就增加5个
             copyDynamics += 10
         } else {
             // 小于5，就全部添加进去
-            copyDynamics = dynamics.size
+            copyDynamics = currentList.size
         }
         // 通知数据发生改变
         notifyItemRangeChanged(oldSize, itemCount)

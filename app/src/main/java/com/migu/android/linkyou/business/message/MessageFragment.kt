@@ -5,12 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.databinding.FragmentMessageBinding
-import com.migu.android.linkyou.business.util.BarUtils
+import com.migu.android.linkyou.util.BarUtils
 
-private const val TAG = "MessageFragment"
-
-class MessageFragment : Fragment() {
+class MessageFragment : BaseFragment() {
     private val binding by lazy {
         FragmentMessageBinding.inflate(layoutInflater)
     }

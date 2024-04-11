@@ -1,4 +1,4 @@
-package com.migu.android.linkyou.business.util
+package com.migu.android.linkyou.util
 
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor

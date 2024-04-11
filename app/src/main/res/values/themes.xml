@@ -10,6 +10,7 @@
         <item name="materialButtonStyle">@style/Button</item>
         <item name="toolbarStyle">@style/MyToolbarStyle</item>
         <item name="alertDialogTheme">@style/MyAlertDialogStyle</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 
@@ -51,10 +52,8 @@
     </style>
 
     <!-- 设置Button 的样式 -->
-    <style name="Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:textColor">@color/black</item>
+    <style name="Button" parent="@android:style/Widget.Button">
         <item name="colorPrimary">@color/gray</item>
-        <item name="backgroundTint">@color/whiteBackground</item>
     </style>
 
     <!-- 设置BottomSheetDialog 的样式 -->
