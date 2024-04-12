@@ -90,6 +90,11 @@ object LinkYouNetwork {
             .awaitForRetrofit()
     }
 
+    /**
+     * 分页获取最新的动态
+     * @param limit 限制每页数量
+     * @param skip 跳过的数量
+     */
     suspend fun getTheLatestDynamicsRequest(
         limit: Int = 10,
         skip: Int

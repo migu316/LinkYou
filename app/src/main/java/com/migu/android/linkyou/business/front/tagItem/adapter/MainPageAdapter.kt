@@ -15,6 +15,9 @@ import com.migu.android.linkyou.business.dynamic.ImageAdapter
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.util.NetWorkUtil
 
+/**
+ * 主页适配器，继承自 PagingDataAdapter，用于展示动态列表
+ */
 class MainPageAdapter :
     PagingDataAdapter<Dynamic, MainPageAdapter.DynamicViewHolder>(COMPARATOR) {
 
@@ -34,21 +37,29 @@ class MainPageAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicViewHolder {
         context = parent.context
+        // 使用动态布局绑定生成的 ViewDataBinding 对象
         val binding =
             DynamicsHasAvatarItemBinding.inflate(LayoutInflater.from(context), parent, false)
         return DynamicViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: DynamicViewHolder, position: Int) {
+        val binding = holder.binding
         val dynamicItem = getItem(position)
         if (dynamicItem != null) {
             holder.bind(dynamicItem)
-            holder.binding.includeContent.userDynamicImagesRecyclerView.visibility = View.GONE
-            if (dynamicItem.imageUrls.isNotEmpty()) {
-                holder.binding.includeContent.userDynamicImagesRecyclerView.apply {
-                    visibility = View.VISIBLE
-                    adapter = ImageAdapter(dynamicItem.imageUrls)
-                    layoutManager = GridLayoutManager(context, 3)
+            // 设置用户动态图片列表的可见性
+            binding.includeContent.userDynamicImagesRecyclerView.visibility = View.GONE
+
+            dynamicItem.imageUrls?.let {
+                if (it.isNotEmpty()) {
+                    // 如果图片列表不为空，则显示图片列表
+                    binding.includeContent.userDynamicImagesRecyclerView.apply {
+                        visibility = View.VISIBLE
+                        adapter = ImageAdapter(it) // 使用 ImageAdapter 设置图片列表的适配器
+                        layoutManager =
+                            GridLayoutManager(context, 3) // 使用 GridLayoutManager 设置图片列表的布局管理器
+                    }
                 }
             }
         }
@@ -60,6 +71,7 @@ class MainPageAdapter :
         private lateinit var dynamic: Dynamic
         fun bind(dynamic: Dynamic) {
             this.dynamic = dynamic
+            // 设置用户信息部分的数据
             binding.includeUserInfo.apply {
                 val httpsUrl = dynamic.userInfoId?.avatar?.url?.let {
                     NetWorkUtil.replaceHttps(it)
@@ -67,11 +79,13 @@ class MainPageAdapter :
                 Glide.with(context).load(httpsUrl).into(avatar)
                 userName.text = dynamic.userInfoId?.name
             }
+            // 设置动态内容部分的数据
             binding.includeContent.apply {
                 releaseTimeTextview.text =
                     dynamic.createdAt?.let { DateUtil.formatDateToString(it) }
                 contentTextview.text = dynamic.postText
             }
+            // 设置互动数据部分的数据
             binding.interactiveData.apply {
                 likesTextview.text = dynamic.likes.toString()
             }

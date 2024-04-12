@@ -1,6 +1,5 @@
 package com.migu.android.network
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
@@ -11,7 +10,6 @@ import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
-import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.database.DatabaseRepository
 import com.migu.android.database.model.DynamicAndImages
@@ -28,11 +26,19 @@ import com.migu.android.network.request.LinkYouNetwork
 import com.migu.android.network.util.Event
 import com.migu.android.network.util.toDynamic
 import com.migu.android.network.util.toDynamicEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.suspendCoroutine
 
 private const val TAG = "LoginViewModel"
 
@@ -40,6 +46,8 @@ private const val TAG = "LoginViewModel"
  * 仓库层的统一封装入口
  */
 object Repository {
+
+    private val databaseRepository = DatabaseRepository.getRepository()
 
     /**
      * 登录用户的挂起函数，通过网络请求登录用户并返回登录响应对象。
@@ -66,7 +74,6 @@ object Repository {
         }
     }
 
-
     /**
      * 获取用户信息的方法，通过网络请求获取用户信息并返回 LiveData<Result<UserResultResponse>> 对象。
      *
@@ -88,6 +95,7 @@ object Repository {
     /**
      * 获取目标用户发布的帖子信息。
      *
+     * 之所以不在这里同步获取动态图片，是因为返回的Livedata并不是直接就有数据，需要等待后续的观察
      * @param objectId 目标用户的唯一标识符
      * @return LiveData 包装的帖子信息响应结果
      */
@@ -150,7 +158,7 @@ object Repository {
     }
 
     /**
-     * 获取最新的动态数据的 LiveData 对象
+     * 获取最新的动态数据的 Flow 对象
      * @param limit 每一页的大小
      * @param skip 跳过的动态数量
      * @return 返回一个 Flow 对象，用于观察最新动态数据的请求结果
@@ -169,7 +177,7 @@ object Repository {
      */
     fun getDynamicDetailByDB(): LiveData<List<Dynamic>?> {
         return fireNotResult(Dispatchers.IO) {
-            return@fireNotResult DatabaseRepository.getRepository().getDynamicDetail()
+            return@fireNotResult databaseRepository.getDynamicDetail()
         }.map {
             it?.map { dynamicAndImages ->
                 dynamicAndImages.dynamicEntity.toDynamic()
@@ -178,19 +186,40 @@ object Repository {
     }
 
     /**
-     * 将数据存储到数据库中
+     * 将需要缓存的数据存储到数据库中
      */
+    @OptIn(DelicateCoroutinesApi::class)
     fun saveDynamicsDB(dynamic: List<Dynamic>) {
-        val databaseRepository = DatabaseRepository.getRepository()
-        // 先删除再插入
-        databaseRepository.deleteAllDynamic()
-        val dynamicEntityList = dynamic.map {
-            it.toDynamicEntity()
+        GlobalScope.launch(Dispatchers.Main) {
+            coroutineScope {
+                // 先删除数据
+                databaseRepository.deleteAllDynamic()
+                // 将动态数据转换为能够存储再数据库中的类型
+                val dynamicEntityList = dynamic.map {
+                    it.toDynamicEntity()
+                }
+
+                // 再将动态数据对象和ID等一起封装到DynamicAndImages
+                val dynamicAndImagesList = dynamicEntityList.map {
+                    DynamicAndImages(it.objectId, it, listOf())
+                }
+                // 再插入数据
+                databaseRepository.insertDynamicDetail(dynamicAndImagesList)
+            }
         }
-        val dynamicAndImagesList = dynamicEntityList.map {
-            DynamicAndImages(it.objectId, it, listOf())
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun updateImageUrlToDB(dynamicAndImages: DynamicAndImages) {
+        GlobalScope.launch(Dispatchers.Main) {
+            databaseRepository.updateImageUrl(dynamicAndImages)
         }
-        databaseRepository.insertDynamicDetail(dynamicAndImagesList)
+    }
+
+    fun getImagesUrlsJsonByDB(objectId: String): List<String> {
+        return runBlocking {
+            databaseRepository.getImagesUrlJson(objectId)
+        }
     }
 
 
@@ -224,7 +253,6 @@ object Repository {
             FileImage(url = backgroundUrl)
         )
     }
-
 
     /**
      * 从SP文件中获取头像URL
@@ -272,6 +300,9 @@ object Repository {
     }
 
 
+    /**
+     * 返回泛型类型直接是响应数据的对象
+     */
     private fun <T> fireNotResult(
         context: CoroutineContext = Dispatchers.IO,
         block: suspend () -> T

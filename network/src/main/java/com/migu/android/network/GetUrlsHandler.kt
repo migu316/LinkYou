@@ -8,10 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import com.migu.android.core.util.logInfo
 import com.migu.android.database.DatabaseRepository
 import com.migu.android.database.model.DynamicAndImages
 import com.migu.android.network.model.base.Dynamic
+import com.migu.android.network.util.DataProcessingUtil
 import com.migu.android.network.util.toDynamicEntity
 import java.util.concurrent.ConcurrentHashMap
 
@@ -123,7 +123,7 @@ class GetUrlsHandler<in T>(
         // 设置退出标志位为 true
         hasQuit = true
         // 调用父类的 quit() 方法执行退出操作，并返回结果
-        return super.quit()
+        return super.quitSafely()
     }
 
 
@@ -142,10 +142,10 @@ class GetUrlsHandler<in T>(
         // 如果缓存中不存在图片 URL 列表，则尝试从本地数据库获取
         if (listUrls.isEmpty()) {
             // 获取本地数据库中的原始图片 URL 数据，即一个 List<String> 在索引 0 处
-            var rawListData = databaseRepository.getImagesUrl(objectId)
+            var rawListData = Repository.getImagesUrlsJsonByDB(objectId)
             // 集合不为空时才将其转换为List集合
             if (rawListData.isNotEmpty()) {
-                rawListData = databaseRepository.toListString(rawListData[0])
+                rawListData = DataProcessingUtil.jsonToListString(rawListData[0])
             }
             // 如果获取到的集合为空，即数据库中无数据，执行如下操作
             if (rawListData.isEmpty()) {
@@ -154,7 +154,7 @@ class GetUrlsHandler<in T>(
                 // 将获取到的动态图片 URLs合并动态数据 存入数据库
                 // 需要重写：修改为更新指定对象的url，不能在这里往数据库存数据
 //                logInfo(dynamic.toString())
-                databaseRepository.updateImageUrl(DynamicAndImages(objectId, dynamic.toDynamicEntity(), listUrls))
+                Repository.updateImageUrlToDB(DynamicAndImages(objectId, dynamic.toDynamicEntity(), listUrls))
                 // 将获取到的动态图片 URLs 存入缓存
                 mMemoryCache.put(objectId, listUrls)
             } else {

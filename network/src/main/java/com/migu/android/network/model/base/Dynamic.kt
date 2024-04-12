@@ -20,5 +20,5 @@ data class Dynamic(
     @SerializedName("ImageCount") val imageCount: Int? = 0
 ) : Parcelable {
     @IgnoredOnParcel
-    var imageUrls:List<String> = listOf()
+    var imageUrls:List<String>? = listOf()
 }

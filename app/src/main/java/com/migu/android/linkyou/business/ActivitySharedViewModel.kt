@@ -20,8 +20,11 @@ class ActivitySharedViewModel:ViewModel() {
 
     // 仅第一次获取该livedata时，发起网络请求
     // 即使多次获取，也不会再发起网络请求
+    // 获取用户信息
     val userInfoLiveData = Repository.getUserInfo(LinkYou.objectId)
+    // 获取当前用户发布的动态
     val userDynamicsLiveData = Repository.getTargetUserDynamics(LinkYou.objectId)
+    // 获取当前用户发布的动态的缓存
     val dynamicCache = Repository.getDynamicDetailByDB()
 
     /**
