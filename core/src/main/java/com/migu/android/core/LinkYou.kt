@@ -33,6 +33,10 @@ class LinkYou {
         var objectId: String = ""
             private set
 
+        var sdkLoginLCUserJson:String = ""
+
+        var sdkUserInfoJson:String = ""
+
         fun initialize(c: Context) {
             context = c
             handler = Handler(Looper.getMainLooper())
@@ -57,11 +61,15 @@ class LinkYou {
             val un = preferences.getString(Const.Auth.USER_NAME, "")
             val ev = preferences.getBoolean(Const.Auth.EMAIL_VERIFIED, false)
             val oId = preferences.getString(Const.Auth.OBJECT_ID, "")
+            val sll = preferences.getString(Const.Auth.SDK_LOGIN_INFO, "")
+            val sui = preferences.getString(Const.Auth.SDK_USER_INFO, "")
             isLogin = t!!.isNotEmpty() && un!!.isNotEmpty() && oId!!.isNotEmpty()
             if (isLogin) {
                 sessionToken = t
                 userName = un!!
                 objectId = oId!!
+                sdkLoginLCUserJson = sll!!
+                sdkUserInfoJson = sui!!
             }
         }
     }

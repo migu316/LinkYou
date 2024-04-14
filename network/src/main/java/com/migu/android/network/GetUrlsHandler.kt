@@ -38,7 +38,7 @@ class GetUrlsHandler<in T>(
     private var hasQuit = false
 
     // 用于数据库操作的 Repository
-    private val databaseRepository = DatabaseRepository.getRepository()
+//    private val databaseRepository = DatabaseRepository.getRepository()
 
     // 用于存储图像 URL 的内存缓存
     private val mMemoryCache: LruCache<String, List<String>>
@@ -123,7 +123,7 @@ class GetUrlsHandler<in T>(
         // 设置退出标志位为 true
         hasQuit = true
         // 调用父类的 quit() 方法执行退出操作，并返回结果
-        return super.quitSafely()
+        return super.quit()
     }
 
 

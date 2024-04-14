@@ -106,6 +106,9 @@ class LoginActivity : BaseActivity() {
         }
     }
 
+    /**
+     * 隐藏登录界面
+     */
     fun hideIsLogin() {
         lifecycleScope.launch(Dispatchers.Main) {
             binding.apply {

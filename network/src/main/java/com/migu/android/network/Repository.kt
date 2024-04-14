@@ -1,14 +1,18 @@
 package com.migu.android.network
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import cn.leancloud.LCObject
 import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.GlobalUtil
+import com.migu.android.core.util.SharedUtil
+import com.migu.android.core.util.SharedUtil.getSharedPreferencesByNameExecute
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.database.DatabaseRepository
@@ -22,15 +26,14 @@ import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.FileImage
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.request.DynamicsPagingSource
+import com.migu.android.network.request.LeanCloudSDKRequest
 import com.migu.android.network.request.LinkYouNetwork
 import com.migu.android.network.util.Event
 import com.migu.android.network.util.toDynamic
 import com.migu.android.network.util.toDynamicEntity
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -38,7 +41,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.suspendCoroutine
 
 private const val TAG = "LoginViewModel"
 
@@ -48,6 +50,8 @@ private const val TAG = "LoginViewModel"
 object Repository {
 
     private val databaseRepository = DatabaseRepository.getRepository()
+
+    /*------------------ 网络请求封装 -----------------*/
 
     /**
      * 登录用户的挂起函数，通过网络请求登录用户并返回登录响应对象。
@@ -172,6 +176,8 @@ object Repository {
         ).flow
     }
 
+    /*------------------ 本地数据库封装 -----------------*/
+
     /**
      * 该函数用于获取数据库中缓存的所有动态，调用数据库模块的函数进行查询，最后将其转换为app模块中能够使用的对象
      */
@@ -216,12 +222,74 @@ object Repository {
         }
     }
 
+    /**
+     * 获取本地数据中存储的图片Urls的JSON数据
+     */
     fun getImagesUrlsJsonByDB(objectId: String): List<String> {
         return runBlocking {
             databaseRepository.getImagesUrlJson(objectId)
         }
     }
 
+    /*------------------ LeanCloud SDK封装 -----------------*/
+    /**
+     * 上传文件。
+     *
+     * @param uris 要上传的文件 Uri 列表
+     * @param postObjectId 关联的 LCObject
+     * @return 上传失败的文件 Uri 列表
+     */
+    private suspend fun uploadFile(uris: List<Uri>, postObjectId: LCObject): List<Uri> {
+        return LeanCloudSDKRequest.uploadFile(uris, postObjectId)
+    }
+
+    /**
+     * 上传动态内容。
+     *
+     * @param content 动态内容
+     * @return 结果对象，包含上传后的 LCObject，可能为 null
+     */
+    private suspend fun uploadDynamicContent(content: String): Result<LCObject?> {
+        return LeanCloudSDKRequest.uploadDynamicContent(content)
+    }
+
+
+    /**
+     * 发布动态。
+     *
+     * @param content 动态内容
+     * @param uris 图片 Uri 列表
+     * @return 结果对象，表示发布是否成功
+     */
+    suspend fun postDynamic(content: String, uris: List<Uri>): Result<Boolean> {
+        var postStatus = false
+
+        try {
+            withContext(Dispatchers.Main) {
+                val dynamicCreateResult = uploadDynamicContent(content)
+                if (dynamicCreateResult.isFailure) {
+                    throw dynamicCreateResult.exceptionOrNull()
+                        ?: RuntimeException("登录状态异常，动态发布失败")
+                }
+
+                dynamicCreateResult.getOrNull()?.let {
+                    val failedList = uploadFile(uris, it)
+                    if (failedList.isEmpty()) {
+                        postStatus = true
+                    } else {
+                        throw RuntimeException("图片上传出现错误，失败数：${failedList.size}张")
+                    }
+                } ?: throw RuntimeException("动态构建失败，未知原因")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.failure(e)
+        }
+        return Result.success(postStatus)
+    }
+
+
+    /*------------------ SharedPreferences 封装 -----------------*/
 
     /**
      * 用于主页从本地获取全部缓存数据
@@ -262,6 +330,67 @@ object Repository {
             LinkYou.context.getSharedPreferencesObjByName(Const.UserInfo.USER_INFO_SP_FILE)
         return sharedPreferences.getString(Const.UserInfo.AVATAR_FILE_PATH, "")
     }
+
+    /**
+     * 保存用户资料到SP文件
+     * @param userInfo 用户资料对象
+     */
+    fun saveUserInfoToSp(userInfo: UserInfo) {
+        LinkYou.context.getSharedPreferencesByNameExecute(Const.UserInfo.USER_INFO_SP_FILE) {
+            putInt(Const.UserInfo.AGE, userInfo.age ?: 0)
+            putString(Const.UserInfo.BRIEF_INFO, userInfo.briefInfo)
+            putString(Const.UserInfo.CITY, userInfo.city)
+            putString(Const.UserInfo.GENDER, userInfo.gender)
+            putString(Const.UserInfo.NAME, userInfo.name)
+            putString(Const.UserInfo.CREATED_AT, userInfo.createdAt)
+            putString(Const.UserInfo.OBJECT_ID, userInfo.objectId)
+            putString(Const.UserInfo.UPDATED_AT, userInfo.updatedAt)
+            putString(Const.UserInfo.AVATAR_FILE_PATH, userInfo.avatar?.url)
+            putString(Const.UserInfo.BACKGROUND_FILE_PATH, userInfo.background?.url)
+        }
+    }
+
+
+    /**
+     * 保存认证数据
+     * @param loginUserResponse 登录用户的认证数据
+     */
+    fun saveAuthData(loginUserResponse: LoginUserResponse) {
+        // 保存用户名
+        SharedUtil.save(
+            Const.Auth.LOGIN_STATE_INFO_SHARED,
+            Const.Auth.USER_NAME,
+            loginUserResponse.username
+        )
+        // 保存邮箱
+        SharedUtil.save(
+            Const.Auth.LOGIN_STATE_INFO_SHARED,
+            Const.Auth.EMAIL,
+            loginUserResponse.email
+        )
+        // 保存会话令牌
+        SharedUtil.save(
+            Const.Auth.LOGIN_STATE_INFO_SHARED,
+            Const.Auth.SESSION_TOKEN,
+            loginUserResponse.sessionToken
+        )
+        // 保存创建时间
+        SharedUtil.save(
+            Const.Auth.LOGIN_STATE_INFO_SHARED,
+            Const.Auth.CREATE_AT,
+            loginUserResponse.createdAt
+        )
+        SharedUtil.save(
+            Const.Auth.LOGIN_STATE_INFO_SHARED,
+            Const.Auth.OBJECT_ID,
+            loginUserResponse.objectId
+        )
+        // 刷新登录状态
+        LinkYou.refreshLoginState()
+    }
+
+
+    /*------------------ 异步网络请求通用封装 -----------------*/
 
     /**
      * 构建一个通用的用于返回结果或者错误信息的泛型函数

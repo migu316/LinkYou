@@ -10,10 +10,6 @@ import cn.leancloud.callback.LCCallback
 import cn.leancloud.session.LCConnectionManager
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.AssetsUtils
-import java.io.IOException
-import java.io.InputStream
-import java.util.Properties
-
 
 /**
  * 自定义Application，在这里进行全局的初始化操作

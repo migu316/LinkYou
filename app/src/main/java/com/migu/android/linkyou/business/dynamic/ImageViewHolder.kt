@@ -25,10 +25,10 @@ class ImageViewHolder(val binding: DynamicsImageItemBinding) :
      */
     fun bind(imageUrl: String) {
         if (imageUrl.isEmpty()) {
-            glide.load(R.drawable.ic_launcher_background).into(binding.dynamicsImage)
+//            glide.load(R.drawable.ic_launcher_background).into(binding.dynamicsImage)
         } else {
             glide.load(NetWorkUtil.replaceHttps(imageUrl))
-                .placeholder(R.drawable.ic_launcher_background).into(binding.dynamicsImage)
+               .into(binding.dynamicsImage)
         }
     }
 

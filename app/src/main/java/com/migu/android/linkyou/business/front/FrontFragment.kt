@@ -14,8 +14,8 @@ import com.migu.android.linkyou.databinding.FragmentFrontBinding
 import com.migu.android.linkyou.util.TabItemControl
 import com.migu.android.linkyou.business.front.tagItem.adapter.TabItemFragmentStateAdapter
 import com.migu.android.linkyou.business.front.tagItem.fragment.ChangeChannelFragment
+import com.migu.android.linkyou.business.front.tagItem.model.ChannelData
 import com.migu.android.linkyou.util.BarUtils
-import com.migu.android.network.util.NetWorkUtil
 
 private const val TAG_ITEM = "tag_item"
 
@@ -67,11 +67,18 @@ class FrontFragment : BaseFragment() {
             tab.text = channelSet.elementAt(position).channelName
         }.attach()
 
-
         // 刷新头像
         val avatarUrlBySp = activitySharedViewModel.getUserAvatarUrlBySp()
         Glide.with(this).load(avatarUrlBySp).into(binding.frontPageSmallAvatar)
 
+        initListener(channelSet)
+    }
+
+    /**
+     * 初始化监听器
+     * @param channelSet 频道列表
+     */
+    private fun initListener(channelSet: LinkedHashSet<ChannelData>) {
         // 打开频道管理页面
         binding.addFocusTopic.setOnClickListener {
             val fragment = ChangeChannelFragment.newInstance(channelSet)

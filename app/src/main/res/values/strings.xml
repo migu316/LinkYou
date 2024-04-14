@@ -51,4 +51,5 @@
     <string name="post_dynamic">Post</string>
     <string name="dynamic_input_content">Share your thoughts at the moment</string>
     <string name="maximum_image_limit">You can choose up to 9 pictures</string>
+    <string name="publishing_string">Publishing...Do not exit</string>
 </resources>

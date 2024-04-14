@@ -2,7 +2,6 @@ package com.migu.android.linkyou
 
 import android.app.Activity
 import android.content.Context
-import android.inputmethodservice.InputMethodService
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -50,7 +49,7 @@ open class BaseActivity : AppCompatActivity() {
             }
         }
 
-        fun hasTargetActivity(targetActivity: Activity): Boolean {
+        private fun hasTargetActivity(targetActivity: Activity): Boolean {
             for (activity in activities) {
                 if (activity === targetActivity) {
                     return true

@@ -16,7 +16,6 @@ import com.migu.android.network.model.base.Dynamic
 
 class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewHolder>) :
     ListAdapter<Dynamic, UserDynamicAdapter.DynamicViewHolder>(diffUtil) {
-
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Dynamic>() {
             override fun areItemsTheSame(oldItem: Dynamic, newItem: Dynamic): Boolean {
@@ -29,6 +28,7 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
         }
     }
 
+    // 本来用来缓解bug导致的问题，现在没什么卵用了，留着吧
     private var copyDynamics = if (currentList.size > 10) 10 else currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicViewHolder {
@@ -59,6 +59,7 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
             }
             layoutManager = GridLayoutManager(context, 3)
         }
+        // 提交动态图片拉取请求
         getUrlsHandler.queueGetUrls(holder, dynamic)
     }
 
@@ -92,6 +93,10 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
                         // 说明holder部分拉取数据失败，需要设置本身数量的图片占位符
                         // 但是注意：在前面调用onBindViewHolder时，
                         // 已经给adapter设置过了用于占位的图片集合了，因此这里只需要退出即可
+
+                        // 新增：如果上传图片中断网导致图片未上传，那么就需要隐藏RV，虽然和前面的解释有一些冲突，
+                        // 那也没办法，将就一下，毕竟很少会出现动态纪录的图片数量不为0，但是urls又为空的情况
+                        visibility = View.GONE
                         return
                     }
                     visibility = View.VISIBLE

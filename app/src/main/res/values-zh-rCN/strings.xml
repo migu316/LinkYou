@@ -52,4 +52,5 @@
     <string name="post_dynamic">发布</string>
     <string name="dynamic_input_content">分享你此刻的想法</string>
     <string name="maximum_image_limit">你最多可选择9张图片</string>
+    <string name="publishing_string">正在发布动态，请勿退出...</string>
 </resources>

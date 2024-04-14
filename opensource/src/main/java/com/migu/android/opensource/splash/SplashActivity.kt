@@ -34,10 +34,7 @@ class SplashActivity : BaseActivity() {
                                 LoginActivity.newInstance(this@SplashActivity)
                                 finish()
                             }
-//                            MainActivity.newInstance(this@SplashActivity)
-//                            finish()
                         }
-
                         return this
                     }
                 }

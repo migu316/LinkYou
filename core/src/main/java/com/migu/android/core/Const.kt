@@ -14,6 +14,8 @@ interface Const {
             const val EMAIL = "email"
             const val CREATE_AT = "created_at"
             const val OBJECT_ID = "object_Id"
+            const val SDK_LOGIN_INFO = "sdk_login_info"
+            const val SDK_USER_INFO = "sdk_user_info"
         }
     }
 

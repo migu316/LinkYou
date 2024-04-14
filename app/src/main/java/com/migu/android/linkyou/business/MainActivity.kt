@@ -9,11 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import cn.leancloud.LCUser
+import com.google.gson.Gson
+import com.migu.android.core.LinkYou
+import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.ActivityMainBinding
 import com.migu.android.linkyou.util.BarUtils
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 
 private const val TAG = "MainActivity"
 private const val BUNDLE_MENU_SELECT_ID = "menuSelectId"

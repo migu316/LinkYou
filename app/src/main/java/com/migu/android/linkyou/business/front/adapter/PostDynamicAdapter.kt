@@ -26,7 +26,7 @@ class PostDynamicAdapter(private val onItemClick: (position: Int) -> Unit) :
         Uri.parse("android.resource://com.migu.android.linkyou/" + R.drawable.add_24px)
 
     // 图片列表，包括添加图片的 Uri
-    private val imageList = mutableListOf<Uri>().apply {
+    val imageList = mutableListOf<Uri>().apply {
         add(baseAddUri)
     }
 

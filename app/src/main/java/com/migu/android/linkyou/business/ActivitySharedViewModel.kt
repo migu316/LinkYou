@@ -1,15 +1,20 @@
 package com.migu.android.linkyou.business
 
+import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.migu.android.core.Const
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.migu.android.core.LinkYou
-import com.migu.android.core.util.SharedUtil.getSharedPreferencesByNameExecute
 import com.migu.android.network.Repository
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
+import com.migu.android.network.util.Event
 import com.migu.android.network.util.NetWorkUtil
+import kotlinx.coroutines.launch
 
-class ActivitySharedViewModel:ViewModel() {
+class ActivitySharedViewModel : ViewModel() {
 
     /**
      * 获取头像URL
@@ -22,27 +27,25 @@ class ActivitySharedViewModel:ViewModel() {
     // 即使多次获取，也不会再发起网络请求
     // 获取用户信息
     val userInfoLiveData = Repository.getUserInfo(LinkYou.objectId)
+
     // 获取当前用户发布的动态
     val userDynamicsLiveData = Repository.getTargetUserDynamics(LinkYou.objectId)
+
     // 获取当前用户发布的动态的缓存
     val dynamicCache = Repository.getDynamicDetailByDB()
+
+    // 发布状态
+    private val _postDynamicStatus = MutableLiveData<Event<Result<Boolean>>>()
+
+    // 提供对外用于观察的发布状态
+    val postDynamicStatus: LiveData<Event<Result<Boolean>>>
+        get() = _postDynamicStatus
 
     /**
      * 将从服务器获取到的数据存储到SP文件中
      */
     fun saveUserInfo(userInfo: UserInfo) {
-        LinkYou.context.getSharedPreferencesByNameExecute(Const.UserInfo.USER_INFO_SP_FILE) {
-            putInt(Const.UserInfo.AGE, userInfo.age ?: 0)
-            putString(Const.UserInfo.BRIEF_INFO, userInfo.briefInfo)
-            putString(Const.UserInfo.CITY, userInfo.city)
-            putString(Const.UserInfo.GENDER, userInfo.gender)
-            putString(Const.UserInfo.NAME, userInfo.name)
-            putString(Const.UserInfo.CREATED_AT, userInfo.createdAt)
-            putString(Const.UserInfo.OBJECT_ID, userInfo.objectId)
-            putString(Const.UserInfo.UPDATED_AT, userInfo.updatedAt)
-            putString(Const.UserInfo.AVATAR_FILE_PATH, userInfo.avatar?.url)
-            putString(Const.UserInfo.BACKGROUND_FILE_PATH, userInfo.background?.url)
-        }
+        Repository.saveUserInfoToSp(userInfo)
     }
 
     /**
@@ -61,4 +64,22 @@ class ActivitySharedViewModel:ViewModel() {
     fun getUserAllInfoBySp(): UserInfo {
         return Repository.getUserAllInfoBySp()
     }
+
+    /**
+     * 发布动态内容。
+     *
+     * @param postContent 动态内容
+     * @param imageList 图片列表
+     */
+    fun postDynamic(postContent: String, imageList: List<Uri>) {
+        viewModelScope.launch {
+            Repository.postDynamic(
+                postContent,
+                imageList
+            ).apply {
+                _postDynamicStatus.value = Event(this)
+            }
+        }
+    }
+
 }

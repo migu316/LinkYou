@@ -12,6 +12,12 @@ open class BaseFragment:Fragment() {
     }
 
     /**
+     * 关闭软键盘
+     */
+    fun hideSoftKeyboard() {
+        (activity as BaseActivity).hideSoftKeyboard()
+    }
+    /**
      * 退出当前的fragment
      */
     fun exitFragment() {

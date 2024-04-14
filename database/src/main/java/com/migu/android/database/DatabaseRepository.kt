@@ -1,10 +1,7 @@
 package com.migu.android.database
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.migu.android.database.db.LinkYouDatabase
 import com.migu.android.database.model.DynamicAndImages
-import kotlinx.coroutines.runBlocking
 
 /**
  * 数据库仓库类，用于封装数据库操作方法。
@@ -24,7 +21,7 @@ class DatabaseRepository {
     suspend fun getImagesUrlJson(objectId: String): List<String> {
         val urls: List<String> = dynamicDao.getImagesUrl(objectId)
         // 数据库设计问题，当一个list保存到数据库的时候，是List<String> -> String类型，但是取出时，就直接取出
-        // String类型了，因此取出的字符串就是"[1,3]"或者"[]"这种形式，因此在外部需要进行处理
+        // String类型了，取出的字符串就是"[1,3]"或者"[]"这种形式，因此在外部需要进行处理
         if (urls.isEmpty() || urls[0] == "[]") {
             return listOf()
         }

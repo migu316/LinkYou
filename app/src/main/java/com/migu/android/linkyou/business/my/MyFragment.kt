@@ -49,7 +49,7 @@ class MyFragment : Fragment() {
             userDynamicAdapter = UserDynamicAdapter(getUrlsHandler)
             // 设置屏幕外的视图缓存数量
             setItemViewCacheSize(20)
-            // 设置适配器
+            // 设置适配器 b
             adapter = userDynamicAdapter
             // 设置布局管理器
             layoutManager = LinearLayoutManager(requireContext())

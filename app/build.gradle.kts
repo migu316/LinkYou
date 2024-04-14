@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.paging)
     implementation(project(":core"))
     implementation(project(":network"))
+//    debugImplementation(libs.leak.cannary)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
