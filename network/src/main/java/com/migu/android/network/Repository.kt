@@ -14,6 +14,7 @@ import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.SharedUtil
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesByNameExecute
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
+import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.database.DatabaseRepository
 import com.migu.android.database.model.DynamicAndImages
@@ -31,10 +32,8 @@ import com.migu.android.network.request.LinkYouNetwork
 import com.migu.android.network.util.Event
 import com.migu.android.network.util.toDynamic
 import com.migu.android.network.util.toDynamicEntity
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -194,30 +193,29 @@ object Repository {
     /**
      * 将需要缓存的数据存储到数据库中
      */
-    @OptIn(DelicateCoroutinesApi::class)
     fun saveDynamicsDB(dynamic: List<Dynamic>) {
-        GlobalScope.launch(Dispatchers.Main) {
-            coroutineScope {
-                // 先删除数据
-                databaseRepository.deleteAllDynamic()
-                // 将动态数据转换为能够存储再数据库中的类型
-                val dynamicEntityList = dynamic.map {
-                    it.toDynamicEntity()
-                }
-
-                // 再将动态数据对象和ID等一起封装到DynamicAndImages
-                val dynamicAndImagesList = dynamicEntityList.map {
-                    DynamicAndImages(it.objectId, it, listOf())
-                }
-                // 再插入数据
-                databaseRepository.insertDynamicDetail(dynamicAndImagesList)
+        CoroutineScope(Dispatchers.Main).launch {
+            // 先删除数据
+            databaseRepository.deleteAllDynamic()
+            // 将动态数据转换为能够存储再数据库中的类型
+            val dynamicEntityList = dynamic.map {
+                it.toDynamicEntity()
             }
+
+            // 再将动态数据对象和ID等一起封装到DynamicAndImages
+            val dynamicAndImagesList = dynamicEntityList.map {
+                DynamicAndImages(it.objectId, it, listOf())
+            }
+            // 再插入数据
+            databaseRepository.insertDynamicDetail(dynamicAndImagesList)
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    /**
+     * 将图片链接插入到数据库
+     */
     fun updateImageUrlToDB(dynamicAndImages: DynamicAndImages) {
-        GlobalScope.launch(Dispatchers.Main) {
+        CoroutineScope(Dispatchers.Main).launch {
             databaseRepository.updateImageUrl(dynamicAndImages)
         }
     }
