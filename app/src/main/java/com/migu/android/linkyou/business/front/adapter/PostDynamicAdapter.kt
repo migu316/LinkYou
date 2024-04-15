@@ -18,7 +18,10 @@ import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
  *
  * @param onItemClick 图片项点击事件的回调函数。
  */
-class PostDynamicAdapter(private val onItemClick: (position: Int) -> Unit) :
+class PostDynamicAdapter(
+    private val onItemClick: () -> Unit,
+    private val onChangeImagesCallBack: () -> Unit
+) :
     Adapter<ImageViewHolder>() {
 
     // 添加图片的基本 Uri
@@ -63,7 +66,7 @@ class PostDynamicAdapter(private val onItemClick: (position: Int) -> Unit) :
             binding.delete.visibility = View.GONE
             binding.root.setOnClickListener {
                 // 执行回调:打开图库
-                onItemClick(position)
+                onItemClick()
             }
         } else {
             binding.delete.apply {
@@ -81,9 +84,14 @@ class PostDynamicAdapter(private val onItemClick: (position: Int) -> Unit) :
      * @param position 要删除的图片位置。
      */
     private fun delete(position: Int) {
+        // 避免快速点击删除，误删添加按钮
+        if (imageList.size == 1) {
+            return
+        }
         imageList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, imageList.size - position)
+        onChangeImagesCallBack()
     }
 
     /**
@@ -105,5 +113,6 @@ class PostDynamicAdapter(private val onItemClick: (position: Int) -> Unit) :
             // 处理最后一个加入进来的
             notifyItemRangeChanged(imageList.size - 2, 1)
         }
+        onChangeImagesCallBack()
     }
 }

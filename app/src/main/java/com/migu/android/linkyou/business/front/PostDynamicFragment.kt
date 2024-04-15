@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToast
+import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
@@ -39,9 +42,10 @@ class PostDynamicFragment : BaseFragment() {
 
     private lateinit var binding: FragmentPostDynamicBinding
 
-    private val postDynamicAdapter = PostDynamicAdapter {
-        openGallery()
-    }
+    private val postDynamicAdapter = PostDynamicAdapter(
+        { openGallery() },
+        { checkHasImages() }
+    )
 
     private val activitySharedViewModel by activityViewModels<ActivitySharedViewModel>()
 
@@ -64,28 +68,17 @@ class PostDynamicFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // 将fragment弹出返回栈
-        binding.back.setOnClickListener {
-            exitFragment()
-        }
-        binding.postDynamic.setOnClickListener {
-            dialog = createPostDynamicDialog()
-            hideSoftKeyboard()
-            lifecycleScope.launch {
-                dialog.show()
-                activitySharedViewModel.postDynamic(
-                    binding.postContentEditText.text.toString(),
-                    postDynamicAdapter.imageList.subList(0, postDynamicAdapter.imageList.size - 1)
-                )
-            }
-        }
+        initialize()
+        initializeObserver()
+    }
 
+    private fun initializeObserver() {
+        // 监听发布动态的完成状态
         activitySharedViewModel.postDynamicStatus.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.apply {
                 if (this.isSuccess) {
                     if (this.getOrNull() != null) {
                         showToast("发布成功")
-                        dialog.dismiss()
                         exitFragment()
                     } else {
                         showToast("发布失败")
@@ -93,8 +86,67 @@ class PostDynamicFragment : BaseFragment() {
                 } else {
                     showToast("发布失败，原因：${this.exceptionOrNull()?.message}")
                 }
+                dialog.dismiss()
+                // 恢复可点击
+                binding.postDynamic.isClickable = true
             }
         }
+    }
+
+    private fun initialize() {
+        binding.back.apply {
+            // 将fragment弹出返回栈
+            setOnClickListener {
+                exitFragment()
+            }
+        }
+
+        binding.postDynamic.apply {
+            setOnClickListener {
+                // 关闭点击
+                it.isClickable = false
+                dialog = createPostDynamicDialog()
+                hideSoftKeyboard()
+                lifecycleScope.launch {
+                    dialog.show()
+                    activitySharedViewModel.postDynamic(
+                        binding.postContentEditText.text.toString(),
+                        postDynamicAdapter.imageList.subList(
+                            0,
+                            postDynamicAdapter.imageList.size - 1
+                        )
+                    )
+                }
+            }
+            // 默认不可点击
+            hidePostButton()
+        }
+
+        binding.postContentEditText.apply {
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val t1 = text.toString().trim().isNotEmpty()
+                    binding.postDynamic.apply {
+                        // t1:内容是否为空
+                        // size > 1 是否添加了图片
+                        isActivated = (t1 || postDynamicAdapter.imageList.size > 1)
+                        isClickable = (t1 || postDynamicAdapter.imageList.size > 1)
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+        }
+
+
     }
 
     /**
@@ -108,7 +160,6 @@ class PostDynamicFragment : BaseFragment() {
             setCancelable(false)
         }
     }
-
 
 
     /**
@@ -152,6 +203,36 @@ class PostDynamicFragment : BaseFragment() {
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         }
         pickImageLauncher.launch(intent)
+    }
+
+    private fun checkHasImages() {
+        if (postDynamicAdapter.imageList.size - 1 > 0) {
+            binding.postDynamic.apply {
+                showPostButton()
+            }
+        } else {
+            binding.postDynamic.apply {
+                // 只有当没有文本，且没有图片时才禁用发布按钮
+                if (binding.postContentEditText.text.toString().isEmpty()) {
+                    hidePostButton()
+                }
+            }
+        }
+    }
+
+
+    private fun hidePostButton() {
+        binding.postDynamic.apply {
+            isClickable = false
+            isActivated = false
+        }
+    }
+
+    private fun showPostButton() {
+        binding.postDynamic.apply {
+            isClickable = true
+            isActivated = true
+        }
     }
 
     companion object {
