@@ -81,7 +81,6 @@ class GetUrlsHandler<in T>(
         }
     }
 
-
     /**
      * 初始化块，用于设置内存缓存大小并创建 LruCache 对象。
      */

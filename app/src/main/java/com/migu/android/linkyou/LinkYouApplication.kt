@@ -2,6 +2,7 @@ package com.migu.android.linkyou
 
 import android.app.Application
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import cn.leancloud.LCException
 import cn.leancloud.LCLogger
 import cn.leancloud.LCObject
@@ -20,6 +21,7 @@ open class LinkYouApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         LinkYou.initialize(this)
         leanCloudInit()
     }

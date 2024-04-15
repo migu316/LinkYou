@@ -27,7 +27,7 @@ interface DynamicDao {
      * 更新数据库中图片urls的值
      */
     @Update
-    suspend fun updateDynamicImageUrls(dynamicAndImages: DynamicAndImages)
+    suspend fun updateDynamicImageUrls(dynamicAndImages: DynamicAndImages):Int
 
     /**
      * 删除DynamicAndImages中的所有数据

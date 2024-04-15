@@ -2,6 +2,7 @@ package com.migu.android.opensource.splash
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -18,7 +19,6 @@ class SplashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         val viewModel = ViewModelProvider(this)[SplashViewModel::class.java]
         val screen = installSplashScreen()
         setContentView(R.layout.activity_splash)

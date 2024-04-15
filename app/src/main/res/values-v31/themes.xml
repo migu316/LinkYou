@@ -2,11 +2,7 @@
 <resources>
 
     <style name="JetpackSplashTheme" parent="JetpackSplashTheme.Base">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_png
-        </item>
-
-        <item name="android:windowSplashScreenIconBackgroundColor">@color/skyBlue</item>
-
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_png</item>
         <!--        <item name="android:windowSplashScreenBrandingImage">@drawable/ic_tm_brand</item>-->
     </style>
 </resources>

@@ -41,8 +41,8 @@ class DatabaseRepository {
     /**
      * 更新指定动态的urls
      */
-    suspend fun updateImageUrl(dynamicAndImages: DynamicAndImages) {
-        dynamicDao.updateDynamicImageUrls(dynamicAndImages)
+    suspend fun updateImageUrl(dynamicAndImages: DynamicAndImages):Int {
+        return dynamicDao.updateDynamicImageUrls(dynamicAndImages)
     }
 
     /**

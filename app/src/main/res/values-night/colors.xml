@@ -3,16 +3,17 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="whiteCard">#FFFEFEFE</color>
-    <color name="background">#FFF7F7F9</color>
+    <color name="background">#FF000000</color>
     <color name="whiteFrosted">#40F7F7F9</color>
     <color name="gray">#FFC7C8CC</color>
     <color name="blue">#FF378CE7</color>
 
-    <color name="cardBackground">#FFFFFFFF</color>
 
-    <color name="tabTextColor">#FF000000</color>
+    <color name="cardBackground">#FF111015</color>
 
-    <color name="backgroundGradientMedium">#C0FFFFFF</color>
-    <color name="backgroundGradientEnd">#00FFFFFF</color>
+    <color name="tabTextColor">#FFFFFFFF</color>
+
+    <color name="backgroundGradientMedium">#C0000000</color>
+    <color name="backgroundGradientEnd">#00000000</color>
 
 </resources>

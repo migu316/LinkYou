@@ -16,7 +16,7 @@
             android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="410dp"
-            android:background="@color/whiteBackground"
+            android:background="@color/background"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
@@ -181,7 +181,6 @@
                             android:maxLength="10"
                             android:maxLines="1"
                             android:text="@string/user_name"
-                            android:textColor="@color/black"
                             android:textSize="18sp" />
                     </LinearLayout>
 
@@ -194,21 +193,28 @@
                         android:orientation="horizontal">
 
                         <ImageView
+                            android:id="@+id/dark_sun_mode_switch"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center"
                             android:layout_marginEnd="10dp"
                             android:background="@drawable/my_button_background"
-                            android:src="@drawable/search_home_24px"
-                            app:tint="@color/black" />
+                            android:src="@drawable/dark_mode_24px" />
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="10dp"
+                            android:background="@drawable/my_button_background"
+                            android:src="@drawable/search_home_24px" />
 
                         <ImageView
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center"
                             android:background="@drawable/my_button_background"
-                            android:src="@drawable/settings_24px"
-                            app:tint="@color/black" />
+                            android:src="@drawable/settings_24px" />
                     </LinearLayout>
                 </FrameLayout>
 

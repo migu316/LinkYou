@@ -1,5 +1,6 @@
 package com.migu.android.linkyou.business.dynamic
 
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -25,7 +26,7 @@ class ImageViewHolder(val binding: DynamicsImageItemBinding) :
      */
     fun bind(imageUrl: String) {
         if (imageUrl.isEmpty()) {
-//            glide.load(R.drawable.ic_launcher_background).into(binding.dynamicsImage)
+            glide.load(R.color.gray).into(binding.dynamicsImage)
         } else {
             glide.load(NetWorkUtil.replaceHttps(imageUrl))
                .into(binding.dynamicsImage)
