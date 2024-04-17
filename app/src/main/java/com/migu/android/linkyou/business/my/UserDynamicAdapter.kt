@@ -28,8 +28,6 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
         }
     }
 
-    // 本来用来缓解bug导致的问题，现在没什么卵用了，留着吧
-    private var copyDynamics = if (currentList.size > 10) 10 else currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicViewHolder {
         val binding =
@@ -38,7 +36,6 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
         return DynamicViewHolder(binding)
     }
 
-//    override fun getItemCount() = dynamics.size
 
     override fun onBindViewHolder(holder: DynamicViewHolder, position: Int) {
         val dynamic = currentList[position]
@@ -112,33 +109,5 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
                 }
             }
         }
-    }
-
-    /**
-     * 计算当前position是否即将到达末尾，如果到达末尾，将发送回调调用数据获取方法并添加到当前adapter中
-     */
-    fun calculate(position: Int): Boolean {
-        val proportion = position.toFloat() / itemCount.toFloat()
-        return if (proportion > 0.7) true else false
-    }
-
-    /**
-     * 用于增加数据
-     */
-    fun addData() {
-        // 获取增加数据前的大小
-        val oldSize = itemCount
-        // 如果当前数据和源数据长度相等，说明数据已经全部添加完毕了，直接退出
-        if (currentList.size == itemCount) {
-            return
-        } else if (currentList.size - copyDynamics > 10) {
-            // 如果当前数据长度和源数据长度差值大于5，那就增加5个
-            copyDynamics += 10
-        } else {
-            // 小于5，就全部添加进去
-            copyDynamics = currentList.size
-        }
-        // 通知数据发生改变
-        notifyItemRangeChanged(oldSize, itemCount)
     }
 }

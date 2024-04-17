@@ -248,8 +248,8 @@ object Repository {
      * @param content 动态内容
      * @return 结果对象，包含上传后的 LCObject，可能为 null
      */
-    private suspend fun uploadDynamicContent(content: String, imageCount:Int): Result<LCObject?> {
-        return LeanCloudSDKRequest.uploadDynamicContent(content,imageCount)
+    private suspend fun uploadDynamicContent(content: String, imageCount: Int): Result<LCObject?> {
+        return LeanCloudSDKRequest.uploadDynamicContent(content, imageCount)
     }
 
 

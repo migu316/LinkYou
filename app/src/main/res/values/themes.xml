@@ -70,7 +70,7 @@
     <!-- 闪屏页base -->
     <style name="JetpackSplashTheme.Base" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimationDuration">@integer/icon_animator_duration</item>
-        <item name="windowSplashScreenBackground">@color/background</item>
+        <item name="windowSplashScreenBackground">@color/white</item>
         <item name="postSplashScreenTheme">@style/SplashActivityTheme</item>
     </style>
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatDelegate
 import com.migu.android.core.util.SharedUtil
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
 
@@ -33,14 +34,26 @@ class LinkYou {
         var objectId: String = ""
             private set
 
-        var sdkLoginLCUserJson:String = ""
+        var sdkLoginLCUserJson: String = ""
 
-        var sdkUserInfoJson:String = ""
+        var sdkUserInfoJson: String = ""
+
+        var pictureQuality = Const.PictureQuality.LOW
 
         fun initialize(c: Context) {
             context = c
             handler = Handler(Looper.getMainLooper())
+            checkOnDarkMode()
             refreshLoginState()
+        }
+
+        private fun checkOnDarkMode() {
+            val darkIsOn = SharedUtil.get(Const.DarkMode.DARK_MODE_SP_FILE, Const.DarkMode.DARK_ON)
+            if (darkIsOn) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
 
         /**

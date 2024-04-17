@@ -26,7 +26,7 @@ class PostDynamicAdapter(
 
     // 添加图片的基本 Uri
     private val baseAddUri =
-        Uri.parse("android.resource://com.migu.android.linkyou/" + R.drawable.add_24px)
+        Uri.parse("android.resource://com.migu.android.linkyou/" + R.drawable.add_20px)
 
     // 图片列表，包括添加图片的 Uri
     val imageList = mutableListOf<Uri>().apply {

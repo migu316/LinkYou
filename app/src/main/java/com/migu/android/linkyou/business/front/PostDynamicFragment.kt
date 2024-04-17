@@ -145,8 +145,6 @@ class PostDynamicFragment : BaseFragment() {
                 override fun afterTextChanged(s: Editable?) {}
             })
         }
-
-
     }
 
     /**

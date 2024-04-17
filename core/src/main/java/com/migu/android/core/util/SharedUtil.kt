@@ -50,6 +50,10 @@ object SharedUtil {
         }
     }
 
+    fun get(spName: String, key: String): Boolean {
+        return LinkYou.context.getSharedPreferences(spName, MODE_PRIVATE).getBoolean(key, false)
+    }
+
     /**
      * 将字符串类型的值保存到指定的 SharedPreferences 中
      * @param spName SharedPreferences 文件名

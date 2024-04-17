@@ -26,15 +26,12 @@ class ImageViewHolder(val binding: DynamicsImageItemBinding) :
      * @param imageUrl 要加载的图片的 URL。
      */
     fun bind(imageUrl: String) {
-        if (imageUrl.isEmpty()) {
-            glide.load(R.color.gray).into(binding.dynamicsImage)
-        } else {
-            glide.load(NetWorkUtil.replaceHttps(imageUrl))
-               .into(binding.dynamicsImage)
+        if (imageUrl.isNotEmpty()) {
+            glide.load(NetWorkUtil.replaceHttps(imageUrl)).into(binding.dynamicsImage)
         }
     }
 
     fun bindByUri(uri: Uri) {
-        glide.load(uri).into(binding.dynamicsImage)
+        glide.load(uri).override(200, 200).into(binding.dynamicsImage)
     }
 }

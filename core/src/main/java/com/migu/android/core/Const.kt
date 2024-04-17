@@ -41,4 +41,19 @@ interface Const {
             const val PRIVACY_POLICY_IS_AGREE = "is_agree"
         }
     }
+
+    interface DarkMode {
+        companion object {
+            const val DARK_MODE_SP_FILE = "dark_mode_sp_file"
+            const val DARK_ON = "dark_on"
+        }
+    }
+
+
+    enum class PictureQuality {
+        LOW,
+        MEDIUM,
+        HIGH,
+        RAW
+    }
 }

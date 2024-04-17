@@ -1,5 +1,9 @@
 package com.migu.android.network.request
 
+import com.migu.android.core.Const
+import com.migu.android.core.LinkYou
+import com.migu.android.core.util.logInfo
+import com.migu.android.network.Interceptor
 import com.migu.android.network.api.DynamicServiceInterface
 import com.migu.android.network.api.UserServiceInterface
 import com.migu.android.network.model.base.LeanCloudPointerBaseModel
@@ -9,11 +13,17 @@ import com.migu.android.network.model.DynamicImageResponse
 import com.migu.android.network.model.TargetUserDynamicsResponse
 import com.migu.android.network.model.UserResultResponse
 import com.migu.android.network.request.ServiceCreator.awaitForRetrofit
+import com.migu.android.network.util.LeanCloudUtils
 
 /**
  * 封装网络请求API
  */
 object LinkYouNetwork {
+
+    private val dynamicServiceInterface = ServiceCreator.create<DynamicServiceInterface>()
+
+    private val userServiceInterface = ServiceCreator.create<UserServiceInterface>()
+
     /**
      * 执行登录用户请求的函数。
      *
@@ -22,8 +32,8 @@ object LinkYouNetwork {
      * @throws Exception 如果请求失败，则抛出异常。
      */
     suspend fun loginUserRequest(loginUserRequestBody: LoginUserRequestBody): LoginUserResponse {
-        return ServiceCreator.create<UserServiceInterface>()
-            .getLoginUserData(requestBody = loginUserRequestBody).awaitForRetrofit()
+        return userServiceInterface.getLoginUserData(requestBody = loginUserRequestBody)
+            .awaitForRetrofit()
     }
 
 
@@ -42,8 +52,7 @@ object LinkYouNetwork {
         // 将指针参数转换约束条件
         val pointerWhere = leanCloudPointerBaseModel.toStringSeparateParameters()
         // 发起网络请求获取用户信息数据，并等待响应结果
-        return ServiceCreator.create<UserServiceInterface>().getUserInfoData(where = pointerWhere)
-            .awaitForRetrofit() // 等待 Retrofit 响应
+        return userServiceInterface.getUserInfoData(where = pointerWhere).awaitForRetrofit()
     }
 
 
@@ -63,9 +72,7 @@ object LinkYouNetwork {
         // 将指针参数转换约束条件
         val pointerWhere = leanCloudPointerBaseModel.toStringSeparateParameters()
         // 发起网络请求获取用户发布的动态数据，并等待响应结果
-        return ServiceCreator.create<DynamicServiceInterface>()
-            .getUserDynamicsData(where = pointerWhere)
-            .awaitForRetrofit() // 等待 Retrofit 响应
+        return dynamicServiceInterface.getUserDynamicsData(where = pointerWhere).awaitForRetrofit()
     }
 
     /**
@@ -82,12 +89,13 @@ object LinkYouNetwork {
         // 将指针转换为查询条件字符串
         val pointerWhere = leanCloudPointerBaseModel.toStringSeparateParameters()
 
-        // 使用 Retrofit 接口创建实例，并发起网络请求
-        return ServiceCreator.create<DynamicServiceInterface>()
-            // 调用 Retrofit 接口中的 getDynamicImagesData 方法，并传入查询条件
-            .getDynamicImagesData(where = pointerWhere)
-            // 等待 Retrofit 异步响应
-            .awaitForRetrofit()
+        val dynamicImageResponse =
+            dynamicServiceInterface.getDynamicImagesData(where = pointerWhere).awaitForRetrofit()
+        for (dynamicImage in dynamicImageResponse.results) {
+            dynamicImage.image.url = Interceptor.pictureQualityMode(dynamicImage.image.url!!)
+        }
+
+        return dynamicImageResponse
     }
 
     /**
@@ -99,10 +107,7 @@ object LinkYouNetwork {
         limit: Int = 10,
         skip: Int
     ): TargetUserDynamicsResponse {
-        return ServiceCreator.create<DynamicServiceInterface>()
-            .getTheLatestDynamicsData(limit = limit, skip = skip)
+        return dynamicServiceInterface.getTheLatestDynamicsData(limit = limit, skip = skip)
             .awaitForRetrofit()
     }
-
-
 }

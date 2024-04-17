@@ -2,6 +2,7 @@ package com.migu.android.network.request
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.migu.android.core.util.logInfo
 import com.migu.android.network.model.base.Dynamic
 
 /**
