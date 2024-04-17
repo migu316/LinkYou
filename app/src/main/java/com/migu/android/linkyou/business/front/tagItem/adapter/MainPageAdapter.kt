@@ -56,7 +56,8 @@ class MainPageAdapter :
                     // 如果图片列表不为空，则显示图片列表
                     binding.includeContent.userDynamicImagesRecyclerView.apply {
                         visibility = View.VISIBLE
-                        adapter = ImageAdapter(it) // 使用 ImageAdapter 设置图片列表的适配器
+                        adapter =
+                            ImageAdapter(it) // 使用 ImageAdapter 设置图片列表的适配器
                         layoutManager =
                             GridLayoutManager(context, 3) // 使用 GridLayoutManager 设置图片列表的布局管理器
                     }

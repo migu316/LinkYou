@@ -34,6 +34,7 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicViewHolder {
         val binding =
             DynamicsNoAvatarItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding.includeContent
         return DynamicViewHolder(binding)
     }
 

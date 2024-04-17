@@ -1,5 +1,7 @@
 package com.migu.android.linkyou.business.my
 
+import android.app.UiModeManager
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.GlobalUtil
+import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.business.ActivitySharedViewModel
 import com.migu.android.linkyou.databinding.FragmentMyBinding
@@ -87,10 +90,14 @@ class MyFragment : Fragment() {
             // 也就是说[-1269,-1151]显示 [-1150,0]隐藏
             if (p1 > -(shouldGoneValue!!)) {
                 // 当滚动偏移量大于shouldGoneValue时，隐藏toolbarInfo
-                binding.toolbarInfo.visibility = View.INVISIBLE
+                if (binding.toolbarInfo.visibility == View.VISIBLE) {
+                    binding.toolbarInfo.visibility = View.INVISIBLE
+                }
             } else {
                 // 否则显示toolbarInfo
-                binding.toolbarInfo.visibility = View.VISIBLE
+                if (binding.toolbarInfo.visibility == View.INVISIBLE) {
+                    binding.toolbarInfo.visibility = View.VISIBLE
+                }
             }
         }
 
@@ -120,12 +127,49 @@ class MyFragment : Fragment() {
             })
         }
 
-        binding.darkSunModeSwitch.setOnClickListener {
-            val isNightMode = AppCompatDelegate.getDefaultNightMode()
-            if (isNightMode == AppCompatDelegate.MODE_NIGHT_NO) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else if (isNightMode == AppCompatDelegate.MODE_NIGHT_YES) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        binding.darkSunModeSwitch.apply {
+            setOnClickListener {
+                val uiModeManager =
+                    activity?.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+                // 系统设置
+                /**
+                 *     public static final int MODE_NIGHT_AUTO = 0;
+                 *     public static final int MODE_NIGHT_CUSTOM = 3;
+                 *     public static final int MODE_NIGHT_NO = 1;
+                 *     public static final int MODE_NIGHT_YES = 2;
+                 */
+                val systemNightMode = uiModeManager.nightMode
+                // app设置
+                val isNightMode = AppCompatDelegate.getDefaultNightMode()
+
+                // 如果系统设置为日间，那么可以通过app的设置进行切换
+                // 如果系统设置为其他，那么不执行切换
+                when (systemNightMode) {
+                    // 系统夜间关闭
+                    UiModeManager.MODE_NIGHT_NO -> {
+                        when (isNightMode) {
+                            // app夜间关闭
+                            AppCompatDelegate.MODE_NIGHT_NO -> {
+                                // 切换为夜间
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                            }
+                            // app夜间开启
+                            AppCompatDelegate.MODE_NIGHT_YES -> {
+                                // 切换为日间
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                            }
+                            // app夜间未指定
+                            AppCompatDelegate.MODE_NIGHT_UNSPECIFIED -> {
+                                // 切换为夜间
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                            }
+
+                            else -> {}
+                        }
+                    }
+
+                    else -> {}
+                }
             }
         }
     }
@@ -168,19 +212,25 @@ class MyFragment : Fragment() {
 
         // 发起网络请求获取用户发布的动态
         sharedViewModel.userDynamicsLiveData.observe(viewLifecycleOwner) { result ->
-            val targetUserDynamicsResponse = result.getOrNull()
-            targetUserDynamicsResponse?.let {
+            if (result.isFailure) {
+                showToastOnUiThread(GlobalUtil.getString(com.migu.android.linkyou.R.string.get_dynamics_error))
+                result.exceptionOrNull()?.printStackTrace()
+            } else {
+                val targetUserDynamicsResponse = result.getOrNull()
+                targetUserDynamicsResponse?.let {
 //                // 1.先提交一个空集合，用于清空视图，避免holder在后台继续从数据库取urls
 //                userDynamicAdapter.submitList(listOf())
 
-                // 3.再将数据显示上去，就可以避免holder取数据存在问题
-                showDynamics(it.results)
+                    // 3.再将数据显示上去，就可以避免holder取数据存在问题
+                    showDynamics(it.results)
 
-                // 2.再存进数据库作为缓存：因为需要先删除数据库的数据
-                sharedViewModel.saveDynamicsToDB(it.results)
-            } ?: run {
-                showToastOnUiThread(GlobalUtil.getString(com.migu.android.linkyou.R.string.get_dynamics_error))
-                result.exceptionOrNull()?.printStackTrace()
+                    // 2.再存进数据库作为缓存：因为需要先删除数据库的数据
+                    // 问题很可能出现在这里，因为当切换到主页后，这里会拉取数据，先删除数据库的数据，再保存进去
+                    // 此时所有的urls都为空，我们再直接退出，就会导致下次打开时，无任何图片加载
+                    // 复现：当连接网络时切换到该页面，瞬间关闭网络，就会导致数据库的urls被清空，下次无网络时就会出现
+                    // 没有任何数据
+                    sharedViewModel.saveDynamicsToDB(it.results)
+                }
             }
         }
     }

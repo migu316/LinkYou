@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
 import com.migu.android.network.util.NetWorkUtil

@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import com.migu.android.database.DatabaseRepository
 import com.migu.android.database.model.DynamicAndImages
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.util.DataProcessingUtil

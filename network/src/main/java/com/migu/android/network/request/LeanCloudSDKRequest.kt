@@ -72,7 +72,7 @@ object LeanCloudSDKRequest {
      * @param content 动态内容
      * @return 结果对象，包含上传后的 LCObject，可能为 null
      */
-    suspend fun uploadDynamicContent(content: String): Result<LCObject?> {
+    suspend fun uploadDynamicContent(content: String, imageCount: Int): Result<LCObject?> {
         var lcObject: LCObject? = null
         try {
             val currentUser = LeanCloudUtils.getLCUser() ?: throw RuntimeException("登录状态异常")
@@ -85,6 +85,7 @@ object LeanCloudSDKRequest {
                     put("author", currentUser)
                     put("postText", content)
                     put("UserInfoId", userInfoObj)
+                    put("ImageCount", imageCount)
                 }, {
                     // 成功后的逻辑
                     Log.i(TAG, "onNext: 构建动态成功 $this")

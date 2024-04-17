@@ -13,7 +13,8 @@ import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
  *
  * @property urls 要显示的图片 URL 列表。
  */
-class ImageAdapter(private var urls: List<String>) : Adapter<ImageViewHolder>() {
+class ImageAdapter(private var urls: List<String>) :
+    Adapter<ImageViewHolder>() {
 
     private lateinit var context: Context
 

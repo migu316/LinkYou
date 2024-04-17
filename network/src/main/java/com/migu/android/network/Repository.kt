@@ -248,8 +248,8 @@ object Repository {
      * @param content 动态内容
      * @return 结果对象，包含上传后的 LCObject，可能为 null
      */
-    private suspend fun uploadDynamicContent(content: String): Result<LCObject?> {
-        return LeanCloudSDKRequest.uploadDynamicContent(content)
+    private suspend fun uploadDynamicContent(content: String, imageCount:Int): Result<LCObject?> {
+        return LeanCloudSDKRequest.uploadDynamicContent(content,imageCount)
     }
 
 
@@ -265,7 +265,7 @@ object Repository {
 
         try {
             withContext(Dispatchers.Main) {
-                val dynamicCreateResult = uploadDynamicContent(content)
+                val dynamicCreateResult = uploadDynamicContent(content, uris.size)
                 if (dynamicCreateResult.isFailure) {
                     throw dynamicCreateResult.exceptionOrNull()
                         ?: RuntimeException("登录状态异常，动态发布失败")
