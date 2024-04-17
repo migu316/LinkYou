@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.migu.android.core.util.logInfo
+import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
 
 /**
@@ -13,7 +15,7 @@ import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
  *
  * @property urls 要显示的图片 URL 列表。
  */
-class ImageAdapter(private var urls: List<String>) :
+class ImageAdapter(private var urls: List<String>, val callbacks: BaseFragment.Callbacks?) :
     Adapter<ImageViewHolder>() {
 
     private lateinit var context: Context
@@ -28,7 +30,12 @@ class ImageAdapter(private var urls: List<String>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         context = parent.context
         val binding = DynamicsImageItemBinding.inflate(LayoutInflater.from(context), parent, false)
-        return ImageViewHolder(binding)
+        val holder = ImageViewHolder(binding)
+        binding.dynamicsImage.setOnClickListener {
+            val fragment = ImageFragment.newInstance(urls, holder.bindingAdapterPosition)
+            callbacks?.onClickChangeFragment(fragment)
+        }
+        return holder
     }
 
     /**

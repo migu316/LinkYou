@@ -20,6 +20,7 @@ import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.SharedUtil
 import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
+import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.ActivitySharedViewModel
 import com.migu.android.linkyou.databinding.FragmentMyBinding
 import com.migu.android.network.GetUrlsHandler
@@ -28,15 +29,12 @@ import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.util.NetWorkUtil
 
-class MyFragment : Fragment() {
+class MyFragment : BaseFragment() {
 
     private val binding by lazy {
         FragmentMyBinding.inflate(layoutInflater)
     }
 
-//    private val myViewModel by lazy {
-//        ViewModelProvider(this)[MyViewModel::class.java]
-//    }
 
     private val sharedViewModel by activityViewModels<ActivitySharedViewModel>()
 
@@ -52,7 +50,7 @@ class MyFragment : Fragment() {
             }
         binding.userDynamicRecyclerView.apply {
             // 初始化适配器
-            userDynamicAdapter = UserDynamicAdapter(getUrlsHandler)
+            userDynamicAdapter = UserDynamicAdapter(getUrlsHandler, callbacks)
             // 设置屏幕外的视图缓存数量
             setItemViewCacheSize(20)
             // 设置适配器 b

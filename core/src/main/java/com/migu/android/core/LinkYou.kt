@@ -38,7 +38,7 @@ class LinkYou {
 
         var sdkUserInfoJson: String = ""
 
-        var pictureQuality = Const.PictureQuality.LOW
+        var pictureQuality = Const.PictureQuality.HIGH
 
         fun initialize(c: Context) {
             context = c

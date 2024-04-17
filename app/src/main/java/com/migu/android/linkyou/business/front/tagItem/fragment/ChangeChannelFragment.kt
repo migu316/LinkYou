@@ -12,7 +12,7 @@ import com.migu.android.linkyou.business.front.tagItem.model.ChannelData
 import com.migu.android.linkyou.util.BarUtils
 
 
-private const val ARG_MAP_LIST = "arg_map_list"
+
 
 class ChangeChannelFragment : Fragment() {
 
@@ -47,6 +47,7 @@ class ChangeChannelFragment : Fragment() {
     }
 
     companion object {
+        private const val ARG_MAP_LIST = "arg_map_list"
         fun newInstance(channelSet: LinkedHashSet<ChannelData>): ChangeChannelFragment {
             val array = ArrayList<ChannelData>(channelSet)
             val args = Bundle().apply {

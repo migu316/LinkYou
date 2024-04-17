@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
+import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.ActivitySharedViewModel
 import com.migu.android.linkyou.databinding.FragmentFrontBinding
@@ -17,11 +18,8 @@ import com.migu.android.linkyou.business.front.tagItem.fragment.ChangeChannelFra
 import com.migu.android.linkyou.business.front.tagItem.model.ChannelData
 import com.migu.android.linkyou.util.BarUtils
 
-private const val TAG_ITEM = "tag_item"
-
 class FrontFragment : BaseFragment() {
 
-    // 使用懒加载委托来获取与该Fragment关联的布局绑定
     private val binding by lazy {
         FragmentFrontBinding.inflate(layoutInflater)
     }
@@ -31,12 +29,6 @@ class FrontFragment : BaseFragment() {
     // 用于管理ViewPager2中的Fragment
     private lateinit var adapter: TabItemFragmentStateAdapter
 
-    private var callbacks: Callbacks? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callbacks = context as Callbacks
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,12 +90,8 @@ class FrontFragment : BaseFragment() {
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
     companion object {
+        private const val TAG_ITEM = "tag_item"
         // 创建FrontFragment的新实例
         fun newInstance(): FrontFragment {
             return FrontFragment()

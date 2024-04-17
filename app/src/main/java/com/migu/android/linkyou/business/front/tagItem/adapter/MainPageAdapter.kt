@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.DateUtil
+import com.migu.android.core.util.logInfo
+import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.databinding.DynamicsHasAvatarItemBinding
 import com.migu.android.linkyou.business.dynamic.ImageAdapter
 import com.migu.android.network.model.base.Dynamic
@@ -18,7 +20,7 @@ import com.migu.android.network.util.NetWorkUtil
 /**
  * 主页适配器，继承自 PagingDataAdapter，用于展示动态列表
  */
-class MainPageAdapter :
+class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
     PagingDataAdapter<Dynamic, MainPageAdapter.DynamicViewHolder>(COMPARATOR) {
 
     private lateinit var context: Context
@@ -57,7 +59,7 @@ class MainPageAdapter :
                     binding.includeContent.userDynamicImagesRecyclerView.apply {
                         visibility = View.VISIBLE
                         adapter =
-                            ImageAdapter(it) // 使用 ImageAdapter 设置图片列表的适配器
+                            ImageAdapter(it, callbacks) // 使用 ImageAdapter 设置图片列表的适配器
                         layoutManager =
                             GridLayoutManager(context, 3) // 使用 GridLayoutManager 设置图片列表的布局管理器
                     }

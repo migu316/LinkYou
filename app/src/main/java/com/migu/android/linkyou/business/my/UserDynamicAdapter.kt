@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.migu.android.core.util.DateUtil
+import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.databinding.DynamicsNoAvatarItemBinding
 import com.migu.android.linkyou.business.dynamic.ImageAdapter
 import com.migu.android.network.GetUrlsHandler
 import com.migu.android.network.model.base.Dynamic
 
-class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewHolder>) :
+class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewHolder>, val callbacks: BaseFragment.Callbacks?) :
     ListAdapter<Dynamic, UserDynamicAdapter.DynamicViewHolder>(diffUtil) {
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Dynamic>() {
@@ -53,7 +53,7 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
                 // 否则设置显示，并传入无效数据用于显示占位图，
                 // 避免后面holder回调方法时，页面view重新测量高度导致视图拉扯卡顿
                 visibility = View.VISIBLE
-                ImageAdapter(List(dynamic.imageCount ?: 0) { "" })
+                ImageAdapter(List(dynamic.imageCount ?: 0) { "" }, callbacks)
             }
             layoutManager = GridLayoutManager(context, 3)
         }
@@ -103,7 +103,7 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
                         val imageAdapter = adapter as ImageAdapter
                         imageAdapter.overwriteData(urls)
                     } else {
-                        adapter = ImageAdapter(urls)
+                        adapter = ImageAdapter(urls, callbacks)
                     }
                     layoutManager = GridLayoutManager(context, 3)
                 }

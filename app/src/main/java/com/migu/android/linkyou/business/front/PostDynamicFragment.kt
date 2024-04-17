@@ -218,7 +218,6 @@ class PostDynamicFragment : BaseFragment() {
         }
     }
 
-
     private fun hidePostButton() {
         binding.postDynamic.apply {
             isClickable = false

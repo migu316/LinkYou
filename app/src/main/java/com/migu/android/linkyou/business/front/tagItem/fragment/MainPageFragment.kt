@@ -4,27 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToast
+import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.databinding.FragmentTabItemMainPageBinding
 import com.migu.android.linkyou.business.front.tagItem.viewmodel.MainViewModel
 import com.migu.android.linkyou.business.front.tagItem.adapter.MainPageAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainPageFragment : Fragment() {
+class MainPageFragment : BaseFragment() {
     private lateinit var binding: FragmentTabItemMainPageBinding
 
     private val sharedMainViewModel: MainViewModel by lazy {
         ViewModelProvider(this)[MainViewModel::class.java]
     }
 
-    private val mainPageAdapter: MainPageAdapter = MainPageAdapter()
+    private lateinit var mainPageAdapter: MainPageAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +38,7 @@ class MainPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        mainPageAdapter = MainPageAdapter(callbacks)
         binding.theLastDynamicsRecyclerView.apply {
             // 设置屏幕外的视图缓存数量
             setItemViewCacheSize(20)
@@ -46,11 +46,13 @@ class MainPageFragment : Fragment() {
             adapter = mainPageAdapter
         }
         mainPageAdapter.addLoadStateListener {
-            when(it.refresh) {
+            when (it.refresh) {
                 is LoadState.NotLoading -> {
                 }
+
                 is LoadState.Loading -> {
                 }
+
                 is LoadState.Error -> {
                     val state = it.refresh as LoadState.Error
                     showToast("网络错误")
@@ -64,6 +66,5 @@ class MainPageFragment : Fragment() {
                 mainPageAdapter.submitData(pagingData)
             }
         }
-
     }
 }
