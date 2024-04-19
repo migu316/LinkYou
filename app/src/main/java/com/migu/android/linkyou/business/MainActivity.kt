@@ -1,31 +1,21 @@
 package com.migu.android.linkyou.business
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import cn.leancloud.LCUser
-import com.google.gson.Gson
-import com.migu.android.core.LinkYou
-import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.ActivityMainBinding
+import com.migu.android.linkyou.event.OnBackPressedListener
 import com.migu.android.linkyou.util.BarUtils
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-
-private const val TAG = "MainActivity"
-private const val BUNDLE_MENU_SELECT_ID = "menuSelectId"
-
 
 class MainActivity : BaseActivity(), BaseFragment.Callbacks {
 
@@ -37,77 +27,57 @@ class MainActivity : BaseActivity(), BaseFragment.Callbacks {
         ViewModelProvider(this)[ActivitySharedViewModel::class.java]
     }
 
-    // FragmentController 单例对象
-    private val fragmentController = FragmentController
 
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.main)
+        initialize()
+    }
+
+
+    private fun initialize() {
         BarUtils.immersiveStatus(window)
+        // 按下back键的回调
+        val backCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 获取当前显示的 Fragment
+                val currentFragment = supportFragmentManager.findFragmentById(binding.root.id)
 
-        // 如果未包含指定ID，说明是第一次加载该活动
-//        if (savedInstanceState == null || !savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
-//            replaceContainerFragment(FrontFragment::class.java)
-//        }
-//
-//        binding.mainBottomMenu.setOnItemSelectedListener {
-//            when (it.itemId) {
-//                R.id.front_page -> {
-//                    replaceContainerFragment(FrontFragment::class.java)
-//                }
-//
-//                R.id.explore_page -> {
-//                    replaceContainerFragment(ExploreFragment::class.java)
-//                }
-//
-//                R.id.message_page -> {
-//                    replaceContainerFragment(MessageFragment::class.java)
-//                }
-//
-//                R.id.my_page -> {
-//                    replaceContainerFragment(MyFragment::class.java)
-//                }
-//            }
-//            return@setOnItemSelectedListener true
-//        }
+                // 如果当前 Fragment 是可以处理返回事件的（例如，显示图片详情），则交给 Fragment 处理返回事件
+                if (currentFragment is OnBackPressedListener && currentFragment.onBackPressed()) {
+                    return
+                }
+            }
+        }
+        // 添加回调
+        onBackPressedDispatcher.addCallback(this, backCallback)
 
-        // 使用navigation完成导航操作
+        // 绑定navigation和bottomNavigation
         val navHostFragment =
             supportFragmentManager.findFragmentById(binding.fragmentContainer.id) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
         NavigationUI.setupWithNavController(binding.mainBottomMenu, navController)
     }
 
-    /**
-     * 因为异常情况保存活动的数据
-     * 由于该方法通常发生在onStart
-     */
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        // 如果存在一个指定的导航ID，那么模拟点击触发监听方法去改变视图
-        if (savedInstanceState.containsKey(BUNDLE_MENU_SELECT_ID)) {
-            Log.i(TAG, "onRestoreInstanceState: ")
-            binding.mainBottomMenu.performClick()
+    override fun onClickChangeFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.apply {
+            setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.fade_out,
+                R.anim.fade_in,
+                R.anim.slide_out_left
+            )
+            replace(binding.root.id, fragment).addToBackStack(null)
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        // 保存用户选择的底部导航栏选项ID
-        val tempSelectItemId = binding.mainBottomMenu.selectedItemId
-        outState.putInt(BUNDLE_MENU_SELECT_ID, tempSelectItemId)
+        transaction.commit()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        fragmentController.clearAll()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
         ActivityController.finishAllActivity()
     }
 
@@ -116,66 +86,5 @@ class MainActivity : BaseActivity(), BaseFragment.Callbacks {
             val intent = Intent(context, MainActivity::class.java)
             context.startActivity(intent)
         }
-    }
-
-
-    /**
-     * 用于替换容器中的碎片，仅用于首页导航栏碎片缓存切换
-     */
-    private fun replaceContainerFragment(fragmentClass: Class<out Fragment>) {
-        val transaction = supportFragmentManager.beginTransaction()
-        // 查看activity维护的fragment集合中是否存在需要的对象
-        var targetFragment = fragmentController.getFragment(fragmentClass)
-        if (targetFragment != null) {
-            transaction.replace(binding.fragmentContainer.id, targetFragment)
-        } else {
-            // 如果不存在，就通过反射调用无参构造器创建一个fragment实例
-            val constructor = fragmentClass.getConstructor()
-            targetFragment = constructor.newInstance()
-            // 隐藏当前碎片，再添加当前targetFragment
-            transaction.replace(binding.fragmentContainer.id, targetFragment)
-            // 将当前fragment添加到集合中
-            fragmentController.addFragment(targetFragment)
-        }
-        transaction.commit()
-    }
-
-    private object FragmentController {
-        private val fragments = ArrayList<Fragment>()
-
-        fun addFragment(fragment: Fragment) {
-            // 如果不存在，那么添加到集合中
-            if (getFragment(fragment::class.java) == null) {
-                fragments.add(fragment)
-            }
-        }
-
-        fun getFragment(fragmentClass: Class<out Fragment>): Fragment? {
-            for (fragment in fragments) {
-                if (fragment.javaClass === fragmentClass) {
-                    return fragment
-                }
-            }
-            return null
-        }
-
-        fun removeTargetFragment(fragment: Fragment) {
-            fragments.remove(fragment)
-        }
-
-        fun clearAll() {
-            fragments.clear()
-        }
-
-        fun getCount() = fragments.size
-    }
-
-    override fun onClickChangeFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.apply {
-            setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_left)
-            replace(binding.root.id, fragment).addToBackStack(null)
-        }
-        transaction.commit()
     }
 }

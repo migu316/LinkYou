@@ -35,7 +35,6 @@ class MyFragment : BaseFragment() {
         FragmentMyBinding.inflate(layoutInflater)
     }
 
-
     private val sharedViewModel by activityViewModels<ActivitySharedViewModel>()
 
     private lateinit var userDynamicAdapter: UserDynamicAdapter

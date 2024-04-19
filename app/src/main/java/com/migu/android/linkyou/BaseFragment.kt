@@ -2,9 +2,9 @@ package com.migu.android.linkyou
 
 import android.content.Context
 import androidx.fragment.app.Fragment
-import com.migu.android.core.util.logInfo
+import com.migu.android.linkyou.event.OnBackPressedListener
 
-open class BaseFragment : Fragment() {
+open class BaseFragment : Fragment(), OnBackPressedListener {
 
     /**
      * 托管活动所需接口，用于在添加频道时添加主页面
@@ -24,11 +24,14 @@ open class BaseFragment : Fragment() {
      * 退出当前的fragment
      */
     fun exitFragment() {
-        // 使用FragmentManager直接弹出返回栈顶部Fragment
-        parentFragmentManager.popBackStack()
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(0, R.anim.slide_out_left)
+            .remove(this)
+            .commit()
     }
 
     var callbacks: Callbacks? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks = context as Callbacks
@@ -37,5 +40,10 @@ open class BaseFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         callbacks = null
+    }
+
+    override fun onBackPressed(): Boolean {
+        exitFragment()
+        return true
     }
 }
