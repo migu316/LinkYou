@@ -84,7 +84,7 @@ object LeanCloudUtils {
     /**
      * 将获取到的url转换为略缩图url，默认宽高为650，但是返回的不一定是一定是650，后端会自动转换为合法的参数
      */
-    fun getThumbnailUrl(rawUrl: String, width: Int? = 650, height: Int? = 650): String {
+    fun getThumbnailUrl(rawUrl: String, width: Int, height: Int): String {
         return "$rawUrl?imageView/2/w/$width/h/$height/q/100/format/png"
     }
 }

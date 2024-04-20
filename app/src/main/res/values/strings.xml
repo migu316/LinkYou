@@ -52,4 +52,7 @@
     <string name="dynamic_input_content">Share your thoughts at the moment</string>
     <string name="maximum_image_limit">You can choose up to 9 pictures</string>
     <string name="publishing_string">Publishing...Do not exit</string>
+    <string name="view_pager_items">%s/%s</string>
+    <string name="save_image">Save Image</string>
+    <string name="cancel_string">Cancel</string>
 </resources>

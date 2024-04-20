@@ -40,6 +40,8 @@ class LinkYou {
 
         var pictureQuality = Const.PictureQuality.HIGH
 
+        var packageLastName = "LinkYou"
+
         fun initialize(c: Context) {
             context = c
             handler = Handler(Looper.getMainLooper())

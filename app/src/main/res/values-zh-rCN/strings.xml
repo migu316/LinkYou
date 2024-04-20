@@ -53,4 +53,7 @@
     <string name="dynamic_input_content">分享你此刻的想法</string>
     <string name="maximum_image_limit">你最多可选择9张图片</string>
     <string name="publishing_string">正在发布动态，请勿退出...</string>
+    <string name="view_pager_items">%s/%s</string>
+    <string name="save_image">保存图片</string>
+    <string name="cancel_string">取消</string>
 </resources>
