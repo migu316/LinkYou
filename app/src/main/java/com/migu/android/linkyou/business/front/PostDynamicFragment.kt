@@ -56,44 +56,20 @@ class PostDynamicFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPostDynamicBinding.inflate(inflater, container, false).apply {
-            postImagesRecyclerView.apply {
-                adapter = postDynamicAdapter
-                layoutManager = GridLayoutManager(requireContext(), 3)
-            }
-        }
-        BarUtils.offsetStatusBar(binding.root)
+        binding = FragmentPostDynamicBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initialize()
-        initializeObserver()
-    }
+    override fun initialize() {
+        BarUtils.offsetStatusBar(binding.root)
 
-    private fun initializeObserver() {
-        // 监听发布动态的完成状态
-        activitySharedViewModel.postDynamicStatus.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.apply {
-                if (this.isSuccess) {
-                    if (this.getOrNull() != null) {
-                        showToast("发布成功")
-                        exitFragment()
-                    } else {
-                        showToast("发布失败")
-                    }
-                } else {
-                    showToast("发布失败，原因：${this.exceptionOrNull()?.message}")
-                }
-                dialog.dismiss()
-                // 恢复可点击
-                binding.postDynamic.isClickable = true
-            }
+        binding.postImagesRecyclerView.apply {
+            adapter = postDynamicAdapter
+            layoutManager = GridLayoutManager(requireContext(), 3)
         }
     }
 
-    private fun initialize() {
+    override fun initializeListener() {
         binding.back.apply {
             // 将fragment弹出返回栈
             setOnClickListener {
@@ -144,6 +120,25 @@ class PostDynamicFragment : BaseFragment() {
 
                 override fun afterTextChanged(s: Editable?) {}
             })
+        }
+
+        // 监听发布动态的完成状态
+        activitySharedViewModel.postDynamicStatus.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.apply {
+                if (this.isSuccess) {
+                    if (this.getOrNull() != null) {
+                        showToast("发布成功")
+                        exitFragment()
+                    } else {
+                        showToast("发布失败")
+                    }
+                } else {
+                    showToast("发布失败，原因：${this.exceptionOrNull()?.message}")
+                }
+                dialog.dismiss()
+                // 恢复可点击
+                binding.postDynamic.isClickable = true
+            }
         }
     }
 

@@ -9,12 +9,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.migu.android.core.util.GlobalUtil
-import com.migu.android.core.util.showToast
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
+import com.migu.android.linkyou.business.dynamic.adapter.DynamicImageViewPagerAdapter
 import com.migu.android.linkyou.databinding.DialogBottomSheetImageOperateBinding
 import com.migu.android.linkyou.databinding.FragmentDynacisImagesViewpagerBinding
-import com.migu.android.linkyou.util.BarUtils
 import com.migu.android.linkyou.util.FileUtils
 import com.migu.android.linkyou.util.LayoutUtils
 import kotlinx.coroutines.launch
@@ -43,12 +42,11 @@ class DynamicImageFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDynacisImagesViewpagerBinding.inflate(inflater, container, false)
-        initialize()
         return binding.root
     }
 
 
-    private fun initialize() {
+    override fun initialize() {
         binding.viewPagerItems.text =
             GlobalUtil.getString(R.string.view_pager_items, position + 1, urls.size)
 
@@ -56,6 +54,13 @@ class DynamicImageFragment : BaseFragment() {
             adapter = dynamicImageViewPagerAdapter
             dynamicImageViewPagerAdapter.submitList(urls)
             setCurrentItem(position, false)
+            // 页面间的宽度
+            setPageTransformer(MarginPageTransformer(30))
+        }
+    }
+
+    override fun initializeListener() {
+        binding.viewPager.apply {
             // 滑动监听
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
@@ -64,8 +69,6 @@ class DynamicImageFragment : BaseFragment() {
                         GlobalUtil.getString(R.string.view_pager_items, position + 1, urls.size)
                 }
             })
-            // 页面间的宽度
-            setPageTransformer(MarginPageTransformer(30))
         }
 
         binding.back.setOnClickListener {
@@ -85,7 +88,11 @@ class DynamicImageFragment : BaseFragment() {
         }
         operateBinding.saveImage.setOnClickListener {
             lifecycleScope.launch {
-                FileUtils.addBitmapToAlbum(bitmap, System.currentTimeMillis().toString(), "image/png")
+                FileUtils.addBitmapToAlbum(
+                    bitmap,
+                    System.currentTimeMillis().toString(),
+                    "image/png"
+                )
             }
             dialog.dismiss()
         }

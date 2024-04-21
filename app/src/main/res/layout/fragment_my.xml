@@ -15,12 +15,13 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
-            android:layout_height="410dp"
+            android:layout_height="480dp"
             android:background="@color/background"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
+
 
             <FrameLayout
                 android:id="@+id/enlarge_bar_part"
@@ -38,101 +39,244 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/my_background" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:layout_gravity="bottom"
-                    android:background="@drawable/gradient_white_to_transparent" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center"
-                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="bottom"
                     android:orientation="vertical">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="90dp"
-                        android:layout_height="90dp"
-                        android:layout_gravity="center"
-                        app:cardCornerRadius="45dp"
-                        app:cardElevation="10dp"
-                        app:strokeWidth="0dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradient_white_to_transparent"
+                        android:orientation="vertical">
 
                         <com.google.android.material.card.MaterialCardView
-                            android:layout_width="82dp"
-                            android:layout_height="82dp"
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
                             android:layout_gravity="center"
-                            app:cardCornerRadius="41dp"
+                            app:cardCornerRadius="45dp"
+                            app:cardElevation="10dp"
                             app:strokeWidth="0dp">
 
-                            <ImageView
-                                android:id="@+id/user_photo"
+                            <com.google.android.material.card.MaterialCardView
                                 android:layout_width="82dp"
                                 android:layout_height="82dp"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/test_photo" />
-                        </com.google.android.material.card.MaterialCardView>
-                    </com.google.android.material.card.MaterialCardView>
+                                android:layout_gravity="center"
+                                app:cardCornerRadius="41dp"
+                                app:strokeWidth="0dp">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/user_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:ellipsize="end"
-                        android:maxLength="10"
-                        android:maxLines="1"
-                        android:text="@string/user_name"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        tools:text="迷毂" />
+                                <ImageView
+                                    android:id="@+id/user_photo"
+                                    android:layout_width="82dp"
+                                    android:layout_height="82dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/test_photo" />
+                            </com.google.android.material.card.MaterialCardView>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/user_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:ellipsize="end"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:text="@string/user_name"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            tools:text="迷毂" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="5dp"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/user_city"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLength="6"
+                                android:maxLines="1"
+                                android:text="@string/user_city"
+                                android:textColor="@color/gray"
+                                android:textSize="16sp"
+                                tools:text="重庆" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/user_constellation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+
+                                android:text="@string/user_constellation"
+                                android:textColor="@color/gray"
+                                android:textSize="16sp"
+                                tools:text=" · 白羊座" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/user_dynamic_quantity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:textColor="@color/gray"
+                                android:textSize="16sp"
+                                tools:text=" · 32条" />
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="5dp"
+                        android:id="@+id/interactive_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/background"
+                        android:gravity="center_horizontal"
                         android:orientation="horizontal">
 
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/user_city"
-                            android:layout_width="wrap_content"
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:maxLength="6"
-                            android:maxLines="1"
-                            android:text="@string/user_city"
-                            android:textColor="@color/gray"
-                            android:textSize="16sp"
-                            tools:text="重庆" />
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="1"
+                            app:cardCornerRadius="20dp"
+                            app:strokeWidth="0dp">
 
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/user_constellation"
-                            android:layout_width="wrap_content"
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="12dp">
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        android:id="@+id/user_friend_count"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:maxWidth="80dp"
+                                        android:maxLines="1"
+                                        android:minWidth="10dp"
+                                        android:text="@string/my_friend_count"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold"
+                                        tools:text="111" />
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignBottom="@id/user_friend_count"
+                                        android:layout_marginStart="2dp"
+                                        android:layout_toEndOf="@id/user_friend_count"
+                                        android:ellipsize="end"
+                                        android:maxLines="1"
+                                        android:paddingBottom="2dp"
+                                        android:text="@string/my_friend_bit_string"
+                                        android:textStyle="bold" />
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_below="@id/user_friend_count"
+                                        android:layout_marginTop="-4dp"
+                                        android:paddingStart="2dp"
+                                        android:paddingEnd="2dp"
+                                        android:text="@string/my_friend_string"
+                                        android:textColor="@color/gray"
+                                        android:textSize="12sp" />
+                                </RelativeLayout>
+
+                                <ImageView
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:layout_gravity="end"
+                                    android:layout_marginEnd="10dp"
+                                    android:src="@drawable/group_24px" />
+                            </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:maxLines="1"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_weight="1"
+                            android:layout_marginBottom="5dp"
+                            app:cardCornerRadius="20dp"
+                            app:strokeWidth="0dp">
 
-                            android:text="@string/user_constellation"
-                            android:textColor="@color/gray"
-                            android:textSize="16sp"
-                            tools:text=" · 白羊座" />
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="12dp">
 
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/user_dynamic_quantity"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:textColor="@color/gray"
-                            android:textSize="16sp"
-                            tools:text=" · 32条" />
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        android:id="@+id/light_up_dynamics"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:maxWidth="80dp"
+                                        android:maxLines="1"
+                                        android:minWidth="10dp"
+                                        android:text="@string/my_light_up_dynamics_count"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold"
+                                        tools:text="111" />
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignBottom="@id/light_up_dynamics"
+                                        android:layout_marginStart="2dp"
+                                        android:layout_toEndOf="@id/light_up_dynamics"
+                                        android:ellipsize="end"
+                                        android:maxLines="1"
+                                        android:paddingBottom="2dp"
+                                        android:text="@string/my_light_up_dynamics_strip_string"
+                                        android:textStyle="bold" />
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_below="@id/light_up_dynamics"
+                                        android:layout_marginTop="-4dp"
+                                        android:paddingStart="2dp"
+                                        android:paddingEnd="2dp"
+                                        android:text="@string/my_light_up_dynamics"
+                                        android:textColor="@color/gray"
+                                        android:textSize="12sp" />
+                                </RelativeLayout>
+
+                                <ImageView
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:layout_gravity="end"
+                                    android:layout_marginEnd="10dp"
+                                    android:src="@drawable/wb_sunny_24px" />
+                            </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
                     </LinearLayout>
                 </LinearLayout>
 
-
             </FrameLayout>
+
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
@@ -202,6 +346,7 @@
                             android:src="@drawable/dark_mode_24px" />
 
                         <ImageView
+                            android:id="@+id/search_image"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center"
@@ -224,7 +369,7 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.migu.android.linkyou.customize.MyNestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -234,161 +379,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/interactive_data"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp"
-                    app:strokeWidth="0dp">
-
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="12dp">
-
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:id="@+id/user_friend_count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:maxWidth="80dp"
-                                android:maxLines="1"
-                                android:minWidth="10dp"
-                                android:text="@string/my_friend_count"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                tools:text="111" />
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignBottom="@id/user_friend_count"
-                                android:layout_marginStart="2dp"
-                                android:layout_toEndOf="@id/user_friend_count"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:paddingBottom="2dp"
-                                android:text="@string/my_friend_bit_string"
-                                android:textStyle="bold" />
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/user_friend_count"
-                                android:layout_marginTop="-4dp"
-                                android:paddingStart="2dp"
-                                android:paddingEnd="2dp"
-                                android:text="@string/my_friend_string"
-                                android:textColor="@color/gray"
-                                android:textSize="12sp" />
-                        </RelativeLayout>
-
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:layout_gravity="end"
-                            android:layout_marginEnd="10dp"
-                            android:src="@drawable/group_24px" />
-                    </FrameLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp"
-                    app:strokeWidth="0dp">
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="12dp">
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:id="@+id/light_up_dynamics"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:maxWidth="80dp"
-                                android:maxLines="1"
-                                android:minWidth="10dp"
-                                android:text="@string/my_light_up_dynamics_count"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                tools:text="111" />
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignBottom="@id/light_up_dynamics"
-                                android:layout_marginStart="2dp"
-                                android:layout_toEndOf="@id/light_up_dynamics"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:paddingBottom="2dp"
-                                android:text="@string/my_light_up_dynamics_strip_string"
-                                android:textStyle="bold" />
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/light_up_dynamics"
-                                android:layout_marginTop="-4dp"
-                                android:paddingStart="2dp"
-                                android:paddingEnd="2dp"
-                                android:text="@string/my_light_up_dynamics"
-                                android:textColor="@color/gray"
-                                android:textSize="12sp" />
-                        </RelativeLayout>
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:layout_gravity="end"
-                            android:layout_marginEnd="10dp"
-                            android:src="@drawable/wb_sunny_24px" />
-                    </FrameLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-
-            </LinearLayout>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/user_dynamic_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="0dp" />
+                android:layout_height="0dp"
+                android:overScrollMode="never" />
         </LinearLayout>
 
-    </com.migu.android.linkyou.customize.MyNestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -67,7 +67,7 @@ object FileUtils {
                         writeImageDataToUriSDK29(it, bitmap, values, compressFormat)
                     } else {
                         // 低版本中无MediaStore.Images.Media.IS_PENDING字段
-                        writeImageDataToUriLessThanSDK29(uri, bitmap, compressFormat)
+                        writeImageDataToUriLessThanSDK29(it, bitmap, compressFormat)
                     }
                 }
                 showToastOnUiThread("图片保存成功~")

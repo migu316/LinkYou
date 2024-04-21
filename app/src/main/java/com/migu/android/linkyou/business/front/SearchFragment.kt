@@ -21,6 +21,14 @@ class SearchFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun initialize() {
+
+    }
+
+    override fun initializeListener() {
+    }
+
+
     companion object {
         fun newInstance(): Fragment {
             return SearchFragment()

@@ -55,4 +55,6 @@
     <string name="view_pager_items">%s/%s</string>
     <string name="save_image">Save Image</string>
     <string name="cancel_string">Cancel</string>
+    <string name="reply_in_total">%s reply in total</string>
+    <string name="get_detail_dynamic_error">Get detail dynamic error</string>
 </resources>

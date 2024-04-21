@@ -1,10 +1,12 @@
-package com.migu.android.linkyou.business.dynamic
+package com.migu.android.linkyou.business.dynamic.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.migu.android.linkyou.BaseFragment
+import com.migu.android.linkyou.business.dynamic.DynamicImageFragment
+import com.migu.android.linkyou.business.dynamic.ImageViewHolder
 import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
 
 /**
@@ -29,9 +31,7 @@ class ImageAdapter(private var urls: List<String>, private val callbacks: BaseFr
         return holder
     }
 
-
     override fun getItemCount() = urls.size
-
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val url = urls[position]

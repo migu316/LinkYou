@@ -1,4 +1,4 @@
-package com.migu.android.linkyou.business.dynamic
+package com.migu.android.linkyou.business.dynamic.adapter
 
 import android.content.Context
 import android.graphics.Bitmap

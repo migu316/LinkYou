@@ -56,4 +56,6 @@
     <string name="view_pager_items">%s/%s</string>
     <string name="save_image">保存图片</string>
     <string name="cancel_string">取消</string>
+    <string name="reply_in_total">共%s条回复</string>
+    <string name="get_detail_dynamic_error">获取动态详情错误</string>
 </resources>

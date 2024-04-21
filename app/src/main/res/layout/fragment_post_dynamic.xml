@@ -21,12 +21,13 @@
             android:layout_gravity="center_vertical"
             android:src="@drawable/arrow_back_24px" />
 
-        <com.google.android.material.button.MaterialButton
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/post_dynamic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|end"
             android:clickable="false"
+            android:textColor="@color/black"
             android:background="@drawable/post_button_background"
             android:text="@string/post_dynamic"
             android:textSize="14sp" />

@@ -3,14 +3,11 @@ package com.migu.android.linkyou.business.my
 import android.app.UiModeManager
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -18,10 +15,10 @@ import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.SharedUtil
-import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.ActivitySharedViewModel
+import com.migu.android.linkyou.business.front.SearchFragment
 import com.migu.android.linkyou.databinding.FragmentMyBinding
 import com.migu.android.network.GetUrlsHandler
 import com.migu.android.network.R
@@ -39,7 +36,7 @@ class MyFragment : BaseFragment() {
 
     private lateinit var userDynamicAdapter: UserDynamicAdapter
 
-    private lateinit var getUrlsHandler: GetUrlsHandler<UserDynamicAdapter.DynamicViewHolder>
+    private lateinit var getUrlsHandler: GetUrlsHandler<UserDynamicAdapter.DynamicBaseViewHolder>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,16 +68,31 @@ class MyFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // 执行主页的监听器
-        initListener()
+        // 拉取缓存
         initializeDataForCache()
-        initializeData()
     }
 
-    /**
-     * 初始化监听器
-     */
-    private fun initListener() {
+    override fun initialize() {
+        // 将会发起一个网络请求，获取最新的数据，并观察 userInfoLiveData，当数据发生变化时执行回调函数
+        sharedViewModel.userInfoLiveData.observe(viewLifecycleOwner) { result ->
+            val userResultResponse = result.getOrNull()
+            // 如果 userResultResponse 不为 null，则执行下面的代码块
+            userResultResponse?.let {
+                // 更新用户信息，传入结果中的第一个用户信息对象
+                updateUserInfo(it.results[0])
+                // 将最新的用户信息保存到SharedPreferences中
+                sharedViewModel.saveUserInfo(it.results[0])
+            } ?: run {
+                // 如果发生异常，则显示网络错误提示，并打印异常栈轨迹信息
+                showToastOnUiThread(GlobalUtil.getString(R.string.network_error_get_personal_information))
+                result.exceptionOrNull()?.printStackTrace()
+            }
+        }
+
+
+    }
+
+    override fun initializeListener() {
         binding.appbarLayout.addOnOffsetChangedListener { p0, p1 ->
             val totalRange = p0?.totalScrollRange
             val shouldGoneValue = totalRange?.minus(binding.toolbar.height / 2)
@@ -108,7 +120,7 @@ class MyFragment : BaseFragment() {
                     // 用于设置当前根视图的测量高度
                     val rootMeasureHeight = measuredHeight
                     // 获取当前互动部件的测量高度
-                    val interactiveHeight = binding.interactiveData.measuredHeight
+//                    val interactiveHeight = binding.interactiveData.measuredHeight
 
                     // 设置动态RV的高度，为根布局测量高度 - toolbar的测量高度，避免holder复用失效
                     binding.userDynamicRecyclerView.apply {
@@ -118,7 +130,7 @@ class MyFragment : BaseFragment() {
                     }
 
                     // 设置自定义nestedScrollView中用于消费的互动部件的高度
-                    binding.nestedScrollView.setInteractiveHeight(interactiveHeight)
+//                    binding.nestedScrollView.setInteractiveHeight(interactiveHeight)
                     if (rootMeasureHeight != 0 && observer.isAlive) {
                         observer.removeOnGlobalLayoutListener(this)
                     }
@@ -129,6 +141,34 @@ class MyFragment : BaseFragment() {
         binding.darkSunModeSwitch.apply {
             setOnClickListener {
                 switchDarkMode()
+            }
+        }
+
+        binding.searchImage.setOnClickListener {
+            callbacks?.onClickChangeFragment(SearchFragment.newInstance())
+        }
+
+        // 发起网络请求获取用户发布的动态并监听
+        sharedViewModel.userDynamicsLiveData.observe(viewLifecycleOwner) { result ->
+            if (result.isFailure) {
+                showToastOnUiThread(GlobalUtil.getString(com.migu.android.linkyou.R.string.get_dynamics_error))
+                result.exceptionOrNull()?.printStackTrace()
+            } else {
+                val targetUserDynamicsResponse = result.getOrNull()
+                targetUserDynamicsResponse?.let {
+//                // 1.先提交一个空集合，用于清空视图，避免holder在后台继续从数据库取urls
+//                userDynamicAdapter.submitList(listOf())
+
+                    // 3.再将数据显示上去，就可以避免holder取数据存在问题
+                    showDynamics(it.results)
+
+                    // 2.再存进数据库作为缓存：因为需要先删除数据库的数据
+                    // 问题很可能出现在这里，因为当切换到主页后，这里会拉取数据，先删除数据库的数据，再保存进去
+                    // 此时所有的urls都为空，我们再直接退出，就会导致下次打开时，无任何图片加载
+                    // 复现：当连接网络时切换到该页面，瞬间关闭网络，就会导致数据库的urls被清空，下次无网络时就会出现
+                    // 没有任何数据
+                    sharedViewModel.saveDynamicsToDB(it.results)
+                }
             }
         }
     }
@@ -211,50 +251,6 @@ class MyFragment : BaseFragment() {
         }
     }
 
-    /**
-     * 拉取服务器中最新的内容
-     */
-    private fun initializeData() {
-        // 将会发起一个网络请求，获取最新的数据，并观察 userInfoLiveData，当数据发生变化时执行回调函数
-        sharedViewModel.userInfoLiveData.observe(viewLifecycleOwner) { result ->
-            val userResultResponse = result.getOrNull()
-            // 如果 userResultResponse 不为 null，则执行下面的代码块
-            userResultResponse?.let {
-                // 更新用户信息，传入结果中的第一个用户信息对象
-                updateUserInfo(it.results[0])
-                // 将最新的用户信息保存到SharedPreferences中
-                sharedViewModel.saveUserInfo(it.results[0])
-            } ?: run {
-                // 如果发生异常，则显示网络错误提示，并打印异常栈轨迹信息
-                showToastOnUiThread(GlobalUtil.getString(R.string.network_error_get_personal_information))
-                result.exceptionOrNull()?.printStackTrace()
-            }
-        }
-
-        // 发起网络请求获取用户发布的动态
-        sharedViewModel.userDynamicsLiveData.observe(viewLifecycleOwner) { result ->
-            if (result.isFailure) {
-                showToastOnUiThread(GlobalUtil.getString(com.migu.android.linkyou.R.string.get_dynamics_error))
-                result.exceptionOrNull()?.printStackTrace()
-            } else {
-                val targetUserDynamicsResponse = result.getOrNull()
-                targetUserDynamicsResponse?.let {
-//                // 1.先提交一个空集合，用于清空视图，避免holder在后台继续从数据库取urls
-//                userDynamicAdapter.submitList(listOf())
-
-                    // 3.再将数据显示上去，就可以避免holder取数据存在问题
-                    showDynamics(it.results)
-
-                    // 2.再存进数据库作为缓存：因为需要先删除数据库的数据
-                    // 问题很可能出现在这里，因为当切换到主页后，这里会拉取数据，先删除数据库的数据，再保存进去
-                    // 此时所有的urls都为空，我们再直接退出，就会导致下次打开时，无任何图片加载
-                    // 复现：当连接网络时切换到该页面，瞬间关闭网络，就会导致数据库的urls被清空，下次无网络时就会出现
-                    // 没有任何数据
-                    sharedViewModel.saveDynamicsToDB(it.results)
-                }
-            }
-        }
-    }
 
     /**
      * 将获取到的数据填充到recyclerView的适配器中

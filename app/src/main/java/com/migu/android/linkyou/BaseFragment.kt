@@ -1,16 +1,35 @@
 package com.migu.android.linkyou
 
 import android.content.Context
+import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.migu.android.linkyou.event.OnBackPressedListener
 
-open class BaseFragment : Fragment(), OnBackPressedListener {
+abstract class BaseFragment : Fragment(), OnBackPressedListener {
 
     /**
      * 托管活动所需接口，用于在添加频道时添加主页面
      */
     interface Callbacks {
         fun onClickChangeFragment(fragment: Fragment)
+    }
+
+    /**
+     * 用来处理一些数据的加载，控件的初始化(不包括监听器)
+     */
+    abstract fun initialize()
+
+    /**
+     * 处理控件的监听事件，也可以用来添加观察者
+     */
+    abstract fun initializeListener()
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initialize()
+        initializeListener()
     }
 
     /**

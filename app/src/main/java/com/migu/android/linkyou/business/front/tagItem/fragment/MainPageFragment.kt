@@ -35,9 +35,7 @@ class MainPageFragment : BaseFragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun initialize() {
         mainPageAdapter = MainPageAdapter(callbacks)
         binding.theLastDynamicsRecyclerView.apply {
             // 设置屏幕外的视图缓存数量
@@ -45,6 +43,15 @@ class MainPageFragment : BaseFragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mainPageAdapter
         }
+        lifecycleScope.launch(Dispatchers.IO) {
+            sharedMainViewModel.getTheLastDynamics().collect { pagingData ->
+                logInfo(pagingData.toString())
+                mainPageAdapter.submitData(pagingData)
+            }
+        }
+    }
+
+    override fun initializeListener() {
         mainPageAdapter.addLoadStateListener {
             when (it.refresh) {
                 is LoadState.NotLoading -> {
@@ -57,13 +64,6 @@ class MainPageFragment : BaseFragment() {
                     val state = it.refresh as LoadState.Error
                     showToast("网络错误")
                 }
-            }
-        }
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            sharedMainViewModel.getTheLastDynamics().collect { pagingData ->
-                logInfo(pagingData.toString())
-                mainPageAdapter.submitData(pagingData)
             }
         }
     }

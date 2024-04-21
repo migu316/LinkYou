@@ -1,6 +1,12 @@
 package com.migu.android.linkyou.business.front.tagItem.fragment
 
-import androidx.fragment.app.Fragment
+import com.migu.android.linkyou.BaseFragment
 
-class FocusPageFragment:Fragment() {
+class FocusPageFragment:BaseFragment() {
+    override fun initialize() {
+
+    }
+
+    override fun initializeListener() {
+    }
 }

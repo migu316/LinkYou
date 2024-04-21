@@ -27,7 +27,6 @@ class MainActivity : BaseActivity(), BaseFragment.Callbacks {
         ViewModelProvider(this)[ActivitySharedViewModel::class.java]
     }
 
-
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,9 +36,9 @@ class MainActivity : BaseActivity(), BaseFragment.Callbacks {
         initialize()
     }
 
-
     private fun initialize() {
         BarUtils.immersiveStatus(window)
+
         // 按下back键的回调
         val backCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -71,7 +70,7 @@ class MainActivity : BaseActivity(), BaseFragment.Callbacks {
                 R.anim.fade_in,
                 R.anim.slide_out_left
             )
-            replace(binding.root.id, fragment).addToBackStack(null)
+            add(binding.root.id, fragment).addToBackStack(null)
         }
         transaction.commit()
     }

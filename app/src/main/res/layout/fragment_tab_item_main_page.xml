@@ -5,24 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--    <ScrollView-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent">-->
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:orientation="vertical">-->
-
-
-    <!--            <include layout="@layout/dynamics_has_avatar_item" />-->
-    <!--            <include layout="@layout/dynamics_has_avatar_item" />-->
-    <!--            <include layout="@layout/dynamics_has_avatar_item" />-->
-    <!--            <include layout="@layout/dynamics_has_avatar_item" />-->
-
-    <!--        </LinearLayout>-->
-    <!--    </ScrollView>-->
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/the_last_dynamics_recycler_view"
         android:layout_width="match_parent"

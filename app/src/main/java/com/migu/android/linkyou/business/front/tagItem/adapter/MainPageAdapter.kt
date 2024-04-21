@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.DateUtil
-import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseFragment
+import com.migu.android.linkyou.business.dynamic.RVDynamicBaseViewHolder
 import com.migu.android.linkyou.databinding.DynamicsHasAvatarItemBinding
-import com.migu.android.linkyou.business.dynamic.ImageAdapter
+import com.migu.android.linkyou.business.dynamic.adapter.ImageAdapter
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.util.NetWorkUtil
 
@@ -21,7 +20,7 @@ import com.migu.android.network.util.NetWorkUtil
  * 主页适配器，继承自 PagingDataAdapter，用于展示动态列表
  */
 class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
-    PagingDataAdapter<Dynamic, MainPageAdapter.DynamicViewHolder>(COMPARATOR) {
+    PagingDataAdapter<Dynamic, MainPageAdapter.DynamicBaseViewHolder>(COMPARATOR) {
 
     private lateinit var context: Context
 
@@ -37,15 +36,15 @@ class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicBaseViewHolder {
         context = parent.context
         // 使用动态布局绑定生成的 ViewDataBinding 对象
         val binding =
             DynamicsHasAvatarItemBinding.inflate(LayoutInflater.from(context), parent, false)
-        return DynamicViewHolder(binding)
+        return DynamicBaseViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: DynamicViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DynamicBaseViewHolder, position: Int) {
         val binding = holder.binding
         val dynamicItem = getItem(position)
         if (dynamicItem != null) {
@@ -68,12 +67,15 @@ class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
         }
     }
 
-    inner class DynamicViewHolder(val binding: DynamicsHasAvatarItemBinding) :
-        ViewHolder(binding.root) {
+    inner class DynamicBaseViewHolder(val binding: DynamicsHasAvatarItemBinding) :
+        RVDynamicBaseViewHolder(
+            binding.root,
+            binding.includeContent.userDynamicImagesRecyclerView,
+            callbacks
+        ) {
 
-        private lateinit var dynamic: Dynamic
         fun bind(dynamic: Dynamic) {
-            this.dynamic = dynamic
+            mDynamic = dynamic
             // 设置用户信息部分的数据
             binding.includeUserInfo.apply {
                 val httpsUrl = dynamic.userInfoId?.avatar?.url?.let {

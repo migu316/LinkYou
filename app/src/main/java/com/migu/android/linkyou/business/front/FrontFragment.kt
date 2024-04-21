@@ -1,6 +1,5 @@
 package com.migu.android.linkyou.business.front
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
-import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.ActivitySharedViewModel
 import com.migu.android.linkyou.databinding.FragmentFrontBinding
@@ -29,23 +27,23 @@ class FrontFragment : BaseFragment() {
     // 用于管理ViewPager2中的Fragment
     private lateinit var adapter: TabItemFragmentStateAdapter
 
+    private lateinit var channelSet: LinkedHashSet<ChannelData>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        initialize()
         // 返回根视图
         return binding.root
     }
 
-    private fun initialize() {
+    override fun initialize() {
         // 偏移状态栏
         BarUtils.offsetStatusBar(binding.root)
 
         // 从本地存储中获取TabItem的数据列表
-        val channelSet = TabItemControl.getTabItemListForSP(requireContext(), TAG_ITEM)
+        channelSet = TabItemControl.getTabItemListForSP(requireContext(), TAG_ITEM)
         // 初始化适配器
         adapter = TabItemFragmentStateAdapter(requireActivity(), channelSet)
         // 设置ViewPager2的保存状态为不可用
@@ -62,15 +60,9 @@ class FrontFragment : BaseFragment() {
         // 刷新头像
         val avatarUrlBySp = activitySharedViewModel.getUserAvatarUrlBySp()
         Glide.with(this).load(avatarUrlBySp).into(binding.frontPageSmallAvatar)
-
-        initListener(channelSet)
     }
 
-    /**
-     * 初始化监听器
-     * @param channelSet 频道列表
-     */
-    private fun initListener(channelSet: LinkedHashSet<ChannelData>) {
+    override fun initializeListener() {
         // 打开频道管理页面
         binding.addFocusTopic.setOnClickListener {
             val fragment = ChangeChannelFragment.newInstance(channelSet)
@@ -92,6 +84,7 @@ class FrontFragment : BaseFragment() {
 
     companion object {
         private const val TAG_ITEM = "tag_item"
+
         // 创建FrontFragment的新实例
         fun newInstance(): FrontFragment {
             return FrontFragment()

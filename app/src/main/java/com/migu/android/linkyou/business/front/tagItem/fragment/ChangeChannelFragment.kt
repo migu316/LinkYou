@@ -4,20 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.databinding.FragmentChooseChannelBinding
 import com.migu.android.linkyou.business.front.tagItem.adapter.ChangeChannelAdapter
 import com.migu.android.linkyou.business.front.tagItem.model.ChannelData
 import com.migu.android.linkyou.util.BarUtils
 
-
-
-
-class ChangeChannelFragment : Fragment() {
+class ChangeChannelFragment : BaseFragment() {
 
     private lateinit var binding: FragmentChooseChannelBinding
     private lateinit var channelSet: LinkedHashSet<ChannelData>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val arrayListChannels =
@@ -31,12 +29,14 @@ class ChangeChannelFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentChooseChannelBinding.inflate(inflater, container, false)
-        BarUtils.offsetStatusBar(binding.root)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initialize() {
+        BarUtils.offsetStatusBar(binding.root)
+    }
+
+    override fun initializeListener() {
         binding.myFocusChannelRecyclerView.apply {
             layoutManager = GridLayoutManager(requireContext(), 3)
             adapter = ChangeChannelAdapter(channelSet)

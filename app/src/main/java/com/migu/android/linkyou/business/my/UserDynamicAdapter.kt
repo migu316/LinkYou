@@ -6,16 +6,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.migu.android.core.util.DateUtil
+import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseFragment
+import com.migu.android.linkyou.business.dynamic.RVDynamicBaseViewHolder
 import com.migu.android.linkyou.databinding.DynamicsNoAvatarItemBinding
-import com.migu.android.linkyou.business.dynamic.ImageAdapter
+import com.migu.android.linkyou.business.dynamic.adapter.ImageAdapter
 import com.migu.android.network.GetUrlsHandler
 import com.migu.android.network.model.base.Dynamic
 
-class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewHolder>, val callbacks: BaseFragment.Callbacks?) :
-    ListAdapter<Dynamic, UserDynamicAdapter.DynamicViewHolder>(diffUtil) {
+class UserDynamicAdapter(
+    private val getUrlsHandler: GetUrlsHandler<DynamicBaseViewHolder>,
+    val callbacks: BaseFragment.Callbacks?
+) :
+    ListAdapter<Dynamic, UserDynamicAdapter.DynamicBaseViewHolder>(diffUtil) {
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Dynamic>() {
             override fun areItemsTheSame(oldItem: Dynamic, newItem: Dynamic): Boolean {
@@ -29,15 +33,15 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicBaseViewHolder {
         val binding =
             DynamicsNoAvatarItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        binding.includeContent
-        return DynamicViewHolder(binding)
+        logInfo(":1111")
+        return DynamicBaseViewHolder(binding)
     }
 
 
-    override fun onBindViewHolder(holder: DynamicViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DynamicBaseViewHolder, position: Int) {
         val dynamic = currentList[position]
         holder.bind(dynamic)
         // 为视图添加标签
@@ -61,13 +65,16 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
         getUrlsHandler.queueGetUrls(holder, dynamic)
     }
 
-    inner class DynamicViewHolder(val binding: DynamicsNoAvatarItemBinding) :
-        ViewHolder(binding.root) {
-
-        private lateinit var dynamic: Dynamic
+    inner class DynamicBaseViewHolder(val binding: DynamicsNoAvatarItemBinding) :
+        RVDynamicBaseViewHolder(
+            binding.root,
+            binding.includeContent.userDynamicImagesRecyclerView,
+            callbacks
+        ) {
 
         fun bind(data: Dynamic) {
-            dynamic = data
+            // 必须赋值给mDynamic，以便查看详情
+            mDynamic = data
             binding.apply {
                 includeContent.releaseTimeTextview.text =
                     data.createdAt?.let { DateUtil.formatDateToString(it) }
@@ -81,8 +88,8 @@ class UserDynamicAdapter(private val getUrlsHandler: GetUrlsHandler<DynamicViewH
             // 如果不相等，那么就不进行设置，将会由下一次回调并且tag相等的来进行设置
             if (binding.root.tag == objectId) {
                 binding.includeContent.userDynamicImagesRecyclerView.apply {
-
-                    if (urls.isEmpty() && dynamic.imageCount == 0) {
+                    mDynamic.imageUrls = urls
+                    if (urls.isEmpty() && mDynamic.imageCount == 0) {
                         // 如果holder传递过来的url集合为空，并且动态数据附带的图片数量也是0，那么可以隐藏RecyclerView
                         visibility = View.GONE
                         return

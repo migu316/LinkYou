@@ -19,13 +19,14 @@ class MessageFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        BarUtils.offsetStatusBar(binding.root)
         return binding.root
     }
 
+    override fun initialize() {
+        BarUtils.offsetStatusBar(binding.root)
+    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initializeListener() {
     }
 
     companion object {
