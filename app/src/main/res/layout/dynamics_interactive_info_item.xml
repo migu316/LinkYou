@@ -41,6 +41,7 @@
         android:textColor="@color/gray" />
 
     <ImageView
+        android:id="@+id/shared_dynamic"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center"

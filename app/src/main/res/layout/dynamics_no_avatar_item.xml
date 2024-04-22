@@ -31,7 +31,7 @@
                 android:orientation="vertical">
 
                 <include
-                    android:id="@+id/include_interactive"
+                    android:id="@+id/include_interactive_data"
                     layout="@layout/dynamics_interactive_info_item" />
             </LinearLayout>
         </LinearLayout>

@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.migu.android.core.util.DateUtil
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.dynamic.RVDynamicBaseViewHolder
+import com.migu.android.linkyou.business.dynamic.SharedDynamicFragment
 import com.migu.android.linkyou.databinding.DynamicsHasAvatarItemBinding
 import com.migu.android.linkyou.business.dynamic.adapter.ImageAdapter
 import com.migu.android.network.model.base.Dynamic
@@ -74,6 +75,12 @@ class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
             callbacks
         ) {
 
+            init {
+                binding.includeInteractiveData.sharedDynamic.setOnClickListener {
+                    callbacks?.onClickChangeFragment(SharedDynamicFragment.newInstance(mDynamic))
+                }
+            }
+
         fun bind(dynamic: Dynamic) {
             mDynamic = dynamic
             // 设置用户信息部分的数据
@@ -91,7 +98,7 @@ class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
                 contentTextview.text = dynamic.postText
             }
             // 设置互动数据部分的数据
-            binding.interactiveData.apply {
+            binding.includeInteractiveData.apply {
                 likesTextview.text = dynamic.likes.toString()
             }
         }

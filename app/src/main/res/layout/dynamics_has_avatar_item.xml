@@ -29,7 +29,7 @@
                 layout="@layout/dynamics_context_base_item" />
 
             <include
-                android:id="@+id/interactive_data"
+                android:id="@+id/include_interactive_data"
                 layout="@layout/dynamics_interactive_info_item" />
         </LinearLayout>
 

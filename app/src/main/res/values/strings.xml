@@ -57,4 +57,6 @@
     <string name="cancel_string">Cancel</string>
     <string name="reply_in_total">%s reply in total</string>
     <string name="get_detail_dynamic_error">Get detail dynamic error</string>
+    <string name="shared_image">Shared Image</string>
+    <string name="shared_post_time_string">%s Released in LinkYou</string>
 </resources>

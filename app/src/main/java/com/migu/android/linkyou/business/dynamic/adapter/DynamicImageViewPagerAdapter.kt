@@ -12,6 +12,9 @@ import com.bumptech.glide.Glide
 import com.migu.android.linkyou.databinding.DynacisImagesViewpagerItemBinding
 import com.migu.android.network.util.NetWorkUtil
 
+/**
+ * 显示动态图片的viewpager2适配器
+ */
 class DynamicImageViewPagerAdapter(val saveImageCallback: (bitmap:Bitmap) -> Unit) :
     ListAdapter<String, DynamicImageViewPagerAdapter.DetailImageViewHolder>(diffUtil) {
     companion object {

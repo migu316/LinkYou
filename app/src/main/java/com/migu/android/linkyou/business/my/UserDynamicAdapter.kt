@@ -10,6 +10,7 @@ import com.migu.android.core.util.DateUtil
 import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.dynamic.RVDynamicBaseViewHolder
+import com.migu.android.linkyou.business.dynamic.SharedDynamicFragment
 import com.migu.android.linkyou.databinding.DynamicsNoAvatarItemBinding
 import com.migu.android.linkyou.business.dynamic.adapter.ImageAdapter
 import com.migu.android.network.GetUrlsHandler
@@ -71,6 +72,11 @@ class UserDynamicAdapter(
             callbacks
         ) {
 
+        init {
+            binding.includeInteractiveData.sharedDynamic.setOnClickListener {
+                callbacks?.onClickChangeFragment(SharedDynamicFragment.newInstance(mDynamic))
+            }
+        }
         fun bind(data: Dynamic) {
             // 必须赋值给mDynamic，以便查看详情
             mDynamic = data
@@ -78,7 +84,7 @@ class UserDynamicAdapter(
                 includeContent.releaseTimeTextview.text =
                     data.createdAt?.let { DateUtil.formatDateToString(it) }
                 includeContent.contentTextview.text = data.postText
-                includeInteractive.likesTextview.text = data.likes.toString()
+                includeInteractiveData.likesTextview.text = data.likes.toString()
             }
         }
 

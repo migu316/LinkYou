@@ -13,7 +13,7 @@ import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.business.dynamic.adapter.DynamicImageViewPagerAdapter
 import com.migu.android.linkyou.databinding.DialogBottomSheetImageOperateBinding
-import com.migu.android.linkyou.databinding.FragmentDynacisImagesViewpagerBinding
+import com.migu.android.linkyou.databinding.FragmentDynamicImagesViewpagerBinding
 import com.migu.android.linkyou.util.FileUtils
 import com.migu.android.linkyou.util.LayoutUtils
 import kotlinx.coroutines.launch
@@ -21,11 +21,11 @@ import java.util.ArrayList
 
 class DynamicImageFragment : BaseFragment() {
 
-    private lateinit var binding: FragmentDynacisImagesViewpagerBinding
+    private lateinit var binding: FragmentDynamicImagesViewpagerBinding
     private lateinit var urls: List<String>
     private var position: Int = 0
     private val dynamicImageViewPagerAdapter = DynamicImageViewPagerAdapter {
-        showSaveImageDialog(it)
+        showOperateImageDialog(it)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,7 @@ class DynamicImageFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDynacisImagesViewpagerBinding.inflate(inflater, container, false)
+        binding = FragmentDynamicImagesViewpagerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -76,7 +76,10 @@ class DynamicImageFragment : BaseFragment() {
         }
     }
 
-    private fun showSaveImageDialog(bitmap: Bitmap) {
+    /**
+     * 显示图片操作弹窗
+     */
+    private fun showOperateImageDialog(bitmap: Bitmap) {
         val operateBinding =
             DialogBottomSheetImageOperateBinding.inflate(layoutInflater)
         val dialog = LayoutUtils.createBottomDialog(requireContext()) {
@@ -84,6 +87,10 @@ class DynamicImageFragment : BaseFragment() {
             show()
         }
         operateBinding.cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        operateBinding.sharedImage.setOnClickListener {
+            SharedDynamic.sharedImage(bitmap,requireContext())
             dialog.dismiss()
         }
         operateBinding.saveImage.setOnClickListener {

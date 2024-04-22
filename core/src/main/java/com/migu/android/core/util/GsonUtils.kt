@@ -27,8 +27,8 @@ object GsonUtils {
      * @param json 要反序列化的 JSON 字符串
      * @return 反序列化后的对象，如果 JSON 字符串为空则返回 null
      */
-    inline fun <reified T> fromJsonNormal(json: String): T? {
-        if (json.isEmpty()) {
+    inline fun <reified T> fromJsonNormal(json: String?): T? {
+        if (json.isNullOrEmpty()) {
             return null
         }
         return gson.fromJson(json, T::class.java)

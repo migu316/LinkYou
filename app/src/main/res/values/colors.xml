@@ -15,4 +15,7 @@
     <color name="backgroundGradientMedium">#C0FFFFFF</color>
     <color name="backgroundGradientEnd">#00FFFFFF</color>
 
+    <color name="sharedYellow">#FFFBEF</color>
+    <color name="sharedBackground">#58575C</color>
+
 </resources>

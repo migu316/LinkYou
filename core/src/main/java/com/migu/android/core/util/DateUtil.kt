@@ -12,11 +12,11 @@ object DateUtil {
      * @param date 要转换的日期对象
      * @return 格式化后的日期字符串，格式为 "星期几 年-月-日 时:分"
      */
-    fun formatDateToString(date: Date): String {
+    fun formatDateToString(date: Date?): String {
         // 创建一个 SimpleDateFormat 对象来定义日期时间格式
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         // 将日期对象格式化为字符串并返回
-        return simpleDateFormat.format(date)
+        return date?.let { simpleDateFormat.format(it) } ?: ""
     }
 
 }
