@@ -36,7 +36,6 @@ class UserDynamicAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicBaseViewHolder {
         val binding =
             DynamicsNoAvatarItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        logInfo(":1111")
         return DynamicBaseViewHolder(binding)
     }
 

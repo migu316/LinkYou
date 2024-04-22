@@ -4,9 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.migu.android.linkyou.event.OnBackPressedListener
 
-abstract class BaseFragment : Fragment(), OnBackPressedListener {
+abstract class BaseFragment : Fragment() {
 
     /**
      * 托管活动所需接口，用于在添加频道时添加主页面
@@ -14,6 +13,8 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
     interface Callbacks {
         fun onClickChangeFragment(fragment: Fragment)
     }
+
+    var callbacks: Callbacks? = null
 
     /**
      * 用来处理一些数据的加载，控件的初始化(不包括监听器)
@@ -25,11 +26,20 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
      */
     abstract fun initializeListener()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initialize()
         initializeListener()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     /**
@@ -47,22 +57,5 @@ abstract class BaseFragment : Fragment(), OnBackPressedListener {
             .setCustomAnimations(0, R.anim.slide_out_left)
             .remove(this)
             .commit()
-    }
-
-    var callbacks: Callbacks? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callbacks = context as Callbacks
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
-    override fun onBackPressed(): Boolean {
-        exitFragment()
-        return true
     }
 }

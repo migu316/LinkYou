@@ -10,14 +10,11 @@ import com.migu.android.core.util.logWarn
 /**
  * 应用程序中所有activity的基类
  */
-private const val TAG = "BaseActivity"
-
 open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityController.addActivity(this)
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -70,5 +67,9 @@ open class BaseActivity : AppCompatActivity() {
             }
             activities.clear()
         }
+    }
+
+    companion object {
+        private const val TAG = "BaseActivity"
     }
 }

@@ -3,18 +3,18 @@ package com.migu.android.linkyou.business
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.ActivityMainBinding
-import com.migu.android.linkyou.event.OnBackPressedListener
 import com.migu.android.linkyou.util.BarUtils
 
 class MainActivity : BaseActivity(), BaseFragment.Callbacks {
@@ -38,22 +38,6 @@ class MainActivity : BaseActivity(), BaseFragment.Callbacks {
 
     private fun initialize() {
         BarUtils.immersiveStatus(window)
-
-        // 按下back键的回调
-        val backCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // 获取当前显示的 Fragment
-                val currentFragment = supportFragmentManager.findFragmentById(binding.root.id)
-
-                // 如果当前 Fragment 是可以处理返回事件的（例如，显示图片详情），则交给 Fragment 处理返回事件
-                if (currentFragment is OnBackPressedListener && currentFragment.onBackPressed()) {
-                    return
-                }
-            }
-        }
-        // 添加回调
-        onBackPressedDispatcher.addCallback(this, backCallback)
-
         // 绑定navigation和bottomNavigation
         val navHostFragment =
             supportFragmentManager.findFragmentById(binding.fragmentContainer.id) as NavHostFragment
@@ -70,7 +54,7 @@ class MainActivity : BaseActivity(), BaseFragment.Callbacks {
                 R.anim.fade_in,
                 R.anim.slide_out_left
             )
-            add(binding.root.id, fragment).addToBackStack(null)
+            add(binding.root.id, fragment).addToBackStack(MAIN_FRAGMENT_BACK_STACK)
         }
         transaction.commit()
     }
@@ -80,7 +64,27 @@ class MainActivity : BaseActivity(), BaseFragment.Callbacks {
         ActivityController.finishAllActivity()
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        val currentFragment = supportFragmentManager.findFragmentById(binding.root.id)
+        logInfo("当前返回栈中有${supportFragmentManager.backStackEntryCount}")
+        if (currentFragment?.isAdded == true) {
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(0, R.anim.slide_out_left)
+                .remove(currentFragment)
+                .commit()
+        } else {
+            supportFragmentManager.popBackStack(
+                MAIN_FRAGMENT_BACK_STACK,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+            super.onBackPressed()
+        }
+    }
+
     companion object {
+        private const val MAIN_FRAGMENT_BACK_STACK = "main_fragment_back_stack"
+
         fun newInstance(context: Context) {
             val intent = Intent(context, MainActivity::class.java)
             context.startActivity(intent)
