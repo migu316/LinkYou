@@ -1,4 +1,4 @@
-package com.migu.android.linkyou.business.front.tagItem
+package com.migu.android.core
 
 // 定义一个枚举类 TabItemCategoriesEnum
 enum class TabItemCategoriesEnum {

@@ -1,4 +1,4 @@
-package com.migu.android.linkyou.util
+package com.migu.android.core.util
 
 import android.graphics.Color
 import android.os.Build

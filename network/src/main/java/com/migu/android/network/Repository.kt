@@ -217,7 +217,6 @@ object Repository {
     fun updateImageUrlToDB(dynamicAndImages: DynamicAndImages) {
         CoroutineScope(Dispatchers.Main).launch {
             val isSuccess = databaseRepository.updateImageUrl(dynamicAndImages)
-            logInfo("更新数据是否成功：$isSuccess")
         }
     }
 

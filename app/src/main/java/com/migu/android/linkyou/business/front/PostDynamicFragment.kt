@@ -10,7 +10,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -18,21 +17,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.migu.android.core.util.GlobalUtil
-import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToast
-import com.migu.android.core.util.showToastOnUiThread
-import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.business.ActivitySharedViewModel
 import com.migu.android.linkyou.business.front.adapter.PostDynamicAdapter
 import com.migu.android.linkyou.databinding.DialogPostDynamicBinding
 import com.migu.android.linkyou.databinding.FragmentPostDynamicBinding
-import com.migu.android.linkyou.util.BarUtils
-import com.migu.android.linkyou.util.CalculateUtils
-import com.migu.android.linkyou.util.LayoutUtils
-import com.migu.android.network.Repository
-import com.migu.android.network.request.LeanCloudSDKRequest
+import com.migu.android.core.util.BarUtils
+import com.migu.android.core.util.CalculateUtils
+import com.migu.android.core.util.LayoutUtils
 import kotlinx.coroutines.launch
 
 /**

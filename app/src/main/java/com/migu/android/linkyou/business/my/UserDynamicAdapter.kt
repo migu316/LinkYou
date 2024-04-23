@@ -1,12 +1,17 @@
 package com.migu.android.linkyou.business.my
 
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import androidx.core.util.TypedValueCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
+import com.migu.android.core.LinkYou
 import com.migu.android.core.util.DateUtil
+import com.migu.android.core.util.UiUtils
 import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.dynamic.RVDynamicBaseViewHolder
@@ -16,6 +21,9 @@ import com.migu.android.linkyou.business.dynamic.adapter.ImageAdapter
 import com.migu.android.network.GetUrlsHandler
 import com.migu.android.network.model.base.Dynamic
 
+/**
+ * 用户页的适配器，和主页的略有差异
+ */
 class UserDynamicAdapter(
     private val getUrlsHandler: GetUrlsHandler<DynamicBaseViewHolder>,
     val callbacks: BaseFragment.Callbacks?
@@ -40,7 +48,6 @@ class UserDynamicAdapter(
         return DynamicBaseViewHolder(binding)
     }
 
-
     override fun onBindViewHolder(holder: DynamicBaseViewHolder, position: Int) {
         val dynamic = currentList[position]
         holder.bind(dynamic)
@@ -57,7 +64,7 @@ class UserDynamicAdapter(
                 // 否则设置显示，并传入无效数据用于显示占位图，
                 // 避免后面holder回调方法时，页面view重新测量高度导致视图拉扯卡顿
                 visibility = View.VISIBLE
-                ImageAdapter(List(dynamic.imageCount ?: 0) { "" }, callbacks)
+                ImageAdapter(List(dynamic.imageCount ?: 0) { "" }, null)
             }
             layoutManager = GridLayoutManager(context, 3)
         }
@@ -77,6 +84,7 @@ class UserDynamicAdapter(
                 callbacks?.onClickChangeFragment(SharedDynamicFragment.newInstance(mDynamic))
             }
         }
+
         fun bind(data: Dynamic) {
             // 必须赋值给mDynamic，以便查看详情
             mDynamic = data
@@ -94,18 +102,8 @@ class UserDynamicAdapter(
             if (binding.root.tag == objectId) {
                 binding.includeContent.userDynamicImagesRecyclerView.apply {
                     mDynamic.imageUrls = urls
-                    if (urls.isEmpty() && mDynamic.imageCount == 0) {
-                        // 如果holder传递过来的url集合为空，并且动态数据附带的图片数量也是0，那么可以隐藏RecyclerView
-                        visibility = View.GONE
-                        return
-                    } else if (urls.isEmpty()) {
-                        // 如果holder传递过来的url集合为空，但是动态本身覆盖的图片数量不为0，
-                        // 说明holder部分拉取数据失败，需要设置本身数量的图片占位符
-                        // 但是注意：在前面调用onBindViewHolder时，
-                        // 已经给adapter设置过了用于占位的图片集合了，因此这里只需要退出即可
-
-                        // 新增：如果上传图片中断网导致图片未上传，那么就需要隐藏RV，虽然和前面的解释有一些冲突，
-                        // 那也没办法，将就一下，毕竟很少会出现动态纪录的图片数量不为0，但是urls又为空的情况
+                    // 无数据或动态本身无图片时隐藏RV
+                    if (urls.isEmpty() || mDynamic.imageCount == 0) {
                         visibility = View.GONE
                         return
                     }

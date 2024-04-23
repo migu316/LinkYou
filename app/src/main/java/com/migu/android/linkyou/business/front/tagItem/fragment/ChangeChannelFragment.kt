@@ -9,7 +9,7 @@ import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.databinding.FragmentChooseChannelBinding
 import com.migu.android.linkyou.business.front.tagItem.adapter.ChangeChannelAdapter
 import com.migu.android.linkyou.business.front.tagItem.model.ChannelData
-import com.migu.android.linkyou.util.BarUtils
+import com.migu.android.core.util.BarUtils
 
 class ChangeChannelFragment : BaseFragment() {
 

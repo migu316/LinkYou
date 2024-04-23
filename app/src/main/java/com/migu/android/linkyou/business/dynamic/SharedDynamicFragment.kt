@@ -40,8 +40,8 @@ class SharedDynamicFragment : BaseFragment() {
 
     override fun initialize() {
         binding.sharedImageRecyclerView.apply {
-            adapter = ImageAdapter(dynamic.imageUrls!!, null)
-            layoutManager = GridLayoutManager(requireContext(), 3)
+            adapter = ImageAdapter(dynamic.imageUrls!!, null, true)
+            layoutManager = LinearLayoutManager(requireContext())
         }
         binding.apply {
             dynamicContent.text = dynamic.postText

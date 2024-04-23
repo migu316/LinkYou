@@ -1,4 +1,4 @@
-package com.migu.android.linkyou.util
+package com.migu.android.core.util
 
 import android.content.Context
 import androidx.appcompat.app.AlertDialog

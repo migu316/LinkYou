@@ -3,7 +3,7 @@ package com.migu.android.linkyou.business.front.tagItem.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.migu.android.linkyou.business.front.tagItem.TabItemCategoriesEnum
+import com.migu.android.core.TabItemCategoriesEnum
 import com.migu.android.linkyou.business.front.tagItem.fragment.FocusPageFragment
 import com.migu.android.linkyou.business.front.tagItem.fragment.MainPageFragment
 import com.migu.android.linkyou.business.front.tagItem.model.ChannelData

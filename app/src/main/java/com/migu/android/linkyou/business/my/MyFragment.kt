@@ -3,6 +3,7 @@ package com.migu.android.linkyou.business.my
 import android.app.UiModeManager
 import android.content.Context
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.SharedUtil
+import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.ActivitySharedViewModel
@@ -88,8 +90,6 @@ class MyFragment : BaseFragment() {
                 result.exceptionOrNull()?.printStackTrace()
             }
         }
-
-
     }
 
     override fun initializeListener() {

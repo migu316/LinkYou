@@ -14,8 +14,8 @@ import com.migu.android.linkyou.R
 import com.migu.android.linkyou.business.dynamic.adapter.DynamicImageViewPagerAdapter
 import com.migu.android.linkyou.databinding.DialogBottomSheetImageOperateBinding
 import com.migu.android.linkyou.databinding.FragmentDynamicImagesViewpagerBinding
-import com.migu.android.linkyou.util.FileUtils
-import com.migu.android.linkyou.util.LayoutUtils
+import com.migu.android.core.util.FileUtils
+import com.migu.android.core.util.LayoutUtils
 import kotlinx.coroutines.launch
 import java.util.ArrayList
 

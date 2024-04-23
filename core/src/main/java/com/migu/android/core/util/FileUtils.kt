@@ -1,4 +1,4 @@
-package com.migu.android.linkyou.util
+package com.migu.android.core.util
 
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import com.migu.android.core.LinkYou
-import com.migu.android.core.util.showToastOnUiThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

@@ -1,7 +1,7 @@
 package com.migu.android.linkyou.business.front.tagItem.model
 
 import android.os.Parcelable
-import com.migu.android.linkyou.business.front.tagItem.TabItemCategoriesEnum
+import com.migu.android.core.TabItemCategoriesEnum
 import kotlinx.parcelize.Parcelize
 
 

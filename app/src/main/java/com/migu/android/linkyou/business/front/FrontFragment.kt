@@ -10,11 +10,11 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.ActivitySharedViewModel
 import com.migu.android.linkyou.databinding.FragmentFrontBinding
-import com.migu.android.linkyou.util.TabItemControl
+import com.migu.android.linkyou.business.front.tagItem.TabItemControl
 import com.migu.android.linkyou.business.front.tagItem.adapter.TabItemFragmentStateAdapter
 import com.migu.android.linkyou.business.front.tagItem.fragment.ChangeChannelFragment
 import com.migu.android.linkyou.business.front.tagItem.model.ChannelData
-import com.migu.android.linkyou.util.BarUtils
+import com.migu.android.core.util.BarUtils
 
 class FrontFragment : BaseFragment() {
 

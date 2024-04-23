@@ -15,7 +15,7 @@ import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.ActivityMainBinding
-import com.migu.android.linkyou.util.BarUtils
+import com.migu.android.core.util.BarUtils
 
 class MainActivity : BaseActivity(), BaseFragment.Callbacks {
 

@@ -8,8 +8,9 @@
     android:layout_marginTop="10dp">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:id="@+id/dynamic_image_card_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:cardCornerRadius="10dp"
         app:strokeWidth="0dp">
@@ -26,10 +27,10 @@
     <FrameLayout
         android:id="@+id/delete"
         android:layout_width="match_parent"
-        tools:visibility="visible"
-        android:visibility="gone"
         android:layout_height="wrap_content"
-        android:paddingTop="5dp">
+        android:paddingTop="5dp"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ImageView
 

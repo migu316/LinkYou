@@ -1,12 +1,12 @@
-package com.migu.android.linkyou.util
+package com.migu.android.linkyou.business.front.tagItem
 
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.migu.android.core.TabItemCategoriesEnum
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesByNameExecute
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
 import com.migu.android.linkyou.R
-import com.migu.android.linkyou.business.front.tagItem.TabItemCategoriesEnum
 import com.migu.android.linkyou.business.front.tagItem.model.ChannelData
 
 private const val TAB_ITEM_LIST = "tab_item_list"

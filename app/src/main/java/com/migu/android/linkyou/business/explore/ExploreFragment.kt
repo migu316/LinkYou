@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.migu.android.linkyou.databinding.FragmentExploreBinding
-import com.migu.android.linkyou.util.BarUtils
+import com.migu.android.core.util.BarUtils
 
 private const val TAG = "ExploreFragment"
 

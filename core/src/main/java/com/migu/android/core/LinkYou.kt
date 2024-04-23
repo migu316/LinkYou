@@ -7,6 +7,7 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatDelegate
 import com.migu.android.core.util.SharedUtil
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
+import com.migu.android.core.util.UiUtils
 
 private const val LOGIN_INFO = "login_info"
 
@@ -33,6 +34,10 @@ class LinkYou {
 
         var objectId: String = ""
             private set
+
+        val widthDp:Int by lazy {
+            UiUtils.getWindowWidth(context)
+        }
 
         var sdkLoginLCUserJson: String = ""
 

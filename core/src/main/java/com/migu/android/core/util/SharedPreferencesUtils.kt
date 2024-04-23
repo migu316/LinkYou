@@ -1,8 +1,8 @@
-package com.migu.android.linkyou.util
+package com.migu.android.core.util
 
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
-import com.migu.android.linkyou.business.front.tagItem.TabItemCategoriesEnum
+import com.migu.android.core.TabItemCategoriesEnum
 
 /**
  * 工具类，用于操作 SharedPreferences。
