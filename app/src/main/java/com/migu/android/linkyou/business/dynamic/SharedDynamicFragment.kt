@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.migu.android.core.util.BarUtils
 import com.migu.android.core.util.DateUtil
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.GsonUtils
@@ -56,10 +57,10 @@ class SharedDynamicFragment : BaseFragment() {
     }
 
     override fun initializeListener() {
-        binding.saveLocal.setOnClickListener {
-            val bitmap = SharedDynamic.captureNestedScrollView(binding.sharedView)
-            SharedDynamic.sharedImage(bitmap, requireContext())
-        }
+//        binding.saveLocal.setOnClickListener {
+//            val bitmap = SharedDynamic.captureNestedScrollView(binding.sharedView)
+//            SharedDynamic.sharedImage(bitmap, requireContext())
+//        }
     }
 
     companion object {

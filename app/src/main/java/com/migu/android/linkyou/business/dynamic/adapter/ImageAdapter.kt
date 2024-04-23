@@ -11,7 +11,9 @@ import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.dynamic.DynamicImageFragment
 import com.migu.android.linkyou.business.dynamic.ImageViewHolder
 import com.migu.android.linkyou.business.dynamic.SharedImageViewHolder
+import com.migu.android.linkyou.business.dynamic.SingleImageViewHolder
 import com.migu.android.linkyou.databinding.DynamicSharedImageItemBinding
+import com.migu.android.linkyou.databinding.DynamicSingleImageItemBinding
 import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
 
 /**
@@ -22,7 +24,8 @@ import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
 class ImageAdapter(
     private var urls: List<String>,
     private val callbacks: BaseFragment.Callbacks?,
-    private val isShared: Boolean = false
+    private val isShared: Boolean = false,
+    private val isSingle: Boolean = false
 ) :
     Adapter<ViewHolder>() {
 
@@ -30,7 +33,21 @@ class ImageAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return if (!isShared) {
+
+        // 是否为单张图片
+        if (isSingle) {
+            val binding =
+                DynamicSingleImageItemBinding.inflate(LayoutInflater.from(context), parent, false)
+            val holder = SingleImageViewHolder(binding)
+            binding.image.setOnClickListener {
+                val fragment = DynamicImageFragment.newInstance(urls, holder.bindingAdapterPosition)
+                callbacks?.onClickChangeFragment(fragment)
+            }
+            return holder
+        }
+
+        // 是否为分享图片
+        if (!isShared) {
             val binding =
                 DynamicsImageItemBinding.inflate(LayoutInflater.from(context), parent, false)
             val holder = ImageViewHolder(binding)
@@ -39,27 +56,32 @@ class ImageAdapter(
                 val fragment = DynamicImageFragment.newInstance(urls, holder.bindingAdapterPosition)
                 callbacks?.onClickChangeFragment(fragment)
             }
-            holder
-        } else {
-            val binding =
-                DynamicSharedImageItemBinding.inflate(LayoutInflater.from(context), parent, false)
-            SharedImageViewHolder(binding)
+            return holder
         }
+
+        // 为分享图片
+        val binding =
+            DynamicSharedImageItemBinding.inflate(LayoutInflater.from(context), parent, false)
+        return SharedImageViewHolder(binding)
     }
 
     override fun getItemCount() = urls.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val url = urls[position]
+
+        if (isSingle) {
+            val singleImageViewHolder = holder as SingleImageViewHolder
+            singleImageViewHolder.bind(url)
+            return
+        }
         if (!isShared) {
             val imageViewHolder = holder as ImageViewHolder
-            val url = urls[position]
-            url.let { imageViewHolder.bind(it) }
-        } else {
-            val sharedImageViewHolder = holder as SharedImageViewHolder
-            val url = urls[position]
-            url.let { sharedImageViewHolder.bind(it) }
+            imageViewHolder.bind(url)
+            return
         }
-
+        val sharedImageViewHolder = holder as SharedImageViewHolder
+        sharedImageViewHolder.bind(url)
     }
 
     /**

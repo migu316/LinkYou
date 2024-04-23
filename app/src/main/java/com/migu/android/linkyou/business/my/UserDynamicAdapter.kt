@@ -8,6 +8,7 @@ import android.view.ViewTreeObserver
 import androidx.core.util.TypedValueCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.DateUtil
@@ -56,17 +57,26 @@ class UserDynamicAdapter(
         // 当开始绑定时，先将其adapter设置为null
         // 相当于是清除复用holder中的adapter，并且将其设置为GONE，recyclerView将不会提示跳过布局
         holder.binding.includeContent.userDynamicImagesRecyclerView.apply {
-            adapter = if (dynamic.imageCount == 0) {
-                // 如果动态携带的图片数量为0，隐藏RecyclerView，并给adapter设置为null
-                visibility = View.GONE
-                null
-            } else {
+//            adapter = if (dynamic.imageCount == 0) {
+//                // 如果动态携带的图片数量为0，隐藏RecyclerView，并给adapter设置为null
+//                visibility = View.GONE
+//                null
+//            } else {
+//                // 否则设置显示，并传入无效数据用于显示占位图，
+//                // 避免后面holder回调方法时，页面view重新测量高度导致视图拉扯卡顿
+//                visibility = View.VISIBLE
+//                ImageAdapter(List(dynamic.imageCount ?: 0) { "" }, null)
+//            }
+//            layoutManager = GridLayoutManager(context, 3)
+            // 先隐藏，图片数量不为0再显示
+            visibility = View.GONE
+            if (dynamic.imageCount != 0) {
                 // 否则设置显示，并传入无效数据用于显示占位图，
                 // 避免后面holder回调方法时，页面view重新测量高度导致视图拉扯卡顿
                 visibility = View.VISIBLE
-                ImageAdapter(List(dynamic.imageCount ?: 0) { "" }, null)
+                layoutManager = GridLayoutManager(context, 3)
+                adapter = ImageAdapter(List(dynamic.imageCount ?: 0) { "" }, null)
             }
-            layoutManager = GridLayoutManager(context, 3)
         }
         // 提交动态图片拉取请求
         getUrlsHandler.queueGetUrls(holder, dynamic)
@@ -108,14 +118,22 @@ class UserDynamicAdapter(
                         return
                     }
                     visibility = View.VISIBLE
-                    if (adapter != null) {
-                        // 如果本身存在adapter，直接覆盖内部数据即可，并且通知数据发生改变
-                        val imageAdapter = adapter as ImageAdapter
-                        imageAdapter.overwriteData(urls)
+//                    if (adapter != null) {
+//                        // 如果本身存在adapter，直接覆盖内部数据即可，并且通知数据发生改变
+//                        val imageAdapter = adapter as ImageAdapter
+//                        imageAdapter.overwriteData(urls)
+//                    } else {
+//                        adapter = ImageAdapter(urls, callbacks)
+//                    }
+//                    layoutManager = GridLayoutManager(context, 3)
+
+                    if (urls.size == 1) {
+                        adapter = ImageAdapter(urls, callbacks, isSingle = true)
+                        layoutManager = LinearLayoutManager(context)
                     } else {
                         adapter = ImageAdapter(urls, callbacks)
+                        layoutManager = GridLayoutManager(context, 3)
                     }
-                    layoutManager = GridLayoutManager(context, 3)
                 }
             }
         }

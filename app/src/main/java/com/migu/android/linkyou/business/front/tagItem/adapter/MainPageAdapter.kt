@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.DateUtil
 import com.migu.android.linkyou.BaseFragment
@@ -58,10 +60,13 @@ class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
                     // 如果图片列表不为空，则显示图片列表
                     binding.includeContent.userDynamicImagesRecyclerView.apply {
                         visibility = View.VISIBLE
-                        adapter =
-                            ImageAdapter(it, callbacks) // 使用 ImageAdapter 设置图片列表的适配器
-                        layoutManager =
-                            GridLayoutManager(context, 3) // 使用 GridLayoutManager 设置图片列表的布局管理器
+                        layoutManager = if (dynamicItem.imageCount == 1) {
+                            adapter = ImageAdapter(it, callbacks, isSingle = true)
+                            LinearLayoutManager(context)
+                        } else {
+                            adapter = ImageAdapter(it, callbacks)
+                            GridLayoutManager(context, 3)
+                        }
                     }
                 }
             }
@@ -75,11 +80,11 @@ class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
             callbacks
         ) {
 
-            init {
-                binding.includeInteractiveData.sharedDynamic.setOnClickListener {
-                    callbacks?.onClickChangeFragment(SharedDynamicFragment.newInstance(mDynamic))
-                }
+        init {
+            binding.includeInteractiveData.sharedDynamic.setOnClickListener {
+                callbacks?.onClickChangeFragment(SharedDynamicFragment.newInstance(mDynamic))
             }
+        }
 
         fun bind(dynamic: Dynamic) {
             mDynamic = dynamic
