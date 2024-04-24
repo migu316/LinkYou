@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.migu.android.core.LinkYou
+import com.migu.android.core.util.GlobalUtil
+import com.migu.android.linkyou.R
 import com.migu.android.network.Repository
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
@@ -73,10 +75,11 @@ class ActivitySharedViewModel : ViewModel() {
      */
     fun postDynamic(postContent: String, imageList: List<Uri>) {
         viewModelScope.launch {
-            Repository.postDynamic(
-                postContent,
-                imageList
-            ).apply {
+            var newPostContent = postContent
+            if (postContent.isEmpty()) {
+                newPostContent = GlobalUtil.getString(R.string.shared_image_string)
+            }
+            Repository.postDynamic(newPostContent, imageList).apply {
                 _postDynamicStatus.value = Event(this)
             }
         }

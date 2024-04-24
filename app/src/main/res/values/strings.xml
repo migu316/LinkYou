@@ -59,4 +59,5 @@
     <string name="get_detail_dynamic_error">Get detail dynamic error</string>
     <string name="shared_image">Shared Image</string>
     <string name="shared_post_time_string">%s Released in LinkYou</string>
+    <string name="shared_image_string">Shared Images</string>
 </resources>

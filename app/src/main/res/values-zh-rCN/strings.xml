@@ -60,4 +60,5 @@
     <string name="get_detail_dynamic_error">获取动态详情错误</string>
     <string name="shared_image">分享图片</string>
     <string name="shared_post_time_string">%s 发布于链你</string>
+    <string name="shared_image_string">分享图片</string>
 </resources>

@@ -82,4 +82,18 @@
     <!-- 闪屏退出后的主题 -->
     <style name="SplashActivityTheme" parent="Base.Theme.LinkYou" />
 
+
+    <!-- ShapeableImageView  设置为圆形图片 -->
+    <style name="CircularImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!--ShapeableImageView 圆角-->
+    <style name="RoundedStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+
+
 </resources>

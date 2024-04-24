@@ -1,5 +1,7 @@
 package com.migu.android.linkyou.business.dynamic
 
+import android.animation.AnimatorInflater
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,16 +9,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.migu.android.core.util.BarUtils
 import com.migu.android.core.util.DateUtil
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.GsonUtils
+import com.migu.android.core.util.UiUtils
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.business.dynamic.adapter.ImageAdapter
 import com.migu.android.linkyou.databinding.FragmentDynamicSharedViewpagerBinding
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.util.NetWorkUtil
+import kotlinx.coroutines.delay
 import java.util.ArrayList
 
 class SharedDynamicFragment : BaseFragment() {
@@ -52,15 +58,35 @@ class SharedDynamicFragment : BaseFragment() {
             )
             Glide.with(requireContext())
                 .load(NetWorkUtil.replaceHttps(dynamic.userInfoId?.avatar?.url))
+                // 将其转换为圆角图片可避免使用ShapeableImageView带来的边缘透明问题
+                .apply(
+                    RequestOptions().transform(
+                        RoundedCorners(
+                            UiUtils.dpToPx(
+                                requireContext(),
+                                20
+                            )
+                        )
+                    )
+                )
                 .into(userAvatar)
         }
+
+        AnimatorInflater.loadAnimator(requireContext(), R.animator.fade_control).apply {
+            setTarget(binding.sharedOperation)
+        }.start()
     }
 
     override fun initializeListener() {
-//        binding.saveLocal.setOnClickListener {
-//            val bitmap = SharedDynamic.captureNestedScrollView(binding.sharedView)
-//            SharedDynamic.sharedImage(bitmap, requireContext())
-//        }
+        binding.saveLocal.setOnClickListener {
+            val bitmap =
+                SharedDynamic.getScreenshotFromNestedScrollView(binding.sharedLinearLayout)
+            SharedDynamic.sharedImage(bitmap!!, requireContext())
+        }
+
+        binding.back.setOnClickListener {
+            exitFragment()
+        }
     }
 
     companion object {

@@ -4,10 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.view.View
+import android.widget.LinearLayout
 import androidx.core.widget.NestedScrollView
 import com.migu.android.core.util.ContentProviderUtils
 import java.io.File
 import java.io.FileOutputStream
+
 
 object SharedDynamic {
     fun sharedImage(bitmap: Bitmap, context: Context) {
@@ -54,5 +57,29 @@ object SharedDynamic {
         return bitmap
     }
 
+    fun getScreenshotFromLinearLayout(view: View): Bitmap? {
+        var screenshot: Bitmap? = null
+        try {
+            view.isDrawingCacheEnabled = true
+            screenshot = Bitmap.createBitmap(view.drawingCache)
+            view.isDrawingCacheEnabled = false
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return screenshot
+    }
 
+    fun getScreenshotFromNestedScrollView(view:LinearLayout): Bitmap? {
+        var screenshot: Bitmap? = null
+        try {
+            val width = view.width
+            val height = view.height
+            screenshot = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(screenshot)
+            view.draw(canvas)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return screenshot
+    }
 }

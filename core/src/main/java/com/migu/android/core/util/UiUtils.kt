@@ -44,4 +44,14 @@ object UiUtils {
 
         return (unitHeightDp * density * count).toInt()
     }
+
+    /**
+     * 计算dp转换为px后的大小
+     */
+    fun dpToPx(context: Context, unitHeightDp: Int): Int {
+        val metrics = context.resources.displayMetrics
+        val density = metrics.density
+
+        return (unitHeightDp * density).toInt()
+    }
 }
