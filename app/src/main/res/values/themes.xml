@@ -76,7 +76,7 @@
 
     <!-- 兼容低版本闪屏页主题 -->
     <style name="JetpackSplashTheme" parent="JetpackSplashTheme.Base">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_png</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/linkyou</item>
     </style>
 
     <!-- 闪屏退出后的主题 -->
