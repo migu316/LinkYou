@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.GlobalUtil
@@ -30,8 +31,13 @@ class ActivitySharedViewModel : ViewModel() {
     // 获取用户信息
     val userInfoLiveData = Repository.getUserInfo(LinkYou.objectId)
 
+    // 无论false还是true，都会拉取数据
+    private val isRefreshing = MutableLiveData(false)
+
     // 获取当前用户发布的动态
-    val userDynamicsLiveData = Repository.getTargetUserDynamics(LinkYou.objectId)
+    val userDynamicsLiveData = isRefreshing.switchMap {
+        Repository.getTargetUserDynamics(LinkYou.objectId)
+    }
 
     // 获取当前用户发布的动态的缓存
     val dynamicCache = Repository.getDynamicDetailByDB()
@@ -42,6 +48,10 @@ class ActivitySharedViewModel : ViewModel() {
     // 提供对外用于观察的发布状态
     val postDynamicStatus: LiveData<Event<Result<Boolean>>>
         get() = _postDynamicStatus
+
+    fun startRefreshing() {
+        isRefreshing.value = isRefreshing.value?.let { !it } ?: true
+    }
 
     /**
      * 将从服务器获取到的数据存储到SP文件中

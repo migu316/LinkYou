@@ -1,18 +1,18 @@
 package com.migu.android.linkyou.business.dynamic
 
 import android.animation.AnimatorInflater
-import android.animation.ObjectAnimator
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.migu.android.core.util.BarUtils
 import com.migu.android.core.util.DateUtil
+import com.migu.android.core.util.FileUtils
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.GsonUtils
 import com.migu.android.core.util.UiUtils
@@ -22,13 +22,14 @@ import com.migu.android.linkyou.business.dynamic.adapter.ImageAdapter
 import com.migu.android.linkyou.databinding.FragmentDynamicSharedViewpagerBinding
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.util.NetWorkUtil
-import kotlinx.coroutines.delay
-import java.util.ArrayList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SharedDynamicFragment : BaseFragment() {
 
     private lateinit var binding: FragmentDynamicSharedViewpagerBinding
     private lateinit var dynamic: Dynamic
+    private var bitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,12 +51,15 @@ class SharedDynamicFragment : BaseFragment() {
             adapter = ImageAdapter(dynamic.imageUrls!!, null, true)
             layoutManager = LinearLayoutManager(requireContext())
         }
+
         binding.apply {
             dynamicContent.text = dynamic.postText
+
             dynamicTime.text = GlobalUtil.getString(
                 R.string.shared_post_time_string,
                 DateUtil.formatDateToString(dynamic.createdAt)
             )
+
             Glide.with(requireContext())
                 .load(NetWorkUtil.replaceHttps(dynamic.userInfoId?.avatar?.url))
                 // 将其转换为圆角图片可避免使用ShapeableImageView带来的边缘透明问题
@@ -74,16 +78,37 @@ class SharedDynamicFragment : BaseFragment() {
 
         AnimatorInflater.loadAnimator(requireContext(), R.animator.fade_control).apply {
             setTarget(binding.sharedOperation)
+            setTarget(binding.sharedView)
         }.start()
     }
 
     override fun initializeListener() {
-        binding.saveLocal.setOnClickListener {
-            val bitmap =
-                SharedDynamic.getScreenshotFromNestedScrollView(binding.sharedLinearLayout)
-            SharedDynamic.sharedImage(bitmap!!, requireContext())
+
+        binding.shared.setOnClickListener {
+            bitmap?.let {
+                SharedDynamic.sharedImage(it, requireContext())
+            } ?: run {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    bitmap =
+                        SharedDynamic.getScreenshotFromLinearLayout(binding.sharedLinearLayout)
+                    SharedDynamic.sharedImage(bitmap, requireContext())
+                }
+            }
         }
 
+        binding.saveLocal.setOnClickListener {
+            bitmap?.let {
+                lifecycleScope.launch {
+                    FileUtils.saveBitmapToAlbum(it, System.currentTimeMillis().toString())
+                }
+            } ?: run {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    bitmap =
+                        SharedDynamic.getScreenshotFromLinearLayout(binding.sharedLinearLayout)
+                    FileUtils.saveBitmapToAlbum(bitmap, System.currentTimeMillis().toString())
+                }
+            }
+        }
         binding.back.setOnClickListener {
             exitFragment()
         }

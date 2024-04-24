@@ -90,6 +90,7 @@ class MyFragment : BaseFragment() {
                 result.exceptionOrNull()?.printStackTrace()
             }
         }
+        binding.swiperefresh.isRefreshing = true
     }
 
     override fun initializeListener() {
@@ -129,6 +130,12 @@ class MyFragment : BaseFragment() {
                         setLayoutParams(layoutParams)
                     }
 
+                    binding.swiperefresh.apply {
+                        val layoutParams = layoutParams
+                        layoutParams.height = rootMeasureHeight - binding.toolbar.measuredHeight
+                        setLayoutParams(layoutParams)
+                    }
+
                     // 设置自定义nestedScrollView中用于消费的互动部件的高度
 //                    binding.nestedScrollView.setInteractiveHeight(interactiveHeight)
                     if (rootMeasureHeight != 0 && observer.isAlive) {
@@ -153,6 +160,7 @@ class MyFragment : BaseFragment() {
             if (result.isFailure) {
                 showToastOnUiThread(GlobalUtil.getString(com.migu.android.linkyou.R.string.get_dynamics_error))
                 result.exceptionOrNull()?.printStackTrace()
+                binding.swiperefresh.isRefreshing = false
             } else {
                 val targetUserDynamicsResponse = result.getOrNull()
                 targetUserDynamicsResponse?.let {
@@ -161,7 +169,6 @@ class MyFragment : BaseFragment() {
 
                     // 3.再将数据显示上去，就可以避免holder取数据存在问题
                     showDynamics(it.results)
-
                     // 2.再存进数据库作为缓存：因为需要先删除数据库的数据
                     // 问题很可能出现在这里，因为当切换到主页后，这里会拉取数据，先删除数据库的数据，再保存进去
                     // 此时所有的urls都为空，我们再直接退出，就会导致下次打开时，无任何图片加载
@@ -170,6 +177,10 @@ class MyFragment : BaseFragment() {
                     sharedViewModel.saveDynamicsToDB(it.results)
                 }
             }
+        }
+
+        binding.swiperefresh.setOnRefreshListener {
+            sharedViewModel.startRefreshing()
         }
     }
 
@@ -266,6 +277,7 @@ class MyFragment : BaseFragment() {
                 dynamics.size.toString()
             )
         }
+        binding.swiperefresh.isRefreshing = false
     }
 
     /**

@@ -90,16 +90,12 @@ class DynamicImageFragment : BaseFragment() {
             dialog.dismiss()
         }
         operateBinding.sharedImage.setOnClickListener {
-            SharedDynamic.sharedImage(bitmap,requireContext())
+            SharedDynamic.sharedImage(bitmap, requireContext())
             dialog.dismiss()
         }
         operateBinding.saveImage.setOnClickListener {
             lifecycleScope.launch {
-                FileUtils.addBitmapToAlbum(
-                    bitmap,
-                    System.currentTimeMillis().toString(),
-                    "image/png"
-                )
+                FileUtils.saveBitmapToAlbum(bitmap, System.currentTimeMillis().toString())
             }
             dialog.dismiss()
         }

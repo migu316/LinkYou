@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.paging)
+    implementation(libs.swiperefresh.layout)
     implementation(project(":core"))
     implementation(project(":network"))
 //    debugImplementation(libs.leak.cannary)

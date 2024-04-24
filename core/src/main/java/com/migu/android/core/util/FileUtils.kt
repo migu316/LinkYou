@@ -25,12 +25,16 @@ object FileUtils {
      * @param displayName 图片显示的名称
      * @param mimeType 图片mime类型
      */
-    suspend fun addBitmapToAlbum(
-        bitmap: Bitmap,
+    suspend fun saveBitmapToAlbum(
+        bitmap: Bitmap?,
         displayName: String,
-        mimeType: String,
+        mimeType: String = "image/png",
         compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG
     ) {
+        if (bitmap == null) {
+            showToastOnUiThread("图片保存失败！")
+            return
+        }
         withContext(Dispatchers.IO) {
             val pathLessThan29 =
                 "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_PICTURES}/${LinkYou.packageLastName}"

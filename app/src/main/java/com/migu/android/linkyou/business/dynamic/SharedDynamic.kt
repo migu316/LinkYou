@@ -4,18 +4,22 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.view.View
 import android.widget.LinearLayout
-import androidx.core.widget.NestedScrollView
 import com.migu.android.core.util.ContentProviderUtils
+import com.migu.android.core.util.showToastOnUiThread
 import java.io.File
 import java.io.FileOutputStream
 
 
 object SharedDynamic {
-    fun sharedImage(bitmap: Bitmap, context: Context) {
+    fun sharedImage(bitmap: Bitmap?, context: Context) {
+        if (bitmap == null) {
+            showToastOnUiThread("图片加载出错，请重试")
+            return
+        }
+
         // 删除之前缓存的分享文件
-        val file = File("${context.cacheDir}/sharedTemp.png").apply {
+        val file = File("${context.cacheDir}/sharedImage.png").apply {
             if (this.exists()) {
                 this.delete()
             }
@@ -34,42 +38,11 @@ object SharedDynamic {
             type = "image/png"
             putExtra(Intent.EXTRA_STREAM, uri)
         }
-        val chooser = Intent.createChooser(sharedIntent, "Shared Image")
+        val chooser = Intent.createChooser(sharedIntent, "分享图片")
         context.startActivity(chooser)
     }
 
-    fun captureNestedScrollView(nestedScrollView: NestedScrollView): Bitmap {
-        // 获取 NestedScrollView 的内容总高度
-        var height = 0
-        for (i in 0 until nestedScrollView.childCount) {
-            height += nestedScrollView.getChildAt(i).height
-        }
-
-        // 创建一个和内容一样高的 Bitmap
-        val bitmap = Bitmap.createBitmap(nestedScrollView.width, height, Bitmap.Config.ARGB_8888)
-
-        // 创建一个 Canvas，并将 Bitmap 设置为绘制目标
-        val canvas = Canvas(bitmap)
-
-        // 将 NestedScrollView 的内容绘制到 Canvas 上
-        nestedScrollView.draw(canvas)
-
-        return bitmap
-    }
-
-    fun getScreenshotFromLinearLayout(view: View): Bitmap? {
-        var screenshot: Bitmap? = null
-        try {
-            view.isDrawingCacheEnabled = true
-            screenshot = Bitmap.createBitmap(view.drawingCache)
-            view.isDrawingCacheEnabled = false
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return screenshot
-    }
-
-    fun getScreenshotFromNestedScrollView(view:LinearLayout): Bitmap? {
+    fun getScreenshotFromLinearLayout(view:LinearLayout): Bitmap? {
         var screenshot: Bitmap? = null
         try {
             val width = view.width

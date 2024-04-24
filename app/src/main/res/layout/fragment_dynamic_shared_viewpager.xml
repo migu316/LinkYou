@@ -52,8 +52,7 @@
                     android:id="@+id/user_avatar"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/test_photo"
-                     />
+                    android:src="@drawable/test_photo" />
 
 
                 <com.google.android.material.textview.MaterialTextView
@@ -99,51 +98,36 @@
         android:paddingEnd="25dp"
         app:layout_anchorGravity="bottom">
 
+
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/shared"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             app:cardCornerRadius="25dp"
             app:strokeColor="@color/sharedBackground"
-            app:strokeWidth="1dp">
+            app:strokeWidth="0dp">
 
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:src="@drawable/qq_icon"
+                android:src="@drawable/share_24px"
                 app:tint="@color/sharedBackground" />
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/save_local"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             app:cardCornerRadius="25dp"
             app:strokeColor="@color/sharedBackground"
-            app:strokeWidth="1dp">
+            app:strokeWidth="0dp">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:src="@drawable/wx_chat_icon"
-                app:tint="@color/sharedBackground" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            app:cardCornerRadius="25dp"
-            app:strokeColor="@color/sharedBackground"
-            app:strokeWidth="1dp">
-
-            <ImageView
-                android:id="@+id/save_local"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"

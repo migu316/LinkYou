@@ -52,15 +52,27 @@ class MainPageFragment : BaseFragment() {
     }
 
     override fun initializeListener() {
+        binding.swiperefresh.setOnRefreshListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                sharedMainViewModel.getTheLastDynamics().collect { pagingData ->
+                    logInfo(pagingData.toString())
+                    mainPageAdapter.submitData(pagingData)
+                }
+            }
+        }
+
         mainPageAdapter.addLoadStateListener {
             when (it.refresh) {
                 is LoadState.NotLoading -> {
+                    binding.swiperefresh.isRefreshing = false
                 }
 
                 is LoadState.Loading -> {
+                    binding.swiperefresh.isRefreshing = true
                 }
 
                 is LoadState.Error -> {
+                    binding.swiperefresh.isRefreshing = false
                     val state = it.refresh as LoadState.Error
                     showToast("网络错误")
                 }
