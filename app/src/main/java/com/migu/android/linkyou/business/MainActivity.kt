@@ -3,6 +3,7 @@ package com.migu.android.linkyou.business
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -10,12 +11,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.migu.android.core.util.BarUtils
 import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseActivity
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.R
 import com.migu.android.linkyou.databinding.ActivityMainBinding
-import com.migu.android.core.util.BarUtils
+
 
 class MainActivity : BaseActivity(), BaseFragment.Callbacks {
 

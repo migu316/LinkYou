@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.migu.android.core.util.BarUtils
 import com.migu.android.linkyou.databinding.DynacisImagesViewpagerItemBinding
 import com.migu.android.network.util.NetWorkUtil
 

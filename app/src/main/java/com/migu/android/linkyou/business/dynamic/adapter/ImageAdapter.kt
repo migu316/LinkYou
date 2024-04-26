@@ -3,10 +3,8 @@ package com.migu.android.linkyou.business.dynamic.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.migu.android.core.util.logInfo
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.dynamic.DynamicImageFragment
 import com.migu.android.linkyou.business.dynamic.ImageViewHolder

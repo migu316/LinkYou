@@ -69,9 +69,9 @@ class MyFragment : BaseFragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         // 拉取缓存
         initializeDataForCache()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun initialize() {

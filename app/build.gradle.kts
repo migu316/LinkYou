@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.swiperefresh.layout)
     implementation(project(":core"))
     implementation(project(":network"))
+    implementation(libs.photo.view)
 //    debugImplementation(libs.leak.cannary)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

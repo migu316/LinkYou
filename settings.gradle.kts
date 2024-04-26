@@ -16,9 +16,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://www.jitpack.io")
         maven("https://developer.huawei.com/repo/")
         maven("https://developer.hihonor.com/repo/")
-        maven("https://www.jitpack.io")
     }
 }
 
