@@ -5,12 +5,11 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.showToast
 import com.migu.android.linkyou.R
-import com.migu.android.linkyou.business.dynamic.ImageViewHolder
+import com.migu.android.linkyou.business.dynamic.MultipleImageViewHolder
 import com.migu.android.linkyou.databinding.DynamicsImageItemBinding
 
 /**
@@ -22,7 +21,7 @@ class PostDynamicAdapter(
     private val onItemClick: () -> Unit,
     private val onChangeImagesCallBack: () -> Unit
 ) :
-    Adapter<ImageViewHolder>() {
+    Adapter<MultipleImageViewHolder>() {
 
     // 添加图片的基本 Uri
     private val baseAddUri =
@@ -38,10 +37,10 @@ class PostDynamicAdapter(
     /**
      * 创建 ViewHolder。
      */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultipleImageViewHolder {
         context = parent.context
         val binding = DynamicsImageItemBinding.inflate(LayoutInflater.from(context), parent, false)
-        return ImageViewHolder(binding)
+        return MultipleImageViewHolder(binding)
     }
 
     /**
@@ -58,7 +57,7 @@ class PostDynamicAdapter(
     /**
      * 绑定 ViewHolder。
      */
-    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MultipleImageViewHolder, position: Int) {
         val binding = holder.binding
         holder.bindByUri(imageList[position])
         if (position == itemCount - 1 && imageList.size <= 9) {

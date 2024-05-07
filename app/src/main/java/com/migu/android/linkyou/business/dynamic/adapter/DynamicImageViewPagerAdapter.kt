@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
-import com.migu.android.core.util.BarUtils
 import com.migu.android.linkyou.databinding.DynacisImagesViewpagerItemBinding
-import com.migu.android.network.util.NetWorkUtil
+import com.migu.android.core.util.NetWorkUtil
 
 /**
  * 显示动态图片的viewpager2适配器
@@ -35,7 +34,7 @@ class DynamicImageViewPagerAdapter(val saveImageCallback: (bitmap:Bitmap) -> Uni
     inner class DetailImageViewHolder(val binding: DynacisImagesViewpagerItemBinding) :
         ViewHolder(binding.root) {
         init {
-            binding.root.setOnLongClickListener {
+            binding.image.setOnLongClickListener {
                 saveImageCallback(binding.image.drawable.toBitmap())
                 true
             }

@@ -8,9 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
+import com.migu.android.core.LinkYou
+import com.migu.android.core.glide.GlideUtils
+import com.migu.android.core.util.GlobalUtil
 import com.migu.android.database.model.DynamicAndImages
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.util.DataProcessingUtil
+import com.migu.android.core.util.NetWorkUtil
 import com.migu.android.network.util.toDynamicEntity
 import java.util.concurrent.ConcurrentHashMap
 
@@ -161,6 +167,11 @@ class GetUrlsHandler<in T>(
                 listUrls = rawListData
                 // 将数据库中获取到的动态图片 URLs 存入缓存
                 mMemoryCache.put(objectId, listUrls)
+            }
+            if (listUrls.isNotEmpty()) {
+                listUrls.forEach {
+                    GlideUtils.preload(it)
+                }
             }
             // 如果动态的图片 URLs 列表为空，说明无图片，直接返回，避免将任务提交到 UI 线程的消息队列中
 //            if (listUrls.isEmpty()) {

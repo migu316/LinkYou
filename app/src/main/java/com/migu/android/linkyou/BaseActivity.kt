@@ -2,8 +2,14 @@ package com.migu.android.linkyou
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
+import android.view.FrameMetrics
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.migu.android.core.util.logWarn
 
@@ -14,6 +20,21 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityController.addActivity(this)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun extracted() {
+        window?.addOnFrameMetricsAvailableListener(Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
+            Log.v(
+                "test",
+                "measure + layout=${frameMetrics.getMetric(FrameMetrics.LAYOUT_MEASURE_DURATION) / 1000000}, " +
+                        "    delay=${frameMetrics.getMetric(FrameMetrics.UNKNOWN_DELAY_DURATION) / 1000000}, " +
+                        "    anim=${frameMetrics.getMetric(FrameMetrics.ANIMATION_DURATION) / 1000000}," +
+                        "    touch=${frameMetrics.getMetric(FrameMetrics.INPUT_HANDLING_DURATION) / 1000000}, " +
+                        "    draw=${frameMetrics.getMetric(FrameMetrics.DRAW_DURATION) / 1000000}, " +
+                        "    total=${frameMetrics.getMetric(FrameMetrics.LAYOUT_MEASURE_DURATION) / 1000000}"
+            )
+        }, Handler())
     }
 
     override fun onDestroy() {

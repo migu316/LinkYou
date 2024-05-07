@@ -2,7 +2,6 @@ package com.migu.android.network.model.base
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.migu.android.network.util.NetWorkUtil
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

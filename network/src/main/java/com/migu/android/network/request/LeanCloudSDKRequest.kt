@@ -8,10 +8,12 @@ import cn.leancloud.LCQuery
 import cn.leancloud.LCUser
 import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
+import com.migu.android.core.util.GsonUtils
 import com.migu.android.core.util.SharedUtil
 import com.migu.android.core.util.logError
 import com.migu.android.core.util.logInfo
 import com.migu.android.network.Repository
+import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.util.LeanCloudUtils
 import com.migu.android.network.util.toUserInfo
 import io.reactivex.Observer
@@ -27,14 +29,14 @@ private const val TAG = "LeanCloudSDKRequest"
 object LeanCloudSDKRequest {
 
     /**
-     * 上传图片
+     * 动态提交时上传图片
      * 后期修改为LiveData去返回一个可观察的对象
      *
      * @param uris 要上传的文件 Uri 列表
      * @param postObjectId 关联的 LCObject
      * @return 上传失败的文件 Uri 列表
      */
-    suspend fun uploadFile(uris: List<Uri>, postObjectId: LCObject): List<Uri> {
+    suspend fun uploadDynamicFile(uris: List<Uri>, postObjectId: LCObject): List<Uri> {
         val failedUri = mutableListOf<Uri>() // 用于跟踪上传失败的图片数量
         for (uri in uris) {
             val file = LeanCloudUtils.uriToFile(uri)
@@ -196,6 +198,36 @@ object LeanCloudSDKRequest {
             }
         }
     }
+
+    /**
+     * 更新用户资料的函数
+     * 1.首先上传头像文件，拿到一个LCObject（或许应该作为参数传递）
+     * 2.判断缓存数据中是否存在当前用户信息的JSON对象，a.如果不存在 -> 获取  b.存在  ->  不获取直接执行下一步
+     * 3.从缓存数据中获取当前用户信息的JSON对象，转换为LCObject   a.转换错误-> 重新获取  b.成功->下一步
+     * 4.上传以进行更新
+     */
+    suspend fun postModifyUserInfo(avatar: LCFile?, background: LCFile?, userInfo: UserInfo?):Result<LCObject?> {
+        val userInfoObj: LCObject?
+        val lcUser = GsonUtils.fromJsonNormal<LCUser>(LinkYou.sdkLoginLCUserJson)
+        if (LinkYou.sdkUserInfoJson.isNotEmpty()) {
+            userInfoObj = GsonUtils.fromJsonNormal<LCObject>(LinkYou.sdkUserInfoJson)
+        } else {
+            lcUser?.let { user ->
+                getUserInfo(user)
+                userInfoObj = GsonUtils.fromJsonNormal<LCObject>(LinkYou.sdkUserInfoJson)
+                // 如果这次的userInfoObj还是为null，那么登录状态存在问题，抛出错误
+                if (userInfoObj == null) {
+                    return Result.failure(RuntimeException("登录状态异常"))
+                }
+            }
+
+            // 继续尝试上传
+            
+        }
+
+        return Result.failure(RuntimeException("TODO"))
+    }
+
 
     /**
      * 通用的请求函数

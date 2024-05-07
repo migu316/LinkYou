@@ -1,4 +1,4 @@
-package com.migu.android.network.util
+package com.migu.android.core.util
 
 object NetWorkUtil {
     /**

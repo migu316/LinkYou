@@ -1,22 +1,25 @@
 package com.migu.android.linkyou.business.my
 
+import android.app.Activity.RESULT_OK
 import android.app.UiModeManager
 import android.content.Context
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
+import com.migu.android.core.glide.GlideUtils
+import com.migu.android.core.recyclerview.CustomLayoutManager
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.SharedUtil
-import com.migu.android.core.util.logInfo
+import com.migu.android.core.util.UserInfoActions
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.ActivitySharedViewModel
@@ -26,7 +29,7 @@ import com.migu.android.network.GetUrlsHandler
 import com.migu.android.network.R
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
-import com.migu.android.network.util.NetWorkUtil
+import com.migu.android.core.util.NetWorkUtil
 
 class MyFragment : BaseFragment() {
 
@@ -40,24 +43,35 @@ class MyFragment : BaseFragment() {
 
     private lateinit var getUrlsHandler: GetUrlsHandler<UserDynamicAdapter.DynamicBaseViewHolder>
 
+
+    /**
+     * 选择图片后的回调
+     */
+    private val pickAvatarLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK && result.data != null) {
+                GlideUtils.glide(result.data!!.data!!).into(binding.userPhoto)
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getUrlsHandler =
             GetUrlsHandler(LinkYou.handler, this) { dynamicViewHolder, urls, objectId ->
                 dynamicViewHolder.bindImagesAdapter(urls, objectId)
             }
+
         binding.userDynamicRecyclerView.apply {
             // 初始化适配器
             userDynamicAdapter = UserDynamicAdapter(getUrlsHandler, callbacks)
             // 设置屏幕外的视图缓存数量
             setItemViewCacheSize(20)
-            // 设置适配器 b
+            // 设置适配器
             adapter = userDynamicAdapter
             // 设置布局管理器
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = CustomLayoutManager(requireContext())
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -182,6 +196,10 @@ class MyFragment : BaseFragment() {
         binding.swiperefresh.setOnRefreshListener {
             sharedViewModel.startRefreshing()
         }
+
+        binding.userPhoto.setOnClickListener {
+            UserInfoActions.openGallerySelectTheLeaflet(pickAvatarLauncher)
+        }
     }
 
     /**
@@ -262,7 +280,6 @@ class MyFragment : BaseFragment() {
         }
     }
 
-
     /**
      * 将获取到的数据填充到recyclerView的适配器中
      *
@@ -286,22 +303,16 @@ class MyFragment : BaseFragment() {
      * @param userInfo 包含用户信息的对象
      */
     private fun updateUserInfo(userInfo: UserInfo) {
-        // 初始化 Glide 实例
-        val glide = Glide.with(this)
-
         // 使用 Glide 加载用户头像并显示到 userPhoto ImageView 中
         // 如果用户头像 URL 使用 HTTP 协议，则将其转换为 HTTPS
         binding.apply {
-            glide.load(NetWorkUtil.replaceHttps(userInfo.avatar?.url!!)).into(userPhoto)
-
+            GlideUtils.glide(userInfo.avatar?.url!!).into(userPhoto)
             // 使用 Glide 加载用户头像并显示到 smailUserPhoto ImageView 中
             // 如果用户头像 URL 使用 HTTP 协议，则将其转换为 HTTPS
-            glide.load(NetWorkUtil.replaceHttps(userInfo.avatar?.url!!)).into(smailUserPhoto)
-
+            GlideUtils.glide(userInfo.avatar?.url!!).into(smailUserPhoto)
             // 使用 Glide 加载用户背景并显示到 userBackground ImageView 中
             // 如果用户背景 URL 使用 HTTP 协议，则将其转换为 HTTPS
-            glide.load(NetWorkUtil.replaceHttps(userInfo.background?.url!!)).into(userBackground)
-
+            GlideUtils.glide(userInfo.background?.url!!, false).into(userBackground)
             // 设置其他资料
             smailUserName.text = userInfo.name
             userName.text = userInfo.name

@@ -1,5 +1,6 @@
 package com.migu.android.network.request
 
+import android.util.Log
 import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.logInfo

@@ -27,6 +27,7 @@ import com.migu.android.linkyou.databinding.FragmentPostDynamicBinding
 import com.migu.android.core.util.BarUtils
 import com.migu.android.core.util.CalculateUtils
 import com.migu.android.core.util.LayoutUtils
+import com.migu.android.core.util.UserInfoActions
 import kotlinx.coroutines.launch
 
 /**
@@ -36,8 +37,8 @@ class PostDynamicFragment : BaseFragment() {
 
     private lateinit var binding: FragmentPostDynamicBinding
 
-    private val postDynamicAdapter = PostDynamicAdapter(
-        { openGallery() },
+    private val postDynamicAdapter: PostDynamicAdapter = PostDynamicAdapter(
+        { UserInfoActions.openGallerySelectMultipleSheets(pickImageLauncher) },
         { checkHasImages() }
     )
 
@@ -148,7 +149,6 @@ class PostDynamicFragment : BaseFragment() {
         }
     }
 
-
     /**
      * 选择图片后的回调
      */
@@ -177,20 +177,6 @@ class PostDynamicFragment : BaseFragment() {
                 }
             }
         }
-
-    /**
-     * 打开图库
-     */
-    private fun openGallery() {
-        val intent = Intent(
-            Intent.ACTION_GET_CONTENT,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        ).apply {
-            type = "image/*"
-            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        }
-        pickImageLauncher.launch(intent)
-    }
 
     private fun checkHasImages() {
         if (postDynamicAdapter.imageList.size - 1 > 0) {

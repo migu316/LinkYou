@@ -25,7 +25,7 @@ class LoginViewModel : ViewModel() {
     val isLogin: LiveData<LoginEvent<Pair<Boolean, Boolean>>>
         get() = _isLogin
 
-     /**
+    /**
      * 发起用户登录请求
      * @param username 用户名
      * @param password 密码
@@ -42,9 +42,7 @@ class LoginViewModel : ViewModel() {
                 saveAuthData(loginUserData)
 
                 // 在SDK中登录，后期可以修改前面的登录，统一修改为SDK登录
-                withContext(Dispatchers.IO) {
-                    loginSDK(username, password)
-                }
+                loginSDK(username, password)
 
                 // 通知UI登录成功
                 _isLogin.postValue(LoginEvent(true to true))

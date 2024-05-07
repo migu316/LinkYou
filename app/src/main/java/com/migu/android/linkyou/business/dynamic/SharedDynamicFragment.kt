@@ -21,7 +21,7 @@ import com.migu.android.linkyou.R
 import com.migu.android.linkyou.business.dynamic.adapter.ImageAdapter
 import com.migu.android.linkyou.databinding.FragmentDynamicSharedViewpagerBinding
 import com.migu.android.network.model.base.Dynamic
-import com.migu.android.network.util.NetWorkUtil
+import com.migu.android.core.util.NetWorkUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

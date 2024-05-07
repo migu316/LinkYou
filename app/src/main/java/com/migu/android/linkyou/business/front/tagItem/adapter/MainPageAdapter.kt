@@ -8,7 +8,6 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.migu.android.core.util.DateUtil
 import com.migu.android.linkyou.BaseFragment
@@ -17,7 +16,7 @@ import com.migu.android.linkyou.business.dynamic.SharedDynamicFragment
 import com.migu.android.linkyou.databinding.DynamicsHasAvatarItemBinding
 import com.migu.android.linkyou.business.dynamic.adapter.ImageAdapter
 import com.migu.android.network.model.base.Dynamic
-import com.migu.android.network.util.NetWorkUtil
+import com.migu.android.core.util.NetWorkUtil
 
 /**
  * 主页适配器，继承自 PagingDataAdapter，用于展示动态列表
@@ -62,10 +61,14 @@ class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
                         visibility = View.VISIBLE
                         layoutManager = if (dynamicItem.imageCount == 1) {
                             adapter = ImageAdapter(it, callbacks, isSingle = true)
-                            LinearLayoutManager(context)
+                            LinearLayoutManager(context).apply {
+                                initialPrefetchItemCount = 1
+                            }
                         } else {
                             adapter = ImageAdapter(it, callbacks)
-                            GridLayoutManager(context, 3)
+                            GridLayoutManager(context, 3).apply {
+                                initialPrefetchItemCount = 3
+                            }
                         }
                     }
                 }

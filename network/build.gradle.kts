@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.leancloud.realtime)
     implementation(libs.leancloud.mixpush)
     implementation(libs.leancloud.storage)
+    implementation(libs.glide)
     implementation(project(":core"))
     implementation(project(":database"))
     testImplementation(libs.junit)

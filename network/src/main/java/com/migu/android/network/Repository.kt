@@ -1,6 +1,7 @@
 package com.migu.android.network
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
@@ -14,7 +15,6 @@ import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.SharedUtil
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesByNameExecute
 import com.migu.android.core.util.SharedUtil.getSharedPreferencesObjByName
-import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToastOnUiThread
 import com.migu.android.database.DatabaseRepository
 import com.migu.android.database.model.DynamicAndImages
@@ -237,8 +237,8 @@ object Repository {
      * @param postObjectId 关联的 LCObject
      * @return 上传失败的文件 Uri 列表
      */
-    private suspend fun uploadFile(uris: List<Uri>, postObjectId: LCObject): List<Uri> {
-        return LeanCloudSDKRequest.uploadFile(uris, postObjectId)
+    private suspend fun uploadDynamicFile(uris: List<Uri>, postObjectId: LCObject): List<Uri> {
+        return LeanCloudSDKRequest.uploadDynamicFile(uris, postObjectId)
     }
 
     /**
@@ -271,7 +271,7 @@ object Repository {
                 }
 
                 dynamicCreateResult.getOrNull()?.let {
-                    val failedList = uploadFile(uris, it)
+                    val failedList = uploadDynamicFile(uris, it)
                     if (failedList.isEmpty()) {
                         postStatus = true
                     } else {

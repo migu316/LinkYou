@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.migu.android.core.recyclerview.CustomLayoutManager
 import com.migu.android.core.util.logInfo
 import com.migu.android.core.util.showToast
 import com.migu.android.linkyou.BaseFragment
@@ -40,7 +41,7 @@ class MainPageFragment : BaseFragment() {
         binding.theLastDynamicsRecyclerView.apply {
             // 设置屏幕外的视图缓存数量
             setItemViewCacheSize(20)
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = CustomLayoutManager(requireContext())
             adapter = mainPageAdapter
         }
         lifecycleScope.launch(Dispatchers.IO) {

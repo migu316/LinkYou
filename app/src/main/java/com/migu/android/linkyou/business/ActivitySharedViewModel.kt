@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.migu.android.core.LinkYou
@@ -14,7 +13,7 @@ import com.migu.android.network.Repository
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.util.Event
-import com.migu.android.network.util.NetWorkUtil
+import com.migu.android.core.util.NetWorkUtil
 import kotlinx.coroutines.launch
 
 class ActivitySharedViewModel : ViewModel() {

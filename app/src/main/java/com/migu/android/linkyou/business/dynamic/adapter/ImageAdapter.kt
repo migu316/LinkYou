@@ -1,13 +1,14 @@
 package com.migu.android.linkyou.business.dynamic.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.dynamic.DynamicImageFragment
-import com.migu.android.linkyou.business.dynamic.ImageViewHolder
+import com.migu.android.linkyou.business.dynamic.MultipleImageViewHolder
 import com.migu.android.linkyou.business.dynamic.SharedImageViewHolder
 import com.migu.android.linkyou.business.dynamic.SingleImageViewHolder
 import com.migu.android.linkyou.databinding.DynamicSharedImageItemBinding
@@ -44,11 +45,11 @@ class ImageAdapter(
             return holder
         }
 
-        // 是否为分享图片
+        // 是否为分享图片，如果不为分析图片，那么就是多张图片
         if (!isShared) {
             val binding =
                 DynamicsImageItemBinding.inflate(LayoutInflater.from(context), parent, false)
-            val holder = ImageViewHolder(binding)
+            val holder = MultipleImageViewHolder(binding)
             binding.dynamicsImage.setOnClickListener {
                 // 通过回调去切换fragment
                 val fragment = DynamicImageFragment.newInstance(urls, holder.bindingAdapterPosition)
@@ -74,8 +75,8 @@ class ImageAdapter(
             return
         }
         if (!isShared) {
-            val imageViewHolder = holder as ImageViewHolder
-            imageViewHolder.bind(url)
+            val multipleImageViewHolder = holder as MultipleImageViewHolder
+            multipleImageViewHolder.bind(url)
             return
         }
         val sharedImageViewHolder = holder as SharedImageViewHolder
@@ -88,5 +89,26 @@ class ImageAdapter(
     fun overwriteData(newUrls: List<String>) {
         urls = newUrls
         notifyItemChanged(0, newUrls.size)
+    }
+
+//    override fun onViewRecycled(holder: ViewHolder) {
+//        super.onViewRecycled(holder)
+//        if (isSingle) {
+//            (holder as SingleImageViewHolder).apply {
+//                binding.image.setImageDrawable(null)
+//                binding.image.setOnClickListener(null)
+//            }
+//            return
+//        } else {
+//            (holder as MultipleImageViewHolder).apply {
+//                binding.dynamicsImage.setImageDrawable(null)
+//                binding.dynamicsImage.setOnClickListener(null)
+//            }
+//            return
+//        }
+//    }
+
+    companion object {
+        private const val TAG = "ImageAdapter"
     }
 }

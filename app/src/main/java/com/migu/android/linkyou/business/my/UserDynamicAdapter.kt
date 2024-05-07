@@ -74,7 +74,9 @@ class UserDynamicAdapter(
                 // 否则设置显示，并传入无效数据用于显示占位图，
                 // 避免后面holder回调方法时，页面view重新测量高度导致视图拉扯卡顿
                 visibility = View.VISIBLE
-                layoutManager = GridLayoutManager(context, 3)
+                layoutManager = GridLayoutManager(context, 3).apply {
+                    initialPrefetchItemCount = 3
+                }
                 adapter = ImageAdapter(List(dynamic.imageCount ?: 0) { "" }, null)
             }
         }
@@ -129,10 +131,14 @@ class UserDynamicAdapter(
 
                     if (urls.size == 1) {
                         adapter = ImageAdapter(urls, callbacks, isSingle = true)
-                        layoutManager = LinearLayoutManager(context)
+                        layoutManager = LinearLayoutManager(context).apply {
+                            initialPrefetchItemCount = 1
+                        }
                     } else {
                         adapter = ImageAdapter(urls, callbacks)
-                        layoutManager = GridLayoutManager(context, 3)
+                        layoutManager = GridLayoutManager(context, 3).apply {
+                            initialPrefetchItemCount = 3
+                        }
                     }
                 }
             }
