@@ -1,6 +1,7 @@
 package com.migu.android.core.glide
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import com.bumptech.glide.Glide
@@ -16,9 +17,9 @@ object GlideUtils {
     @SuppressLint("StaticFieldLeak")
     private val requestManager = Glide.with(LinkYou.context)
 
-    fun glide(url:String, isOverride:Boolean = true): RequestBuilder<Drawable> {
+    fun glide(url:String, isOverride:Boolean = true): RequestBuilder<out Any> {
         return if (isOverride) {
-            requestManager.load(NetWorkUtil.replaceHttps(url))
+            requestManager.asBitmap().load(NetWorkUtil.replaceHttps(url))
                 .override(100,100)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
