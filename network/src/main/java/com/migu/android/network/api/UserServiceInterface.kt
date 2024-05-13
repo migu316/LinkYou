@@ -26,4 +26,10 @@ interface UserServiceInterface {
         @Query("include") include: String? = "Background,Avatar"
     ): Call<UserResultResponse>
 
+
+    @GET("classes/UserInfo")
+    suspend fun getUserInfoDataSuspend(
+        @Query("where") where: String,
+        @Query("include") include: String? = "Background,Avatar"
+    ): UserResultResponse
 }

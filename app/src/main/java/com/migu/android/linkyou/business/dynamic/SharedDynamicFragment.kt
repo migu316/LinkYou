@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.migu.android.core.glide.GlideUtils
 import com.migu.android.core.util.DateUtil
 import com.migu.android.core.util.FileUtils
 import com.migu.android.core.util.GlobalUtil
@@ -60,20 +62,16 @@ class SharedDynamicFragment : BaseFragment() {
                 DateUtil.formatDateToString(dynamic.createdAt)
             )
 
-            Glide.with(requireContext())
-                .load(NetWorkUtil.replaceHttps(dynamic.userInfoId?.avatar?.url))
-                // 将其转换为圆角图片可避免使用ShapeableImageView带来的边缘透明问题
-                .apply(
-                    RequestOptions().transform(
-                        RoundedCorners(
-                            UiUtils.dpToPx(
-                                requireContext(),
-                                20
-                            )
+            GlideUtils.load(dynamic.userInfoId?.avatar?.url).apply(
+                RequestOptions().transform(
+                    RoundedCorners(
+                        UiUtils.dpToPx(
+                            requireContext(),
+                            20
                         )
                     )
                 )
-                .into(userAvatar)
+            ).into(userAvatar)
         }
 
         AnimatorInflater.loadAnimator(requireContext(), R.animator.fade_control).apply {

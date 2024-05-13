@@ -201,6 +201,10 @@ class GetUrlsHandler<in T>(
         requestMap[target] = dynamic
         // 如果请求处理程序已经初始化，则发送消息给请求处理程序
         if (::requestHandler.isInitialized) {
+//            val message = Message()
+//            message.obj = target
+//            message.what = MESSAGE_GET_URLS
+//            requestHandler.sendMessage(message)
             requestHandler.obtainMessage(MESSAGE_GET_URLS, target).sendToTarget()
         }
     }

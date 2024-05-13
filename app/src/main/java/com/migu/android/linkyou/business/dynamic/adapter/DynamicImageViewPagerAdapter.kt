@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.migu.android.core.glide.GlideUtils
 import com.migu.android.linkyou.databinding.DynacisImagesViewpagerItemBinding
 import com.migu.android.core.util.NetWorkUtil
 
@@ -41,7 +42,7 @@ class DynamicImageViewPagerAdapter(val saveImageCallback: (bitmap:Bitmap) -> Uni
         }
 
         fun bind(url: String) {
-            Glide.with(context).load(NetWorkUtil.replaceHttps(url)).into(binding.image)
+            GlideUtils.glide(url).into(binding.image)
         }
     }
 

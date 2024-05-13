@@ -42,13 +42,21 @@ object SharedDynamic {
         context.startActivity(chooser)
     }
 
+    /**
+     * 将指定view完整的输出为bitmap
+     * @param view 需要输出的View
+     */
     fun getScreenshotFromLinearLayout(view:LinearLayout): Bitmap? {
         var screenshot: Bitmap? = null
         try {
-            val width = view.width
-            val height = view.height
+            // 获取当前容器的宽高
+            val width = view.measuredWidth
+            val height = view.measuredHeight
+            // 创建一个和当前容器同等宽高的bitmap
             screenshot = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            // 使用该bitmap去生成一个指定的canvas
             val canvas = Canvas(screenshot)
+            // 将已经绘制完成的视图输出到这个canvas
             view.draw(canvas)
         } catch (e: Exception) {
             e.printStackTrace()

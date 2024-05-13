@@ -11,6 +11,8 @@ import android.view.ViewTreeObserver
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.migu.android.core.Const
@@ -30,6 +32,8 @@ import com.migu.android.network.R
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.core.util.NetWorkUtil
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MyFragment : BaseFragment() {
 
@@ -61,6 +65,12 @@ class MyFragment : BaseFragment() {
                 dynamicViewHolder.bindImagesAdapter(urls, objectId)
             }
 
+        GlobalScope.launch {
+            launch {
+
+            }
+        }
+        activity?.runOnUiThread {  }
         binding.userDynamicRecyclerView.apply {
             // 初始化适配器
             userDynamicAdapter = UserDynamicAdapter(getUrlsHandler, callbacks)
@@ -202,7 +212,7 @@ class MyFragment : BaseFragment() {
         }
     }
 
-    /**
+     /**
      * 夜间日间模式切换
      */
     private fun switchDarkMode() {

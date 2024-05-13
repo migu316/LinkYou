@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.migu.android.core.glide.GlideUtils
 import com.migu.android.core.util.DateUtil
 import com.migu.android.linkyou.BaseFragment
 import com.migu.android.linkyou.business.dynamic.RVDynamicBaseViewHolder
@@ -93,10 +94,7 @@ class MainPageAdapter(private val callbacks: BaseFragment.Callbacks?) :
             mDynamic = dynamic
             // 设置用户信息部分的数据
             binding.includeUserInfo.apply {
-                val httpsUrl = dynamic.userInfoId?.avatar?.url?.let {
-                    NetWorkUtil.replaceHttps(it)
-                }
-                Glide.with(context).load(httpsUrl).into(avatar)
+                GlideUtils.glide(dynamic.userInfoId?.avatar?.url).into(avatar)
                 userName.text = dynamic.userInfoId?.name
             }
             // 设置动态内容部分的数据

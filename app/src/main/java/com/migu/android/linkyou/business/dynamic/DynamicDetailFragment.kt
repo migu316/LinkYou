@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.migu.android.core.glide.GlideUtils
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.core.util.GsonUtils
 import com.migu.android.core.util.showToast
@@ -44,12 +45,8 @@ class DynamicDetailFragment : BaseFragment() {
     }
 
     override fun initialize() {
-        Glide.with(requireContext())
-            .load(NetWorkUtil.replaceHttps(dynamic.userInfoId?.avatar?.url))
-            .into(binding.userAvatar)
-
+        GlideUtils.glide(dynamic.userInfoId?.avatar?.url).into(binding.userAvatar)
         binding.dynamicContent.text = dynamic.postText
-
         binding.imageRecyclerView.apply {
             adapter = dynamic.imageUrls?.let { ImageAdapter(it, callbacks) }
             layoutManager = GridLayoutManager(requireContext(), 3)

@@ -17,10 +17,10 @@ object GlideUtils {
     @SuppressLint("StaticFieldLeak")
     private val requestManager = Glide.with(LinkYou.context)
 
-    fun glide(url:String, isOverride:Boolean = true): RequestBuilder<out Any> {
+    fun glide(url: String?, isOverride: Boolean = true): RequestBuilder<out Any> {
         return if (isOverride) {
             requestManager.asBitmap().load(NetWorkUtil.replaceHttps(url))
-                .override(100,100)
+                .override(100, 100)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .error(R.drawable.error)
@@ -32,13 +32,18 @@ object GlideUtils {
         }
     }
 
-    fun glide(uri:Uri): RequestBuilder<Drawable> {
+    fun glide(uri: Uri): RequestBuilder<Drawable> {
         return requestManager.load(uri)
             .dontAnimate()
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).error(R.drawable.error)
     }
 
-    fun preload(url: String){
-        requestManager.load(NetWorkUtil.replaceHttps(url)).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).preload(100,100)
+    fun load(url: String?): RequestBuilder<Drawable> {
+        return requestManager.load(NetWorkUtil.replaceHttps(url))
+    }
+
+    fun preload(url: String) {
+        requestManager.load(NetWorkUtil.replaceHttps(url))
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).preload(100, 100)
     }
 }

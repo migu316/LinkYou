@@ -96,6 +96,14 @@ object Repository {
     }
 
     /**
+     * 后期部分API需要修改为这种形式，使Api端点加上suspend进行调用
+     */
+    suspend fun getUserInfoDataSuspend(objectId: String): UserResultResponse {
+        Log.i("TestTag", "initialize: 请求执行中")
+        return LinkYouNetwork.getUserInfoDataSuspend(objectId)
+    }
+
+    /**
      * 获取目标用户发布的帖子信息。
      *
      * 之所以不在这里同步获取动态图片，是因为返回的Livedata并不是直接就有数据，需要等待后续的观察

@@ -56,6 +56,17 @@ object LinkYouNetwork {
         return userServiceInterface.getUserInfoData(where = pointerWhere).awaitForRetrofit()
     }
 
+    suspend fun getUserInfoDataSuspend(objectId: String): UserResultResponse {
+        // 创建指向 LeanCloud 中用户对象的指针
+        val leanCloudPointerBaseModel = LeanCloudPointerBaseModel(objectId).apply {
+            pointerName = "UserObjectId" // 设置指针名称
+            className = "UserInfo" // 设置指针指向的类名
+        }
+        // 将指针参数转换约束条件
+        val pointerWhere = leanCloudPointerBaseModel.toStringSeparateParameters()
+        return userServiceInterface.getUserInfoDataSuspend(where = pointerWhere)
+    }
+
 
     /**
      * 通过 objectId 发起获取用户发布的帖子的网络请求，并返回帖子信息响应结果。
