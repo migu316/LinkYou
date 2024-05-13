@@ -42,7 +42,7 @@ class DynamicImageViewPagerAdapter(val saveImageCallback: (bitmap:Bitmap) -> Uni
         }
 
         fun bind(url: String) {
-            GlideUtils.glide(url).into(binding.image)
+            GlideUtils.glide(url,false).into(binding.image)
         }
     }
 
