@@ -18,6 +18,15 @@ object FileUtils {
 
     /**
      * 保存图片到相册
+     * 主要思路为：使用MediaStore，存储到共享文件夹中，因为不需要权限，主要思路是使用MediaStore API 来插入和保存
+     * 图片数据，并在Android 10（API 29）及以上的版本中通过 RELATIVE_PATH来指定相对路径，而在Android 10以下的
+     * 版本中使用 DATA 来指定绝对路径
+     *
+     * 1.首先构建一个ContentValue，需要填入MediaStore.MediaColumns.DISPLAY_NAME、
+     * MediaStore.MediaColumns.MIME_TYPE、MediaStore.MediaColumns.DATA，而最后这个DATA需要根据不用的版本做处理
+     * 2.使用ContentResolver的api将上面的内容插入到MediaStore.Images.Media.EXTERNAL_CONTENT_URI中，可以构建出一个
+     * uri对象
+     * 3.为uri写入数据，可以做版本适配，SDK29及其以上可以通过使用contentValue避免其他应用程序对该文件进行读写
      *
      * 参见[切换媒体文件的待处理状态](https://developer.android.com/training/data-storage/shared/media?hl=zh-cn#toggle-pending-status)
      * 参见[Android 10适配要点，作用域存储-将图片添加到相册](https://mp.weixin.qq.com/s/_CV68KeQolJQqvUFo10ZVw)

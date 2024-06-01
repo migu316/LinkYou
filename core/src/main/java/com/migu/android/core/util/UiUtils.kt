@@ -1,6 +1,10 @@
 package com.migu.android.core.util
 
+import android.app.Activity
+import android.app.UiModeManager
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
+import com.migu.android.core.Const
 import com.migu.android.core.LinkYou
 
 object UiUtils {
@@ -53,5 +57,70 @@ object UiUtils {
         val density = metrics.density
 
         return (unitHeightDp * density).toInt()
+    }
+
+    /**
+     * 夜间日间模式切换
+     */
+    private fun switchDarkMode(activity: Activity?) {
+        val uiModeManager =
+            activity?.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        // 系统设置
+        /**
+         *     public static final int MODE_NIGHT_AUTO = 0;
+         *     public static final int MODE_NIGHT_CUSTOM = 3;
+         *     public static final int MODE_NIGHT_NO = 1;
+         *     public static final int MODE_NIGHT_YES = 2;
+         */
+        val systemNightMode = uiModeManager.nightMode
+        // app设置
+        val isNightMode = AppCompatDelegate.getDefaultNightMode()
+
+        // 如果系统设置为日间，那么可以通过app的设置进行切换
+        // 如果系统设置为其他，那么不执行切换
+        when (systemNightMode) {
+            // 系统夜间关闭
+            UiModeManager.MODE_NIGHT_NO -> {
+                when (isNightMode) {
+
+                    // app夜间关闭
+                    AppCompatDelegate.MODE_NIGHT_NO -> {
+                        // 切换为夜间
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        SharedUtil.save(
+                            Const.DarkMode.DARK_MODE_SP_FILE,
+                            Const.DarkMode.DARK_ON,
+                            true
+                        )
+                    }
+
+                    // app夜间开启
+                    AppCompatDelegate.MODE_NIGHT_YES -> {
+                        // 切换为日间
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        SharedUtil.save(
+                            Const.DarkMode.DARK_MODE_SP_FILE,
+                            Const.DarkMode.DARK_ON,
+                            false
+                        )
+                    }
+
+                    // app夜间未指定
+                    AppCompatDelegate.MODE_NIGHT_UNSPECIFIED -> {
+                        // 切换为夜间
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        SharedUtil.save(
+                            Const.DarkMode.DARK_MODE_SP_FILE,
+                            Const.DarkMode.DARK_ON,
+                            true
+                        )
+                    }
+
+                    else -> {}
+                }
+            }
+
+            else -> {}
+        }
     }
 }

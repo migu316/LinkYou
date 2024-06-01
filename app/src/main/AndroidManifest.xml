@@ -7,8 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application>
+        <!-- uiMode -> 当切换界面模式时不需要重建Activity -->
         <activity
             android:name=".business.MainActivity"
+            android:configChanges="uiMode"
             android:exported="false" />
         <!-- 即时通讯和推送 START -->
         <!-- 即时通讯和推送都需要 PushService -->

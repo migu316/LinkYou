@@ -235,6 +235,7 @@ class MyFragment : BaseFragment() {
             // 系统夜间关闭
             UiModeManager.MODE_NIGHT_NO -> {
                 when (isNightMode) {
+
                     // app夜间关闭
                     AppCompatDelegate.MODE_NIGHT_NO -> {
                         // 切换为夜间
@@ -245,6 +246,7 @@ class MyFragment : BaseFragment() {
                             true
                         )
                     }
+
                     // app夜间开启
                     AppCompatDelegate.MODE_NIGHT_YES -> {
                         // 切换为日间
@@ -255,6 +257,7 @@ class MyFragment : BaseFragment() {
                             false
                         )
                     }
+
                     // app夜间未指定
                     AppCompatDelegate.MODE_NIGHT_UNSPECIFIED -> {
                         // 切换为夜间
