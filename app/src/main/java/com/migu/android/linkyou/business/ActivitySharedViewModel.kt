@@ -1,11 +1,14 @@
 package com.migu.android.linkyou.business
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import cn.leancloud.LCFile
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.GlobalUtil
 import com.migu.android.linkyou.R
@@ -14,21 +17,21 @@ import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.network.util.Event
 import com.migu.android.core.util.NetWorkUtil
+import com.migu.android.core.util.SharedUtil
+import com.migu.android.core.util.showToastOnUiThread
+import com.migu.android.network.model.UserResultResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ActivitySharedViewModel : ViewModel() {
 
-    /**
-     * 获取头像URL
-     */
-    fun getUserAvatarUrlBySp(): String {
-        return NetWorkUtil.replaceHttps(Repository.getUserAvatarUrlBySp())
-    }
+    private var cacheUserInfo: Result<UserResultResponse>? = null
 
-    // 仅第一次获取该livedata时，发起网络请求
-    // 即使多次获取，也不会再发起网络请求
-    // 获取用户信息
-    val userInfoLiveData = Repository.getUserInfo(LinkYou.objectId)
+    // 用于修改数据后，
+    private val _userInfoLiveData = MutableLiveData<Result<UserResultResponse>>()
+
+    // 从_userInfoLiveData获取数据
+    val userInfoLiveData: LiveData<Result<UserResultResponse>> get() = _userInfoLiveData
 
     // 无论false还是true，都会拉取数据
     private val isRefreshing = MutableLiveData(false)
@@ -45,8 +48,7 @@ class ActivitySharedViewModel : ViewModel() {
     private val _postDynamicStatus = MutableLiveData<Event<Result<Boolean>>>()
 
     // 提供对外用于观察的发布状态
-    val postDynamicStatus: LiveData<Event<Result<Boolean>>>
-        get() = _postDynamicStatus
+    val postDynamicStatus: LiveData<Event<Result<Boolean>>> get() = _postDynamicStatus
 
     fun startRefreshing() {
         isRefreshing.value = isRefreshing.value?.let { !it } ?: true
@@ -94,4 +96,57 @@ class ActivitySharedViewModel : ViewModel() {
         }
     }
 
+    /**
+     * 从SP文件中获取头像URL
+     */
+    fun getUserAvatarUrlBySp(): String {
+        return NetWorkUtil.replaceHttps(Repository.getUserAvatarUrlBySp())
+    }
+
+    /**
+     * 拉取用户信息
+     *
+     */
+    fun fetchUserInfo() {
+        cacheUserInfo?.let { result ->
+            _userInfoLiveData.value = result
+        } ?: run {
+            Repository.getUserInfo(LinkYou.objectId).observeForever {
+                cacheUserInfo = it
+                _userInfoLiveData.value = it
+            }
+        }
+    }
+
+    /**
+     * 提交头像修改
+     *
+     * @param avatarUri 从图库中选择的uri
+     * @return
+     */
+    suspend fun postModifyAvatar(avatarUri: Uri) {
+        Repository.postModifyAvatar(avatarUri).apply {
+            if (isSuccess) {
+                getOrNull()?.let {
+                    val lcFile = it.serverData["Avatar"] as LCFile
+                    lcFile.serverData["url"].toString().let { newUrl ->
+                        viewModelScope.launch(Dispatchers.Main) {
+                            Repository.saveAvatar(newUrl)
+                            // 将修改后得到的url传递给_userInfoLiveData触发观察者更新
+                            cacheUserInfo?.let { result ->
+                                result.getOrNull()?.results?.get(0)?.avatar?.let { avatar ->
+                                    avatar.url = newUrl
+                                    _userInfoLiveData.value = result
+                                }
+                            }
+                        }
+                    }
+                } ?: run {
+                    showToastOnUiThread("头像更换失败")
+                }
+            } else {
+                showToastOnUiThread(exceptionOrNull()?.message ?: "头像更换失败")
+            }
+        }
+    }
 }

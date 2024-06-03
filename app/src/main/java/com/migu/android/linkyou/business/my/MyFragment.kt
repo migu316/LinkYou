@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.app.UiModeManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ import com.migu.android.network.R
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.core.util.NetWorkUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -54,7 +56,9 @@ class MyFragment : BaseFragment() {
     private val pickAvatarLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
-                GlideUtils.glide(result.data!!.data!!).into(binding.userPhoto)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    sharedViewModel.postModifyAvatar(result.data!!.data!!)
+                }
             }
         }
 
@@ -65,12 +69,6 @@ class MyFragment : BaseFragment() {
                 dynamicViewHolder.bindImagesAdapter(urls, objectId)
             }
 
-        GlobalScope.launch {
-            launch {
-
-            }
-        }
-        activity?.runOnUiThread {  }
         binding.userDynamicRecyclerView.apply {
             // 初始化适配器
             userDynamicAdapter = UserDynamicAdapter(getUrlsHandler, callbacks)
@@ -102,7 +100,7 @@ class MyFragment : BaseFragment() {
         // 将会发起一个网络请求，获取最新的数据，并观察 userInfoLiveData，当数据发生变化时执行回调函数
         sharedViewModel.userInfoLiveData.observe(viewLifecycleOwner) { result ->
             val userResultResponse = result.getOrNull()
-            // 如果 userResultResponse 不为 null，则执行下面的代码块
+            // 如果 userResultResponse 不为 null，则更新界面和SP缓存
             userResultResponse?.let {
                 // 更新用户信息，传入结果中的第一个用户信息对象
                 updateUserInfo(it.results[0])
@@ -114,6 +112,7 @@ class MyFragment : BaseFragment() {
                 result.exceptionOrNull()?.printStackTrace()
             }
         }
+        sharedViewModel.fetchUserInfo()
         binding.swiperefresh.isRefreshing = true
     }
 
@@ -212,7 +211,7 @@ class MyFragment : BaseFragment() {
         }
     }
 
-     /**
+    /**
      * 夜间日间模式切换
      */
     private fun switchDarkMode() {
@@ -334,6 +333,7 @@ class MyFragment : BaseFragment() {
     }
 
     companion object {
+        private const val TAG = "MyFragment"
         fun newInstance(): MyFragment {
             return MyFragment()
         }

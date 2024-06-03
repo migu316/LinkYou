@@ -139,8 +139,8 @@ class LoginActivity : BaseActivity() {
      */
     private fun showPrivacyPolicyDialog() {
         // 检查用户是否已同意隐私策略 暂时没用
-        val isAgree = getSharedPreferences(Const.Shared.PRIVACY_POLICY, MODE_PRIVATE).getBoolean(
-            Const.Shared.PRIVACY_POLICY_IS_AGREE,
+        val isAgree = getSharedPreferences(Const.Privacy.PRIVACY_POLICY, MODE_PRIVATE).getBoolean(
+            Const.Privacy.PRIVACY_POLICY_IS_AGREE,
             false
         )
 
@@ -156,8 +156,8 @@ class LoginActivity : BaseActivity() {
                     // 初始化对话框变量并检查其是否已被初始化
                     ::alertDialog.isInitialized.apply {
                         // 将用户同意隐私策略的状态保存到 SharedPreferences 中
-                        getSharedPreferences(Const.Shared.PRIVACY_POLICY, MODE_PRIVATE).edit {
-                            putBoolean(Const.Shared.PRIVACY_POLICY_IS_AGREE, true)
+                        getSharedPreferences(Const.Privacy.PRIVACY_POLICY, MODE_PRIVATE).edit {
+                            putBoolean(Const.Privacy.PRIVACY_POLICY_IS_AGREE, true)
                         }
                         // 关闭对话框
                         alertDialog.dismiss()

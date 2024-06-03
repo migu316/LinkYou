@@ -5,6 +5,9 @@ package com.migu.android.core
  */
 interface Const {
 
+    /**
+     * 账户验证信息（其中包括了SDK的验证信息）
+     */
     interface Auth {
         companion object {
             const val LOGIN_STATE_INFO_SHARED = "login_state_info"
@@ -19,6 +22,9 @@ interface Const {
         }
     }
 
+    /**
+     * 用户个人信息
+     */
     interface UserInfo {
         companion object {
             const val USER_INFO_SP_FILE = "user_info_sp_file"
@@ -35,13 +41,19 @@ interface Const {
         }
     }
 
-    interface Shared {
+    /**
+     * 隐私协议
+     */
+    interface Privacy {
         companion object {
             const val PRIVACY_POLICY = "privacy_policy"
             const val PRIVACY_POLICY_IS_AGREE = "is_agree"
         }
     }
 
+    /**
+     * 夜间模式
+     */
     interface DarkMode {
         companion object {
             const val DARK_MODE_SP_FILE = "dark_mode_sp_file"
@@ -50,6 +62,9 @@ interface Const {
     }
 
 
+    /**
+     * 图形质量
+     */
     enum class PictureQuality {
         LOW,
         MEDIUM,

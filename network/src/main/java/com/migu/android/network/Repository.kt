@@ -32,6 +32,7 @@ import com.migu.android.network.request.LinkYouNetwork
 import com.migu.android.network.util.Event
 import com.migu.android.network.util.toDynamic
 import com.migu.android.network.util.toDynamicEntity
+import com.migu.android.network.util.toUserInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -85,6 +86,7 @@ object Repository {
      */
     fun getUserInfo(objectId: String): LiveData<Result<UserResultResponse>> {
         return fire(Dispatchers.IO) {
+            Log.i(TAG, "getUserInfo: ")
             val userResultResponse = LinkYouNetwork.getUserInfoRequest(objectId)
             if (userResultResponse.results.isNotEmpty()) {
                 Result.success(userResultResponse)
@@ -278,6 +280,7 @@ object Repository {
                         ?: RuntimeException("登录状态异常，动态发布失败")
                 }
 
+                // 需要先创建动态，再创建图片文件，并把动态的id添加到图片记录的字段中
                 dynamicCreateResult.getOrNull()?.let {
                     val failedList = uploadDynamicFile(uris, it)
                     if (failedList.isEmpty()) {
@@ -294,6 +297,9 @@ object Repository {
         return Result.success(postStatus)
     }
 
+    suspend fun postModifyAvatar(avatarUri: Uri): Result<LCObject?> {
+        return LeanCloudSDKRequest.postModifyAvatar(avatarUri)
+    }
 
     /*------------------ SharedPreferences 封装 -----------------*/
 
@@ -356,9 +362,8 @@ object Repository {
         }
     }
 
-
     /**
-     * 保存认证数据
+     * 保存通过api获取的认证数据
      * @param loginUserResponse 登录用户的认证数据
      */
     fun saveAuthData(loginUserResponse: LoginUserResponse) {
@@ -395,6 +400,25 @@ object Repository {
         LinkYou.refreshLoginState()
     }
 
+    /**
+     * 用于将SDK获取的用户数据分别保存到两个SP文件中
+     *
+     * @param lcObject
+     */
+    fun saveSDKAuthAndUserData(lcObject: LCObject) {
+        saveUserInfoToSp(lcObject.toUserInfo())
+        SharedUtil.save(
+            Const.Auth.LOGIN_STATE_INFO_SHARED,
+            Const.Auth.SDK_USER_INFO,
+            lcObject.toJSONString()
+        )
+        LinkYou.refreshLoginState()
+    }
+
+    fun saveAvatar(url:String) {
+        SharedUtil.save(Const.UserInfo.USER_INFO_SP_FILE, Const.UserInfo.AVATAR_FILE_PATH, url)
+        LinkYou.refreshLoginState()
+    }
 
     /*------------------ 异步网络请求通用封装 -----------------*/
 

@@ -20,6 +20,7 @@ import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -27,6 +28,18 @@ import kotlin.coroutines.suspendCoroutine
 private const val TAG = "LeanCloudSDKRequest"
 
 object LeanCloudSDKRequest {
+
+    /**
+     * 创建一个LCFile
+     *
+     * @param uri 传递一个uri
+     * @return 返回一个LCFile
+     */
+    fun createSingleLCFile(uri: Uri): LCFile {
+        val file = LeanCloudUtils.uriToFile(uri)
+        return LCFile(file.name, LeanCloudUtils.fileToByteArray(file))
+    }
+
 
     /**
      * 动态提交时上传图片
@@ -42,8 +55,13 @@ object LeanCloudSDKRequest {
             val file = LeanCloudUtils.uriToFile(uri)
             val lcFile = LCFile(file.name, LeanCloudUtils.fileToByteArray(file))
             try {
-                val userInfoObj = LeanCloudUtils.getUserInfo()
-                    ?: throw RuntimeException("用户信息状态异常，尝试重新登录")
+                val result = verifyYourCurrentAccount()
+                if (result.isFailure) {
+                    throw result.exceptionOrNull()
+                        ?: RuntimeException("用户信息状态异常，尝试重新登录")
+                }
+                val userInfoObj =
+                    result.getOrNull() ?: throw RuntimeException("用户信息状态异常，尝试重新登录")
                 withContext(Dispatchers.IO) {
                     universalLCObjectResult("PostImages", {
                         put("imageId", lcFile)
@@ -147,16 +165,16 @@ object LeanCloudSDKRequest {
     }
 
     /**
-     * 通过当前用户对象获取用户的资料
-     * 即使失败了也没关系
+     * 通过当前用户对象获取用户的资料并存放到SP缓存中
+     * 即使失败了也没关系，因为优先检查的是通过API获取的登录信息
      *
      * @param lcUser 用户对象
      * 备选方式：
      * val lcObject = LCObject.createWithoutData("_User", lcUser.objectId)
      * 参见：[备选方式](https://docs.leancloud.cn/sdk/storage/guide/java/#%E4%B8%80%E5%AF%B9%E4%B8%80%E4%B8%80%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB)
      */
-    suspend fun getUserInfo(lcUser: LCObject) {
-        suspendCoroutine<Boolean> { continuation ->
+    suspend fun getUserInfo(lcUser: LCObject): LCObject? {
+        return suspendCoroutine<LCObject?> { continuation ->
             LCQuery<LCObject>("UserInfo").apply {
                 whereEqualTo("UserObjectId", lcUser)
                 include("Avatar")
@@ -167,30 +185,19 @@ object LeanCloudSDKRequest {
                     override fun onNext(t: List<LCObject>) {
                         if (t.isNotEmpty()) {
                             t[0].apply {
-                                val json = toJSONString()
-                                SharedUtil.save(
-                                    Const.Auth.LOGIN_STATE_INFO_SHARED,
-                                    Const.Auth.SDK_USER_INFO,
-                                    json
-                                )
-                                toUserInfo().apply {
-                                    Repository.saveUserInfoToSp(this)
-                                }
-                                LinkYou.refreshLoginState()
-                                continuation.resume(true)
+                                Repository.saveSDKAuthAndUserData(this)
                             }
+                            continuation.resumeWith(Result.success(t[0]))
                         } else {
-                            logError(
-                                "用户信息获取异常",
-                                RuntimeException("用户信息获取异常:未获取到任何对象")
-                            )
-                            continuation.resume(false)
+                            val exception = RuntimeException("用户信息获取异常:未获取到任何对象")
+                            logError("用户信息获取异常", exception)
+                            continuation.resume(null)
                         }
                     }
 
                     override fun onError(e: Throwable) {
                         logError("获取用户信息失败", e)
-                        continuation.resume(false)
+                        continuation.resume(null)
                     }
 
                     override fun onComplete() {}
@@ -199,35 +206,52 @@ object LeanCloudSDKRequest {
         }
     }
 
-    /**
-     * 更新用户资料的函数
-     * 1.首先上传头像文件，拿到一个LCObject（或许应该作为参数传递）
-     * 2.判断缓存数据中是否存在当前用户信息的JSON对象，a.如果不存在 -> 获取  b.存在  ->  不获取直接执行下一步
-     * 3.从缓存数据中获取当前用户信息的JSON对象，转换为LCObject   a.转换错误-> 重新获取  b.成功->下一步
-     * 4.上传以进行更新
-     */
-    suspend fun postModifyUserInfo(avatar: LCFile?, background: LCFile?, userInfo: UserInfo?):Result<LCObject?> {
-        val userInfoObj: LCObject?
-        val lcUser = GsonUtils.fromJsonNormal<LCUser>(LinkYou.sdkLoginLCUserJson)
-        if (LinkYou.sdkUserInfoJson.isNotEmpty()) {
-            userInfoObj = GsonUtils.fromJsonNormal<LCObject>(LinkYou.sdkUserInfoJson)
-        } else {
-            lcUser?.let { user ->
-                getUserInfo(user)
-                userInfoObj = GsonUtils.fromJsonNormal<LCObject>(LinkYou.sdkUserInfoJson)
-                // 如果这次的userInfoObj还是为null，那么登录状态存在问题，抛出错误
-                if (userInfoObj == null) {
-                    return Result.failure(RuntimeException("登录状态异常"))
-                }
-            }
-
-            // 继续尝试上传
-            
+    suspend fun postModifyAvatar(avatarUri: Uri): Result<LCObject?> {
+        val result = verifyYourCurrentAccount()
+        result.getOrNull()?.run {
+            val lcFile = createSingleLCFile(avatarUri)
+            val lcObjectResult = universalCreateWithoutData("UserInfo", this.objectId, {
+                put("Avatar", lcFile)
+            }, {
+                logInfo("修改成功，修改后的对象为:$this")
+            }, {
+                logError("用户信息修改错误：", this)
+            })
+            return lcObjectResult
+        } ?: run {
+            return result
         }
-
-        return Result.failure(RuntimeException("TODO"))
     }
 
+
+    /**
+     * 验证缓存中是否存在用户信息
+     *
+     * @return 返回获取到的用户信息对象，或者抛出错误
+     */
+    suspend fun verifyYourCurrentAccount(): Result<LCObject?> {
+        // 先检查是否存在用户信息对象
+        if (LinkYou.sdkUserInfoJson.isNotEmpty()) {
+            val userInfoObj = GsonUtils.fromJsonNormal<LCObject>(LinkYou.sdkUserInfoJson)
+            return Result.success(userInfoObj)
+        }
+
+        // 获取SP文件中的SDK用户缓存
+        val lcUser = GsonUtils.fromJsonNormal<LCUser>(LinkYou.sdkLoginLCUserJson)
+        // 如果不为空就返回解析出来的用户对象
+        if (LinkYou.sdkUserInfoJson.isNotEmpty()) {
+            val userInfoObj = GsonUtils.fromJsonNormal<LCObject>(LinkYou.sdkUserInfoJson)
+            return Result.success(userInfoObj)
+        } else {
+            lcUser?.let { user ->
+                // 发起请求，通过SDK方法获取用户信息
+                getUserInfo(user)?.run {
+                    return Result.success(this)
+                }
+            }
+            return Result.failure(RuntimeException("登录状态异常"))
+        }
+    }
 
     /**
      * 通用的请求函数
@@ -252,6 +276,37 @@ object LeanCloudSDKRequest {
                             t.onNextBlock()
                         }
                         continuation.resume(t)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        if (onErrorBlock != null) {
+                            e.onErrorBlock()
+                        }
+                        continuation.resumeWithException(e)
+                    }
+
+                    override fun onComplete() {}
+                })
+        }
+    }
+
+    private suspend fun universalCreateWithoutData(
+        className: String,
+        objectId: String,
+        block: LCObject.() -> Unit,
+        onNextBlock: (LCObject.() -> Unit)? = null,
+        onErrorBlock: (Throwable.() -> Unit)? = null
+    ): Result<LCObject> {
+        return suspendCoroutine { continuation ->
+            LCObject.createWithoutData(className, objectId).apply(block).saveInBackground()
+                .subscribe(object : Observer<LCObject> {
+                    override fun onSubscribe(d: Disposable) {}
+
+                    override fun onNext(t: LCObject) {
+                        if (onNextBlock != null) {
+                            t.onNextBlock()
+                        }
+                        continuation.resume(Result.success(t))
                     }
 
                     override fun onError(e: Throwable) {
