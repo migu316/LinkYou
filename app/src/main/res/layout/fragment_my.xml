@@ -135,6 +135,7 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.card.MaterialCardView
+                            android:clickable="true"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="20dp"
@@ -143,7 +144,8 @@
                             android:layout_marginBottom="5dp"
                             android:layout_weight="1"
                             app:cardCornerRadius="20dp"
-                            app:strokeWidth="0dp">
+                            app:strokeWidth="0dp"
+                            android:focusable="true">
 
 
                             <FrameLayout
@@ -202,6 +204,7 @@
                         </com.google.android.material.card.MaterialCardView>
 
                         <com.google.android.material.card.MaterialCardView
+                            android:clickable="true"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -210,7 +213,8 @@
                             android:layout_marginBottom="5dp"
                             android:layout_weight="1"
                             app:cardCornerRadius="20dp"
-                            app:strokeWidth="0dp">
+                            app:strokeWidth="0dp"
+                            android:focusable="true">
 
                             <FrameLayout
                                 android:layout_width="match_parent"
@@ -303,7 +307,6 @@
                             app:shapeAppearance="@style/CircularImageView" />
 
                         <com.google.android.material.textview.MaterialTextView
-
                             android:id="@+id/smail_user_name"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"

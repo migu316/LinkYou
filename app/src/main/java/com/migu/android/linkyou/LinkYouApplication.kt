@@ -8,6 +8,7 @@ import cn.leancloud.LCLogger
 import cn.leancloud.LCObject
 import cn.leancloud.LeanCloud
 import cn.leancloud.callback.LCCallback
+import cn.leancloud.im.LCIMOptions
 import cn.leancloud.session.LCConnectionManager
 import com.migu.android.core.LinkYou
 import com.migu.android.core.util.AssetsUtils
@@ -29,7 +30,11 @@ open class LinkYouApplication : Application() {
         // 读取 local.properties 中的属性值
         val appId = AssetsUtils.getAPPID()
         val restApi = AssetsUtils.getRESTAPI()
-        LeanCloud.initializeSecurely(this, appId, restApi)
+        val appKey = AssetsUtils.getLCKEY()
+        LeanCloud.initialize(this, appId, appKey, restApi)
+        // 在 LeanCloud.initialize 之后调用，禁止自动发送推送服务的 login 请求。
+        LCIMOptions.getGlobalOptions().isDisableAutoLogin4Push = true;
+//        LeanCloud.initializeSecurely(this, appId, restApi)
 
         // 验证链接是否建立
         LCConnectionManager.getInstance().startConnection(object : LCCallback<LCObject>() {

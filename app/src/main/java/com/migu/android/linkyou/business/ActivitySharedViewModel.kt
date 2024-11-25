@@ -124,28 +124,58 @@ class ActivitySharedViewModel : ViewModel() {
      * @param avatarUri 从图库中选择的uri
      * @return
      */
-    suspend fun postModifyAvatar(avatarUri: Uri) {
-        Repository.postModifyAvatar(avatarUri).apply {
-            if (isSuccess) {
-                getOrNull()?.let {
-                    val lcFile = it.serverData["Avatar"] as LCFile
-                    lcFile.serverData["url"].toString().let { newUrl ->
-                        viewModelScope.launch(Dispatchers.Main) {
-                            Repository.saveAvatar(newUrl)
-                            // 将修改后得到的url传递给_userInfoLiveData触发观察者更新
-                            cacheUserInfo?.let { result ->
-                                result.getOrNull()?.results?.get(0)?.avatar?.let { avatar ->
-                                    avatar.url = newUrl
-                                    _userInfoLiveData.value = result
+    fun postModifyAvatar(avatarUri: Uri) {
+        viewModelScope.launch {
+            Repository.postModifyAvatar(avatarUri).apply {
+                if (isSuccess) {
+                    getOrNull()?.let {
+                        val lcFile = it.serverData["Avatar"] as LCFile
+                        lcFile.serverData["url"].toString().let { newUrl ->
+                            viewModelScope.launch(Dispatchers.Main) {
+                                Repository.saveAvatar(newUrl)
+                                // 将修改后得到的url传递给_userInfoLiveData触发观察者更新
+                                cacheUserInfo?.let { result ->
+                                    result.getOrNull()?.results?.get(0)?.avatar?.let { avatar ->
+                                        avatar.url = newUrl
+                                        _userInfoLiveData.value = result
+                                    }
                                 }
                             }
                         }
+                    } ?: run {
+                        showToastOnUiThread("头像更换失败")
                     }
-                } ?: run {
-                    showToastOnUiThread("头像更换失败")
+                } else {
+                    showToastOnUiThread(exceptionOrNull()?.message ?: "头像更换失败")
                 }
-            } else {
-                showToastOnUiThread(exceptionOrNull()?.message ?: "头像更换失败")
+            }
+        }
+    }
+
+    fun postModifyBackground(avatarUri: Uri) {
+        viewModelScope.launch {
+            Repository.postModifyBackground(avatarUri).apply {
+                if (isSuccess) {
+                    getOrNull()?.let {
+                        val lcFile = it.serverData["Background"] as LCFile
+                        lcFile.serverData["url"].toString().let { newUrl ->
+                            viewModelScope.launch(Dispatchers.Main) {
+                                Repository.saveBackground(newUrl)
+                                // 将修改后得到的url传递给_userInfoLiveData触发观察者更新
+                                cacheUserInfo?.let { result ->
+                                    result.getOrNull()?.results?.get(0)?.background?.let { background ->
+                                        background.url = newUrl
+                                        _userInfoLiveData.value = result
+                                    }
+                                }
+                            }
+                        }
+                    } ?: run {
+                        showToastOnUiThread("背景更换失败")
+                    }
+                } else {
+                    showToastOnUiThread(exceptionOrNull()?.message ?: "背景更换失败")
+                }
             }
         }
     }

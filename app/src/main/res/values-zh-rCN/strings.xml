@@ -61,4 +61,8 @@
     <string name="shared_image">分享图片</string>
     <string name="shared_post_time_string">%s 发布于链你</string>
     <string name="shared_image_string">分享图片</string>
+    <string name="check_avatar">查看头像</string>
+    <string name="modify_avatar">修改头像</string>
+    <string name="check_background">查看背景</string>
+    <string name="modify_background">修改背景</string>
 </resources>

@@ -301,6 +301,9 @@ object Repository {
         return LeanCloudSDKRequest.postModifyAvatar(avatarUri)
     }
 
+    suspend fun postModifyBackground(avatarUri: Uri): Result<LCObject?> {
+        return LeanCloudSDKRequest.postModifyBackground(avatarUri)
+    }
     /*------------------ SharedPreferences 封装 -----------------*/
 
     /**
@@ -417,6 +420,11 @@ object Repository {
 
     fun saveAvatar(url:String) {
         SharedUtil.save(Const.UserInfo.USER_INFO_SP_FILE, Const.UserInfo.AVATAR_FILE_PATH, url)
+        LinkYou.refreshLoginState()
+    }
+
+    fun saveBackground(url:String) {
+        SharedUtil.save(Const.UserInfo.USER_INFO_SP_FILE, Const.UserInfo.BACKGROUND_FILE_PATH, url)
         LinkYou.refreshLoginState()
     }
 

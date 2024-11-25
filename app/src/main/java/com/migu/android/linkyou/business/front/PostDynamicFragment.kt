@@ -1,15 +1,16 @@
 package com.migu.android.linkyou.business.front
 
 import android.app.Activity.RESULT_OK
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -27,7 +28,6 @@ import com.migu.android.linkyou.databinding.FragmentPostDynamicBinding
 import com.migu.android.core.util.BarUtils
 import com.migu.android.core.util.CalculateUtils
 import com.migu.android.core.util.LayoutUtils
-import com.migu.android.core.util.UserInfoActions
 import kotlinx.coroutines.launch
 
 /**
@@ -35,10 +35,16 @@ import kotlinx.coroutines.launch
  */
 class PostDynamicFragment : BaseFragment() {
 
+    private lateinit var pickMultipleMedia: ActivityResultLauncher<PickVisualMediaRequest>
     private lateinit var binding: FragmentPostDynamicBinding
 
+
     private val postDynamicAdapter: PostDynamicAdapter = PostDynamicAdapter(
-        { UserInfoActions.openGallerySelectMultipleSheets(pickImageLauncher) },
+        {
+            // 魅族无法打开系统原生图片选择器
+//            UserInfoActions.openGallerySelectMultipleSheets(pickImageLauncher)
+            openTheNativeImagePicker()
+        },
         { checkHasImages() }
     )
 
@@ -62,7 +68,10 @@ class PostDynamicFragment : BaseFragment() {
             adapter = postDynamicAdapter
             layoutManager = GridLayoutManager(requireContext(), 3)
         }
+
+        pickMultipleMedia = initializeTheImagePicker()
     }
+
 
     override fun initializeListener() {
         binding.back.apply {
@@ -178,6 +187,27 @@ class PostDynamicFragment : BaseFragment() {
             }
         }
 
+    /**
+     * 初始化图片选择器
+     * @return 返回选择器
+     */
+    private fun initializeTheImagePicker() =
+        registerForActivityResult(
+            ActivityResultContracts.PickMultipleVisualMedia(
+                MAXIMUM_NUMBER_OF_PHOTOS_TO_SELECT
+            )
+        ) { uris ->
+            if (uris.isNotEmpty()) {
+                uris.forEach {
+                    postDynamicAdapter.addImage(it)
+                }
+            }
+        }
+
+    private fun openTheNativeImagePicker() {
+        pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+    }
+
     private fun checkHasImages() {
         if (postDynamicAdapter.imageList.size - 1 > 0) {
             binding.postDynamic.apply {
@@ -214,5 +244,7 @@ class PostDynamicFragment : BaseFragment() {
         fun newInstance(): Fragment {
             return PostDynamicFragment()
         }
+
+        private const val MAXIMUM_NUMBER_OF_PHOTOS_TO_SELECT = 9
     }
 }

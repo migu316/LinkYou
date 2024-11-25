@@ -19,6 +19,14 @@ object LayoutUtils {
         return AlertDialog.Builder(context).block().create()
     }
 
+    /**
+     * 创建一个底部弹窗
+     *
+     * @param context 当前context对象
+     * @param style 弹窗样式，可以为null
+     * @param block 弹窗的自定义动作
+     * @return 返回一个Dialog对象
+     */
     inline fun createBottomDialog(
         context: Context,
         style: Int? = null,

@@ -207,17 +207,40 @@ object LeanCloudSDKRequest {
     }
 
     suspend fun postModifyAvatar(avatarUri: Uri): Result<LCObject?> {
+        // 验证用户信息
         val result = verifyYourCurrentAccount()
-        result.getOrNull()?.run {
-            val lcFile = createSingleLCFile(avatarUri)
-            val lcObjectResult = universalCreateWithoutData("UserInfo", this.objectId, {
-                put("Avatar", lcFile)
-            }, {
-                logInfo("修改成功，修改后的对象为:$this")
-            }, {
-                logError("用户信息修改错误：", this)
-            })
-            return lcObjectResult
+        return result.getOrNull()?.let {lcObject->
+            withContext(Dispatchers.IO) {
+                val lcFile = createSingleLCFile(avatarUri)
+                val lcObjectResult = universalCreateWithoutData("UserInfo", lcObject.objectId, {
+                    put("Avatar", lcFile)
+                }, {
+                    logInfo("修改成功，修改后的对象为:$this")
+                }, {
+                    logError("用户信息修改错误：", this)
+                })
+                lcObjectResult
+            }
+        } ?: run {
+            return result
+        }
+    }
+
+    suspend fun postModifyBackground(avatarUri: Uri): Result<LCObject?> {
+        // 验证用户信息
+        val result = verifyYourCurrentAccount()
+        return result.getOrNull()?.let {lcObject->
+            withContext(Dispatchers.IO) {
+                val lcFile = createSingleLCFile(avatarUri)
+                val lcObjectResult = universalCreateWithoutData("UserInfo", lcObject.objectId, {
+                    put("Background", lcFile)
+                }, {
+                    logInfo("修改成功，修改后的对象为:$this")
+                }, {
+                    logError("用户信息修改错误：", this)
+                })
+                lcObjectResult
+            }
         } ?: run {
             return result
         }

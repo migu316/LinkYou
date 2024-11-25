@@ -3,6 +3,7 @@ package com.migu.android.linkyou.business.my
 import android.app.Activity.RESULT_OK
 import android.app.UiModeManager
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModel
@@ -21,6 +23,7 @@ import com.migu.android.core.LinkYou
 import com.migu.android.core.glide.GlideUtils
 import com.migu.android.core.recyclerview.CustomLayoutManager
 import com.migu.android.core.util.GlobalUtil
+import com.migu.android.core.util.LayoutUtils
 import com.migu.android.core.util.SharedUtil
 import com.migu.android.core.util.UserInfoActions
 import com.migu.android.core.util.showToastOnUiThread
@@ -33,8 +36,13 @@ import com.migu.android.network.R
 import com.migu.android.network.model.base.Dynamic
 import com.migu.android.network.model.base.UserInfo
 import com.migu.android.core.util.NetWorkUtil
+import com.migu.android.core.util.showToast
+import com.migu.android.linkyou.databinding.DialogBottomSheetAvatarOperateBinding
+import com.migu.android.linkyou.databinding.DialogBottomSheetBackgroundOperateBinding
+import com.migu.android.linkyou.databinding.DialogBottomSheetImageOperateBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MyFragment : BaseFragment() {
@@ -49,16 +57,22 @@ class MyFragment : BaseFragment() {
 
     private lateinit var getUrlsHandler: GetUrlsHandler<UserDynamicAdapter.DynamicBaseViewHolder>
 
+    private lateinit var mUserInfo: UserInfo
 
     /**
      * 选择图片后的回调
      */
     private val pickAvatarLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK && result.data != null) {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    sharedViewModel.postModifyAvatar(result.data!!.data!!)
-                }
+            result.data?.data?.let { selectedImageUri ->
+                sharedViewModel.postModifyAvatar(selectedImageUri)
+            }
+        }
+
+    private val pickBackgroundLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            result.data?.data?.let { selectedImageUri ->
+                sharedViewModel.postModifyBackground(selectedImageUri)
             }
         }
 
@@ -168,12 +182,14 @@ class MyFragment : BaseFragment() {
             })
         }
 
+        // 日夜切换
         binding.darkSunModeSwitch.apply {
             setOnClickListener {
                 switchDarkMode()
             }
         }
 
+        // 搜索
         binding.searchImage.setOnClickListener {
             callbacks?.onClickChangeFragment(SearchFragment.newInstance())
         }
@@ -202,12 +218,62 @@ class MyFragment : BaseFragment() {
             }
         }
 
+        // 下拉刷新
         binding.swiperefresh.setOnRefreshListener {
             sharedViewModel.startRefreshing()
         }
 
+        // 头像点击
         binding.userPhoto.setOnClickListener {
-            UserInfoActions.openGallerySelectTheLeaflet(pickAvatarLauncher)
+            val avatarOperateBinding = DialogBottomSheetAvatarOperateBinding.inflate(layoutInflater)
+            LayoutUtils.createBottomDialog(requireContext()) {
+                setContentView(avatarOperateBinding.root)
+                show()
+            }.apply {
+                avatarOperateBinding.apply {
+                    cancel.setOnClickListener { dismiss() }
+                    checkAvatar.setOnClickListener {
+                        mUserInfo.avatar?.url?.let { avatarUrl ->
+                            val avatarFragment = AvatarFragment.newInstance(avatarUrl)
+                            callbacks?.onClickChangeFragment(avatarFragment)
+                            dismiss()
+                        }
+                    }
+                    modifyAvatar.setOnClickListener {
+                        UserInfoActions.openGallerySelectTheLeaflet(
+                            pickAvatarLauncher
+                        )
+                        dismiss()
+                    }
+                }
+            }
+
+        }
+
+        // 背景点击
+        binding.userBackground.setOnClickListener {
+            val avatarOperateBinding = DialogBottomSheetBackgroundOperateBinding.inflate(layoutInflater)
+            LayoutUtils.createBottomDialog(requireContext()) {
+                setContentView(avatarOperateBinding.root)
+                show()
+            }.apply {
+                avatarOperateBinding.apply {
+                    cancel.setOnClickListener { dismiss() }
+                    checkBackground.setOnClickListener {
+                        mUserInfo.avatar?.url?.let { avatarUrl ->
+                            val avatarFragment = AvatarFragment.newInstance(avatarUrl)
+                            callbacks?.onClickChangeFragment(avatarFragment)
+                            dismiss()
+                        }
+                    }
+                    modifyBackground.setOnClickListener {
+                        UserInfoActions.openGallerySelectTheLeaflet(
+                            pickBackgroundLauncher
+                        )
+                        dismiss()
+                    }
+                }
+            }
         }
     }
 
@@ -216,7 +282,7 @@ class MyFragment : BaseFragment() {
      */
     private fun switchDarkMode() {
         val uiModeManager =
-            activity?.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+            requireContext().getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
         // 系统设置
         /**
          *     public static final int MODE_NIGHT_AUTO = 0;
@@ -315,13 +381,14 @@ class MyFragment : BaseFragment() {
      * @param userInfo 包含用户信息的对象
      */
     private fun updateUserInfo(userInfo: UserInfo) {
+        mUserInfo = userInfo
         // 使用 Glide 加载用户头像并显示到 userPhoto ImageView 中
         // 如果用户头像 URL 使用 HTTP 协议，则将其转换为 HTTPS
         binding.apply {
-            GlideUtils.glide(userInfo.avatar?.url!!).into(userPhoto)
+            GlideUtils.glide(userInfo.avatar?.url!!, false).into(userPhoto)
             // 使用 Glide 加载用户头像并显示到 smailUserPhoto ImageView 中
             // 如果用户头像 URL 使用 HTTP 协议，则将其转换为 HTTPS
-            GlideUtils.glide(userInfo.avatar?.url!!).into(smailUserPhoto)
+            GlideUtils.glide(userInfo.avatar?.url!!, false).into(smailUserPhoto)
             // 使用 Glide 加载用户背景并显示到 userBackground ImageView 中
             // 如果用户背景 URL 使用 HTTP 协议，则将其转换为 HTTPS
             GlideUtils.glide(userInfo.background?.url!!, false).into(userBackground)

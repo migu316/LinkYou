@@ -60,4 +60,8 @@
     <string name="shared_image">Shared Image</string>
     <string name="shared_post_time_string">%s Released in LinkYou</string>
     <string name="shared_image_string">Shared Images</string>
+    <string name="check_avatar">Check your avatar</string>
+    <string name="modify_avatar">Modify your avatar</string>
+    <string name="check_background">Check your background</string>
+    <string name="modify_background">Modify your background</string>
 </resources>
